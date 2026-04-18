@@ -425,17 +425,21 @@
 
         function openManageAssets() {
             const list = document.getElementById('asset-list-manage');
-            list.innerHTML = symbols.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent);"><span>${s}</span><span style="cursor:pointer; font-size:14px;" onclick="removeAsset('${s}')">🗑️</span></div>`).join('');
+            list.innerHTML = symbols.map(s => {
+                const sym = s.replace("EUR", "").replace("USDT", "");
+                const entryPrice = localStorage.getItem('entry_' + sym) || '';
+                return `
+                <div style="display:flex; flex-direction:column; padding:12px; border-bottom:1px solid var(--accent); gap:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:bold;">${s}</span>
+                        <span style="cursor:pointer; font-size:14px;" onclick="removeAsset('${s}')">🗑️</span>
+                    </div>
+                    <input type="number" placeholder="Avg. Entry Price (EUR)" value="${entryPrice}" 
+                        onchange="localStorage.setItem('entry_${sym}', this.value); renderPortfolio();"
+                        style="width:100%; padding:8px; background:#000; border:1px solid var(--border); color:var(--up); border-radius:4px; font-size:10px;">
+                </div>`;
+            }).join('');
             document.getElementById('manage-overlay').style.display = 'flex';
-        }
-        function removeAsset(s) { symbols = symbols.filter(item => item !== s); localStorage.setItem('user_symbols', JSON.stringify(symbols)); openManageAssets(); updateMarket(); }
-        async function addNewAsset() {
-            const val = document.getElementById('new-asset-input').value.toUpperCase().trim();
-            if (!val) return;
-            try {
-                const check = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${val}`);
-                if (check.ok) { symbols.push(val); localStorage.setItem('user_symbols', JSON.stringify(symbols)); document.getElementById('new-asset-input').value = ''; openManageAssets(); updateMarket(); }
-            } catch (e) {}
         }
 
         function openEdit() {
