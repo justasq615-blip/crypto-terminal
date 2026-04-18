@@ -26,7 +26,6 @@
         .header h2 { font-size: 13px; margin: 0; color: var(--title); text-transform: uppercase; letter-spacing: 1px; }
         
         #status { font-size: 8px; display: flex; align-items: center; gap: 5px; font-weight: bold; }
-        .status-refreshing { color: var(--up) !important; }
         .live-dot { width: 6px; height: 6px; background: var(--up); border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
         @keyframes blink { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
 
@@ -34,11 +33,9 @@
         .portfolio-total { font-size: 20px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; margin-top: 2px; }
         
         .btn-action { background-color: var(--accent); color: var(--text); border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-action:active { opacity: 0.7; transform: scale(0.95); }
         .btn-icon { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 12px; display: flex; align-items: center; }
 
         #portfolio-details { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
-        
         .perf-row { display: flex; justify-content: space-between; margin-top: 12px; padding: 8px 4px; background: rgba(0,0,0,0.2); border-radius: 4px; border: 1px solid var(--accent); }
         .perf-item { font-size: 9px; font-weight: bold; display: flex; flex-direction: column; align-items: center; }
         .perf-label { opacity: 0.5; font-size: 7px; margin-bottom: 2px; text-transform: uppercase; }
@@ -73,7 +70,10 @@
         .modal-scroll { padding: 20px; overflow-y: auto; max-height: 70vh; }
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .theme-btn { padding: 12px; font-size: 9px; font-weight: bold; border: 1px solid var(--border); background: var(--accent); color: var(--text); border-radius: 4px; }
+        .news-btn { display: block; background: var(--accent); color: var(--text); padding: 12px; text-decoration: none; text-align: center; font-weight: bold; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
         
+        #chart-container { width: 100%; height: 250px; background: #000; border-radius: 6px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; }
+
         .dist-row { margin-bottom: 15px; }
         .dist-label { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; font-weight: bold; }
         .dist-bar-bg { height: 8px; background: var(--accent); border-radius: 4px; overflow: hidden; }
@@ -127,10 +127,10 @@
     </div>
 
     <div class="bottom-row">
-        <div class="small-card" onclick="alert('News Hub coming soon')">
+        <div class="small-card" onclick="openGeneralNews()">
             <span id="ui-news-hub" style="font-size:8px; font-weight:bold;">📰 NEWS</span>
         </div>
-        <div class="small-card" onclick="alert('Aplo Crypto Terminal v2.0')">
+        <div class="small-card" onclick="openAppInfo()">
             <span style="font-size:14px;">ℹ️</span>
         </div>
         <div class="half-card">
@@ -169,210 +169,6 @@
         </div>
     </div>
 
-    <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'">
+    <div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'">
         <div class="modal" onclick="event.stopPropagation()">
-            <div style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px; color:var(--title);">ASSET DISTRIBUTION</div>
-            <div id="dist-content" style="padding: 20px; overflow-y:auto; max-height:60vh;"></div>
-        </div>
-    </div>
-
-    <script>
-        const translations = {
-            en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", news: "📰 NEWS", disclaimer: "<b>STRICT LEGAL NOTICE:</b> This is an experimental entertainment project. The developer is NOT a financial advisor. All data is provided 'as is' without guarantee. Use at your own risk. <b>LEGAL BINDING:</b> By using this, you agree to hold the developer harmless. No right to sue is granted.", manage: "MANAGE ASSETS" },
-            es: { title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", news: "📰 NOTICIAS", disclaimer: "<b>AVISO LEGAL ESTRICTO:</b> Proyecto experimental de entretenimiento. El desarrollador NO es asesor financiero. Datos sin garantía. Úselo bajo su riesgo. <b>VÍNCULO LEGAL:</b> Al usar esto, acepta eximir al desarrollador de toda responsabilidad. No se otorga derecho a demandar.", manage: "GESTIONAR ACTIVOS" },
-            ru: { title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", news: "📰 НОВОСТИ", disclaimer: "<b>ОФИЦИАЛЬНОЕ УВЕДОМЛЕНИЕ:</b> Экспериментальный проект. Разработчик НЕ является финансовым консультантом. Данные без гарантий. <b>ЮРИДИЧЕСКАЯ СИЛА:</b> Используя это, вы освобождаете разработчика от ответственности. Право на иск не предоставляется.", manage: "УПРАВЛЕНИЕ" },
-            zh: { title: "🚀 APLO 加密终端", networth: "净资产", assets: "资产", edit: "编辑", news: "📰 新闻中心", disclaimer: "<b>严格法律声明:</b> 本项目仅供娱乐。开发者并非财务顾问。不保证数据准确性。风险自担。<b>法律约束:</b> 使用本终端即表示您同意免除开发者的任何法律责任。您无权提起诉讼。", manage: "资产管理" }
-        };
-
-        const insights = ["Bitcoin was created in 2009.", "Ethereum introduced Smart Contracts in 2015.", "There will only be 21 million BTC.", "Stablecoins are pegged 1:1 to USD.", "HODL was a typo in a 2013 forum post."];
-
-        let symbols = JSON.parse(localStorage.getItem('user_symbols')) || ["BTCEUR", "ETHEUR", "BNBEUR", "SOLEUR"];
-        let currentPrices = {}; let marketData = []; 
-        let currency = localStorage.getItem('currency') || 'EUR'; 
-        let currentLang = localStorage.getItem('lang') || 'en';
-        let usdRate = 1.08;
-        let langKeys = Object.keys(translations);
-        let currentLangIndex = 0;
-
-        const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
-        document.getElementById('theme-grid').innerHTML = themeNames.map(t => `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`).join('');
-
-        function setTheme(t) { document.body.setAttribute('data-theme', t); localStorage.setItem('theme', t); }
-        setTheme(localStorage.getItem('theme') || 'nando-gray');
-
-        function setLang(l) {
-            currentLang = l; localStorage.setItem('lang', l);
-            const t = translations[l] || translations['en'];
-            document.getElementById('ui-title').innerText = t.title;
-            document.getElementById('ui-networth').innerText = t.networth;
-            document.getElementById('ui-btn-assets').innerText = t.assets;
-            document.getElementById('ui-btn-edit').innerText = t.edit;
-            document.getElementById('ui-news-hub').innerText = t.news;
-            document.getElementById('ui-manage-title').innerText = t.manage;
-            renderUI();
-        }
-
-        function rotateDisclaimer() {
-            const el = document.getElementById('ui-disclaimer');
-            el.style.opacity = 0;
-            setTimeout(() => {
-                const langKey = langKeys[currentLangIndex];
-                el.innerHTML = translations[langKey].disclaimer;
-                el.style.opacity = 1;
-                currentLangIndex = (currentLangIndex + 1) % langKeys.length;
-            }, 500);
-        }
-
-        function startClock() {
-            setInterval(() => {
-                document.getElementById('status').innerHTML = `<span class="live-dot"></span> LIVE • ${new Date().toLocaleTimeString('en-GB')}`;
-            }, 1000);
-        }
-
-        async function updateMarket() {
-            try {
-                const priceRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=' + JSON.stringify(symbols));
-                let rawData = await priceRes.json();
-                marketData = rawData;
-                renderUI();
-            } catch (e) {}
-        }
-
-        function renderUI() {
-            const wrapper = document.getElementById('main-wrapper');
-            wrapper.innerHTML = '';
-            const char = currency === 'EUR' ? '€' : '$';
-            marketData.forEach(c => {
-                const sym = c.symbol.replace("EUR", "").replace("USDT", "");
-                const p = parseFloat(c.lastPrice);
-                const ch = parseFloat(c.priceChangePercent);
-                currentPrices[sym] = p;
-                const dp = currency === 'EUR' ? p : p * usdRate;
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}</span> <span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${ch.toFixed(2)}%</span></div><div class="value-text" onclick="toggleCurrency()">${char}${dp.toLocaleString('en-US', {minimumFractionDigits: 2})}</div></div>`;
-                wrapper.appendChild(card);
-            });
-            renderPortfolio();
-        }
-
-        function toggleCurrency() { currency = (currency === 'EUR' ? 'USD' : 'EUR'); localStorage.setItem('currency', currency); renderUI(); }
-
-        function openEdit() {
-            const sym = prompt("Enter Symbol (e.g. BTC):")?.toUpperCase();
-            if (sym) {
-                const qty = prompt(`Enter quantity for ${sym}:`);
-                if (qty !== null) { localStorage.setItem('p_'+sym, qty); renderPortfolio(); }
-            }
-        }
-
-        function openManageAssets() {
-            const list = document.getElementById('asset-list-manage');
-            list.innerHTML = symbols.map(s => {
-                const sym = s.replace("EUR", "").replace("USDT", "");
-                const entryPrice = localStorage.getItem('entry_' + sym) || '';
-                return `
-                <div style="display:flex; flex-direction:column; padding:12px; border-bottom:1px solid var(--border); gap:8px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-weight:bold;">${s}</span>
-                        <span style="cursor:pointer; font-size:14px;" onclick="removeAsset('${s}')">🗑️</span>
-                    </div>
-                    <input type="number" placeholder="Avg. Entry Price (EUR)" value="${entryPrice}" 
-                        onchange="localStorage.setItem('entry_${sym}', this.value); renderPortfolio();"
-                        style="width:100%; padding:8px; background:#000; border:1px solid var(--border); color:var(--up); border-radius:4px; font-size:10px;">
-                </div>`;
-            }).join('');
-            document.getElementById('manage-overlay').style.display = 'flex';
-        }
-
-        function addNewAsset() {
-            const input = document.getElementById('new-asset-input');
-            const val = input.value.toUpperCase();
-            if (val && !symbols.includes(val)) {
-                symbols.push(val);
-                localStorage.setItem('user_symbols', JSON.stringify(symbols));
-                input.value = '';
-                updateMarket();
-                openManageAssets();
-            }
-        }
-
-        function removeAsset(s) {
-            symbols = symbols.filter(x => x !== s);
-            localStorage.setItem('user_symbols', JSON.stringify(symbols));
-            updateMarket();
-            openManageAssets();
-        }
-
-        function renderPortfolio() {
-            let totalEUR = 0; let items = '';
-            const char = currency === 'EUR' ? '€' : '$';
-            symbols.forEach(s => {
-                const sym = s.replace("EUR", "").replace("USDT", "");
-                const qty = parseFloat(localStorage.getItem('p_'+sym)) || 0;
-                const entryPrice = parseFloat(localStorage.getItem('entry_'+sym)) || 0;
-                
-                if (qty > 0 && currentPrices[sym]) {
-                    const valEUR = qty * currentPrices[sym];
-                    totalEUR += valEUR;
-                    const displayVal = currency === 'EUR' ? valEUR : valEUR * usdRate;
-                    
-                    let pnlHtml = '';
-                    if (entryPrice > 0) {
-                        const pnlPct = ((currentPrices[sym] - entryPrice) / entryPrice * 100);
-                        pnlHtml = `<span class="${pnlPct >= 0 ? 'up' : 'down'}" style="font-size:9px; margin-left:5px;">${pnlPct >= 0 ? '▲' : '▼'}${Math.abs(pnlPct).toFixed(1)}%</span>`;
-                    }
-
-                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${sym}${pnlHtml}</span><span style="font-weight:bold;">${char}${displayVal.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>`;
-                }
-            });
-            const displayTotal = currency === 'EUR' ? totalEUR : totalEUR * usdRate;
-            document.getElementById('portfolio-total').innerText = `${char}${displayTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-            document.getElementById('portfolio-list').innerHTML = items || 'No assets added.';
-            saveSnapshot(totalEUR);
-        }
-
-        function saveSnapshot(t) {
-            let h = JSON.parse(localStorage.getItem('portfolio_history')) || [];
-            if (h.length === 0 || Date.now() - h[h.length-1].t > 3600000) {
-                h.push({t: Date.now(), v: t});
-                localStorage.setItem('portfolio_history', JSON.stringify(h.slice(-1000)));
-            }
-        }
-
-        function getPerf(total) {
-            return { h24: 0, h72: 0, w1: 0, m1: 0, m3: 0, m6: 0 }; // Placeholder loogika säilitamiseks
-        }
-
-        function togglePortfolio() { const d = document.getElementById('portfolio-details'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
-        
-        function openDistribution() {
-            let total = 0; let assets = [];
-            symbols.forEach(s => {
-                const sym = s.replace("EUR", "").replace("USDT", "");
-                const val = (parseFloat(localStorage.getItem('p_'+sym)) || 0) * (currentPrices[sym] || 0);
-                if (val > 0) { total += val; assets.push({sym, val}); }
-            });
-            const content = document.getElementById('dist-content');
-            content.innerHTML = assets.sort((a,b)=>b.val-a.val).map(a => `
-                <div class="dist-row">
-                    <div class="dist-label"><span>${a.sym}</span><span>${(a.val/total*100).toFixed(1)}%</span></div>
-                    <div class="dist-bar-bg"><div class="dist-bar-fill" style="width:${a.val/total*100}%"></div></div>
-                </div>`).join('') || 'No data.';
-            document.getElementById('dist-overlay').style.display = 'flex';
-        }
-
-        function cycleInsight() {
-            const el = document.getElementById('insights-ticker');
-            el.innerText = insights[Math.floor(Math.random() * insights.length)];
-        }
-
-        startClock();
-        updateMarket();
-        setInterval(updateMarket, 30000);
-        setInterval(rotateDisclaimer, 10000);
-        setInterval(cycleInsight, 30000);
-        setLang(currentLang);
-    </script>
-</body>
-</html>
+            <div id="info-header" style="padding:15px; border-bottom:1px
