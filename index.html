@@ -56,7 +56,6 @@
         .up { color: var(--up) !important; }
         .down { color: var(--down) !important; }
 
-        /* Uue rea stiilid */
         .mid-row { height: 38px; display: flex; gap: 4px; flex-shrink: 0; margin-bottom: 4px; }
         .mid-btn { flex: 1; display: flex; align-items: center; justify-content: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 14px; }
         .mid-btn:active { background-color: var(--accent); }
@@ -170,7 +169,7 @@
             <div id="ui-manage-title" style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;">MANAGE ASSETS</div>
             <div id="asset-list-manage" style="overflow-y:auto; max-height:40vh; padding:5px;"></div>
             <div style="padding:15px; border-top:1px solid var(--border);">
-                <input type="text" id="new-asset-input" placeholder="TICKER (e.g. BTCEUR)" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; font-size:12px;">
+                <input type="text" id="new-asset-input" placeholder="TICKER OR CA (0x...)" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; font-size:12px;">
                 <button onclick="addNewAsset()" style="width:100%; margin-top:8px; padding:12px; background:var(--title); color:#000; border:none; font-weight:bold; border-radius:4px; font-size:11px;">ADD ASSET</button>
             </div>
         </div>
@@ -198,62 +197,9 @@
             zh: { title: "🚀 APLO 加密终端", networth: "净资产", assets: "资产", edit: "编辑", news: "📰 新闻中心", disclaimer: "<b>严格法律声明:</b> 本项目仅供娱乐。开发者并非财务顾问。不保证数据准确性。风险自担。<b>法律约束:</b> 使用本终端即表示您同意免除开发者的任何法律责任。您无权提起诉讼。", manage: "资产管理" }
         };
 
-        const siteMap = { "BTC": "https://bitcoin.org", "ETH": "https://ethereum.org", "SOL": "https://solana.com", "BNB": "https://www.bnbchain.org", "SHIB": "https://shibatoken.com", "LINK": "https://chain.link", "ADA": "https://cardano.org" };
+        const insights = ["Bitcoin was created in 2009...", "Ethereum introduced Smart Contracts...", "HODL was a misspelling of HOLD..."];
 
-        const insights = [
-            "Bitcoin was created in 2009 by Satoshi Nakamoto.",
-            "The first real-world Bitcoin transaction was for 2 pizzas (10,000 BTC).",
-            "Ethereum introduced Smart Contracts to the world in 2015.",
-            "There will only ever be 21 million Bitcoins in existence.",
-            "Dogecoin was originally created as a joke in 2013.",
-            "Stablecoins like USDT are pegged 1:1 to the US Dollar.",
-            "NFTs are unique digital assets stored on a blockchain.",
-            "The first block in Bitcoin's chain is called the Genesis Block.",
-            "Solana can process over 50,000 transactions per second.",
-            "Cardano was founded by Charles Hoskinson, a co-founder of Ethereum.",
-            "Proof of Work (PoW) requires mining; Proof of Stake (PoS) requires staking.",
-            "The process of losing a private key means losing access to your funds forever.",
-            "El Salvador was the first country to adopt Bitcoin as legal tender.",
-            "A 'Whale' is a person who holds a massive amount of a specific crypto.",
-            "Binance is currently the world's largest cryptocurrency exchange.",
-            "A 'Cold Wallet' is a hardware device not connected to the internet.",
-            "The Bitcoin Halving happens approximately every 4 years.",
-            "Gas fees are the costs of performing transactions on Ethereum.",
-            "DeFi stands for Decentralized Finance.",
-            "Polkadot allows different blockchains to transfer messages and value.",
-            "Litecoin is often referred to as the 'silver' to Bitcoin's 'gold'.",
-            "Satoshi Nakamoto's true identity remains a mystery to this day.",
-            "The smallest unit of Bitcoin is called a 'Satoshi' (0.00000001 BTC).",
-            "Burning tokens means permanently removing them from circulation.",
-            "A 'Bull Market' is when prices are rising; 'Bear Market' is when they fall.",
-            "Initial Coin Offerings (ICOs) were huge during the 2017 boom.",
-            "Monero (XMR) is a privacy-focused coin that hides transaction details.",
-            "Decentralization means no single entity controls the network.",
-            "HODL was a misspelling of 'HOLD' in a 2013 forum post.",
-            "FOMO is the 'Fear Of Missing Out' on a price pump.",
-            "Ripple (XRP) was designed for fast international bank transfers.",
-            "Market Cap is calculated by: Price multiplied by Circulating Supply.",
-            "Polygon (MATIC) is a scaling solution for the Ethereum network.",
-            "A Fork happens when a blockchain splits into two different versions.",
-            "Chainlink provides 'Oracles' that bring real-world data to blockchains.",
-            "The term 'Altcoin' refers to any cryptocurrency other than Bitcoin.",
-            "Uniswap is the most popular Decentralized Exchange (DEX).",
-            "Avalanche (AVAX) uses a unique consensus mechanism for high speed.",
-            "Crypto 'Mining' secures the network and issues new coins.",
-            "A 'Seed Phrase' is usually 12 or 24 words used for wallet recovery.",
-            "The total crypto market cap reached 3 trillion USD in 2021.",
-            "Shiba Inu (SHIB) is known as the 'Dogecoin Killer'.",
-            "Staking allows users to earn rewards by helping secure PoS networks.",
-            "A DAO is a Decentralized Autonomous Organization governed by code.",
-            "Bitcoin's whitepaper was released on October 31, 2008.",
-            "Vitalik Buterin was only 19 when he proposed Ethereum.",
-            "The Lightning Network is a 'Layer 2' for faster Bitcoin payments.",
-            "A 'Rug Pull' is a scam where developers abandon a project and steal funds.",
-            "Web3 is the vision for a decentralized internet owned by users.",
-            "The first regulated crypto ETF was launched in 2021."
-        ];
-
-        let symbols = JSON.parse(localStorage.getItem('user_symbols')) || ["BTCEUR", "ETHEUR", "BNBEUR", "SOLEUR", "SHIBEUR", "LINKEUR", "ADAEUR"];
+        let symbols = JSON.parse(localStorage.getItem('user_symbols')) || ["BTCEUR", "ETHEUR"];
         let currentPrices = {}; let marketData = []; 
         let currency = localStorage.getItem('currency') || 'EUR'; 
         let currentLang = localStorage.getItem('lang') || 'en';
@@ -281,6 +227,7 @@
 
         function rotateDisclaimer() {
             const el = document.getElementById('ui-disclaimer');
+            if(!el) return;
             el.style.opacity = 0;
             setTimeout(() => {
                 const langKey = langKeys[currentLangIndex];
@@ -296,26 +243,39 @@
             }, 1000);
         }
 
-        let touchStart = 0;
-        document.body.addEventListener('touchstart', e => { touchStart = e.touches[0].pageY; }, {passive: true});
-        document.body.addEventListener('touchend', e => {
-            const touchEnd = e.changedTouches[0].pageY;
-            if (touchEnd - touchStart > 150) { 
-                const statusEl = document.getElementById('status');
-                statusEl.classList.add('status-refreshing');
-                updateMarket().then(() => {
-                    setTimeout(() => statusEl.classList.remove('status-refreshing'), 1000);
-                });
-            }
-        }, {passive: true});
-
         async function updateMarket() {
             try {
                 const rateRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
                 if(rateRes.ok) { const rd = await rateRes.json(); usdRate = parseFloat(rd.price); }
-                const priceRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=' + JSON.stringify(symbols));
-                let rawData = await priceRes.json();
-                marketData = rawData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
+                
+                const binanceSyms = symbols.filter(s => !s.startsWith('0x'));
+                const dexAddrs = symbols.filter(s => s.startsWith('0x'));
+
+                let combinedData = [];
+
+                if(binanceSyms.length > 0) {
+                    const priceRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=' + JSON.stringify(binanceSyms));
+                    if(priceRes.ok) combinedData = await priceRes.json();
+                }
+
+                for(let addr of dexAddrs) {
+                    try {
+                        const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${addr}`);
+                        const data = await res.json();
+                        if(data.pairs && data.pairs[0]) {
+                            const p = data.pairs[0];
+                            combinedData.push({
+                                symbol: p.baseToken.symbol,
+                                isDex: true,
+                                address: addr,
+                                lastPrice: parseFloat(p.priceUsd) / usdRate,
+                                priceChangePercent: p.priceChange.h24 || 0
+                            });
+                        }
+                    } catch(e) {}
+                }
+
+                marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
                 renderUI();
             } catch (e) {}
         }
@@ -325,16 +285,15 @@
             wrapper.innerHTML = '';
             const char = currency === 'EUR' ? '€' : '$';
             marketData.forEach(c => {
-                const fullSym = c.symbol;
-                const sym = fullSym.replace("EUR", "").replace("USDT", "");
+                const sym = c.isDex ? c.symbol : c.symbol.replace("EUR", "").replace("USDT", "");
                 const p = parseFloat(c.lastPrice);
                 const ch = parseFloat(c.priceChangePercent);
-                currentPrices[sym] = p;
+                currentPrices[c.isDex ? c.address : sym] = p;
                 const dp = currency === 'EUR' ? p : p * usdRate;
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = (e) => { if (!e.target.classList.contains('value-text')) openInfoModal(sym, fullSym); };
-                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}</span> <span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">24h: ${ch >= 0 ? '+' : ''}${ch.toFixed(2)}%</span></div><div class="value-text" onclick="event.stopPropagation(); toggleCurrency();">${char}${dp.toLocaleString('en-US', {minimumFractionDigits: dp < 1 ? 7 : 2})}</div></div>`;
+                card.onclick = () => c.isDex ? window.open(`https://dexscreener.com/search?q=${c.address}`) : openInfoModal(sym, c.symbol);
+                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}${c.isDex?'*':''}</span> <span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">24h: ${ch >= 0 ? '+' : ''}${ch.toFixed(2)}%</span></div><div class="value-text" onclick="event.stopPropagation(); toggleCurrency();">${char}${dp.toLocaleString('en-US', {minimumFractionDigits: dp < 0.0001 ? 10 : 2})}</div></div>`;
                 wrapper.appendChild(card);
             });
             renderPortfolio();
@@ -342,157 +301,74 @@
 
         function toggleCurrency() { currency = (currency === 'EUR' ? 'USD' : 'EUR'); localStorage.setItem('currency', currency); renderUI(); }
         
-        function saveSnapshot(total) {
-            let history = JSON.parse(localStorage.getItem('portfolio_history')) || [];
-            const now = Date.now();
-            if (history.length === 0 || (now - history[history.length-1].t > 3600000)) {
-                history.push({ t: now, v: total });
-                if (history.length > 5000) history.shift();
-                localStorage.setItem('portfolio_history', JSON.stringify(history));
-            }
-        }
-
-        function getPerf(total) {
-            const history = JSON.parse(localStorage.getItem('portfolio_history')) || [];
-            if (history.length === 0) return { h24: 0, h72: 0, w1: 0, m1: 0, m3: 0, m6: 0 };
-            const now = Date.now();
-            const findV = (ms) => {
-                const target = now - ms;
-                let closest = history[0];
-                for (let h of history) { if (Math.abs(h.t - target) < Math.abs(closest.t - target)) closest = h; }
-                return closest.v;
-            };
-            const calc = (oldV) => oldV > 0 ? ((total - oldV) / oldV * 100) : 0;
-            return { h24: calc(findV(24*3600000)), h72: calc(findV(72*3600000)), w1: calc(findV(7*24*3600000)), m1: calc(findV(30*24*3600000)), m3: calc(findV(90*24*3600000)), m6: calc(findV(180*24*3600000)) };
-        }
-
         function renderPortfolio() {
             let totalEUR = 0; let items = '';
             const char = currency === 'EUR' ? '€' : '$';
             symbols.forEach(s => {
-                const sym = s.replace("EUR", "").replace("USDT", "");
-                const qty = parseFloat(localStorage.getItem('p_'+sym)) || 0;
-                if (qty > 0 && currentPrices[sym]) {
-                    const valEUR = qty * currentPrices[sym];
+                const isDex = s.startsWith('0x');
+                const symLabel = isDex ? s : s.replace("EUR", "").replace("USDT", "");
+                const qty = parseFloat(localStorage.getItem('p_'+s)) || 0;
+                const price = currentPrices[s] || 0;
+                if (qty > 0 && price > 0) {
+                    const valEUR = qty * price;
                     totalEUR += valEUR;
                     const displayVal = currency === 'EUR' ? valEUR : valEUR * usdRate;
-                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${sym}</span><span style="font-weight:bold;">${char}${displayVal.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>`;
+                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${symLabel.substring(0,6)}</span><span style="font-weight:bold;">${char}${displayVal.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>`;
                 }
             });
-            saveSnapshot(totalEUR);
-            const perf = getPerf(totalEUR);
             const displayTotal = currency === 'EUR' ? totalEUR : totalEUR * usdRate;
             document.getElementById('portfolio-total').innerText = `${char}${displayTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-            document.getElementById('portfolio-list').innerHTML = items || '<div style="opacity:0.5; font-size:10px; text-align:center;">No assets added. Use EDIT to add quantities.</div>';
-            const setV = (id, val) => {
-                const el = document.getElementById(id);
-                el.innerText = (val >= 0 ? '+' : '') + val.toFixed(1) + '%';
-                el.className = val >= 0 ? 'up' : 'down';
-            };
-            setV('perf-24h', perf.h24); setV('perf-72h', perf.h72); setV('perf-1w', perf.w1); setV('perf-1m', perf.m1); setV('perf-m3', perf.m3); setV('perf-m6', perf.m6);
+            document.getElementById('portfolio-list').innerHTML = items || '<div style="opacity:0.5; font-size:10px; text-align:center;">No assets.</div>';
         }
 
         function togglePortfolio() { const d = document.getElementById('portfolio-details'); d.style.display = (d.style.display === 'none' || d.style.display === '') ? 'block' : 'none'; }
         
-        function openDistribution() {
-            let totalEUR = 0; let assets = [];
-            symbols.forEach(s => {
-                const sym = s.replace("EUR", "").replace("USDT", "");
-                const qty = parseFloat(localStorage.getItem('p_'+sym)) || 0;
-                if (qty > 0 && currentPrices[sym]) {
-                    const val = qty * currentPrices[sym];
-                    totalEUR += val;
-                    assets.push({ sym, val });
-                }
-            });
-            const content = document.getElementById('dist-content');
-            if (totalEUR === 0) {
-                content.innerHTML = '<div style="text-align:center; font-size:10px; opacity:0.5;">Add asset quantities in EDIT to see distribution.</div>';
-            } else {
-                assets.sort((a,b) => b.val - a.val);
-                content.innerHTML = assets.map(a => {
-                    const pct = (a.val / totalEUR * 100).toFixed(1);
-                    return `<div class="dist-row"><div class="dist-label"><span>${a.sym}</span><span>${pct}%</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${pct}%"></div></div></div>`;
-                }).join('');
-            }
-            document.getElementById('dist-overlay').style.display = 'flex';
-        }
-
-        function cycleInsight() { 
-            const ticker = document.getElementById('insights-ticker');
-            ticker.innerText = insights.join("  •|•  ") + "  •|•  ";
-        }
-
         function openManageAssets() {
             const list = document.getElementById('asset-list-manage');
-            list.innerHTML = symbols.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent);"><span>${s}</span><span style="cursor:pointer; font-size:14px;" onclick="removeAsset('${s}')">🗑️</span></div>`).join('');
+            list.innerHTML = symbols.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;"><span>${s}</span><span style="cursor:pointer;" onclick="removeAsset('${s}')">🗑️</span></div>`).join('');
             document.getElementById('manage-overlay').style.display = 'flex';
         }
         function removeAsset(s) { symbols = symbols.filter(item => item !== s); localStorage.setItem('user_symbols', JSON.stringify(symbols)); openManageAssets(); updateMarket(); }
         async function addNewAsset() {
-            const val = document.getElementById('new-asset-input').value.toUpperCase().trim();
+            const val = document.getElementById('new-asset-input').value.trim();
             if (!val) return;
-            try {
-                const check = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${val}`);
-                if (check.ok) { symbols.push(val); localStorage.setItem('user_symbols', JSON.stringify(symbols)); document.getElementById('new-asset-input').value = ''; openManageAssets(); updateMarket(); }
-            } catch (e) {}
+            if (val.startsWith('0x')) {
+                symbols.push(val);
+            } else {
+                try {
+                    const check = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${val.toUpperCase()}`);
+                    if (check.ok) symbols.push(val.toUpperCase());
+                } catch (e) {}
+            }
+            localStorage.setItem('user_symbols', JSON.stringify(symbols));
+            document.getElementById('new-asset-input').value = '';
+            openManageAssets(); updateMarket();
         }
 
         function openEdit() {
             const fields = symbols.map(s => {
-                const sym = s.replace("EUR", "").replace("USDT", "");
-                return `<div style="margin-bottom:12px;"><label style="font-size:10px; font-weight:bold; color:var(--title);">${sym} AMOUNT</label><br><input type="number" id="e-${sym}" value="${localStorage.getItem('p_'+sym)||''}" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"></div>`;
+                return `<div style="margin-bottom:12px;"><label style="font-size:10px; font-weight:bold; color:var(--title);">${s.substring(0,10)} QTY</label><br><input type="number" id="e-${s}" value="${localStorage.getItem('p_'+s)||''}" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"></div>`;
             }).join('');
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay'; overlay.style.display = 'flex';
-            overlay.innerHTML = `<div class="modal" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">SAVE CHANGES</button></div>`;
+            overlay.innerHTML = `<div class="modal" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">SAVE</button></div>`;
             document.body.appendChild(overlay);
         }
         function saveP(btn) {
-            symbols.forEach(s => { const sym = s.replace("EUR", "").replace("USDT", ""); const val = document.getElementById('e-'+sym).value; localStorage.setItem('p_'+sym, val); });
+            symbols.forEach(s => { const val = document.getElementById('e-'+s).value; localStorage.setItem('p_'+s, val); });
             btn.parentElement.parentElement.remove(); renderPortfolio();
         }
 
-        function openGeneralNews() { 
-            document.getElementById('info-header').innerText = "GLOBAL NEWS HUB"; 
-            document.getElementById('info-content').innerHTML = `
-                <a href="https://cryptopanic.com/" target="_blank" class="news-btn">CryptoPanic (Aggregator)</a>
-                <a href="https://www.coindesk.com/" target="_blank" class="news-btn">CoinDesk</a>
-                <a href="https://cointelegraph.com/" target="_blank" class="news-btn">CoinTelegraph</a>
-                <a href="https://decrypt.co/" target="_blank" class="news-btn">Decrypt</a>
-                <a href="https://www.theblock.co/" target="_blank" class="news-btn">The Block</a>
-            `; 
-            document.getElementById('info-overlay').style.display = 'flex'; 
-        }
-
-        function openAppInfo() {
-            document.getElementById('info-header').innerText = "APLO TERMINAL INFO";
-            document.getElementById('info-content').innerHTML = `
-                <div style="font-size:11px; line-height:1.6;">
-                    <p><b>Version:</b> 2.4.0 (Custom Layout)</p>
-                    <p><b>Data Source:</b> Binance Public API</p>
-                    <p><b>Storage:</b> All portfolio data is stored locally on your device.</p>
-                    <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
-                    <p style="font-size:9px; opacity:0.7;">Use the new middle row buttons for quick actions.</p>
-                </div>
-            `;
-            document.getElementById('info-overlay').style.display = 'flex';
-        }
-
+        function openGeneralNews() { document.getElementById('info-overlay').style.display = 'flex'; }
+        function openAppInfo() { document.getElementById('info-overlay').style.display = 'flex'; }
         function openInfoModal(sym, fullSym) {
             document.getElementById('info-header').innerText = `${sym} ANALYSIS`;
             const theme = document.body.getAttribute('data-theme') === 'white-black' ? 'light' : 'dark';
-            const officialUrl = siteMap[sym] || `https://www.google.com/search?q=${sym}+official+website`;
-            document.getElementById('info-content').innerHTML = `
-                <div id="chart-container"><iframe src="https://www.tradingview.com/widgetembed/?symbol=BINANCE%3A${fullSym}&interval=60&theme=${theme}" width="100%" height="100%" frameborder="0" allowtransparency="true" scrolling="no" allowfullscreen></iframe></div>
-                <a href="${officialUrl}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none;">🌐 OFFICIAL WEBSITE</a>
-                <a href="https://cryptopanic.com/news/${sym.toLowerCase()}/" target="_blank" class="news-btn">VIEW ${sym} NEWS FEED</a>
-                <a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>
-            `;
+            document.getElementById('info-content').innerHTML = `<div id="chart-container"><iframe src="https://www.tradingview.com/widgetembed/?symbol=BINANCE%3A${fullSym}&interval=60&theme=${theme}" width="100%" height="100%" frameborder="0" allowtransparency="true"></iframe></div>`;
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
-        startClock(); setLang(currentLang); updateMarket(); setInterval(updateMarket, 30000); cycleInsight(); rotateDisclaimer(); setInterval(rotateDisclaimer, 20000);
+        startClock(); setLang(currentLang); updateMarket(); setInterval(updateMarket, 30000); rotateDisclaimer(); setInterval(rotateDisclaimer, 20000);
     </script>
 </body>
 </html>
