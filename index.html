@@ -76,7 +76,6 @@
         .modal { background: var(--bg); border: 2px solid var(--border); width: 100%; max-width: 360px; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         .modal-scroll { padding: 20px; overflow-y: auto; max-height: 70vh; }
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .theme-btn { padding: 12px; font-size: 9px; font-weight: bold; border: 1px solid var(--border); background: var(--accent); color: var(--text); border-radius: 4px; }
         .news-btn { display: block; background: var(--accent); color: var(--text); padding: 12px; text-decoration: none; text-align: center; font-weight: bold; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
         
         #chart-container { width: 100%; height: 250px; background: #000; border-radius: 6px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; position: relative; }
@@ -193,7 +192,6 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <script>
-        const siteMap = { BTC: "https://bitcoin.org", ETH: "https://ethereum.org", SOL: "https://solana.com", BNB: "https://www.bnbchain.org", XRP: "https://ripple.com", ADA: "https://cardano.org", DOGE: "https://dogecoin.com", AVAX: "https://www.avax.network", DOT: "https://polkadot.network" };
         const translations = {
             en: { 
                 title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", save: "SAVE", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.",
@@ -235,7 +233,6 @@
         let currentLang = localStorage.getItem('lang') || 'en';
         let langKeys = Object.keys(translations);
         let currentLangIndex = 0;
-        let touchStartPageY = 0;
         let currencyMode = 'USD';
 
         const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
@@ -248,7 +245,6 @@
             currentLang = l; 
             localStorage.setItem('lang', l);
             const t = translations[l] || translations['en'];
-            
             document.getElementById('ui-title').innerText = t.title;
             document.getElementById('ui-networth').innerText = t.networth;
             document.getElementById('ui-btn-assets').innerText = t.assets;
@@ -257,11 +253,9 @@
             document.getElementById('ui-manage-title').innerText = t.manage;
             document.getElementById('ui-btn-add-asset').innerText = t.btn_add;
             document.getElementById('ui-dist-title').innerText = t.dist_title;
-            
             renderUI();
         }
 
-        // ... (ülejäänud funktsioonid nagu rotateDisclaimer, startClock, updateMarket jäid samaks)
         function rotateDisclaimer() {
             const el = document.getElementById('ui-disclaimer');
             if(!el) return;
@@ -314,19 +308,15 @@
             if (!wrapper) return;
             wrapper.innerHTML = '';
             marketData.forEach(c => {
-                // MUUDATUSED SIIN: Peidame CA nimekirjast, kuvame ainult nime
                 const sym = c.isDex ? (caNames[c.address] || "DEX") : c.symbol.replace(/(USDT|USD)$/, "");
                 const p = parseFloat(c.lastPrice);
                 const ch = parseFloat(c.priceChangePercent);
                 currentPrices[c.isDex ? c.address : c.symbol] = p;
                 const qty = parseFloat(localStorage.getItem('p_' + (c.isDex ? c.address : c.symbol))) || 0;
-
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => openInfoModal(sym, c.isDex ? c.address : c.symbol, c.isDex);
-                
                 let displayValue = (currencyMode === 'USD' ? `$${p.toFixed(2)}` : (currencyMode === 'EUR' ? `€${(p*0.92).toFixed(2)}` : `H: $${(qty*p).toFixed(2)}`));
-
                 card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}</span><span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${ch.toFixed(1)}%</span></div><div class="value-text" onclick="toggleCurrencyMode(event)">${displayValue}</div></div>`;
                 wrapper.appendChild(card);
             });
@@ -365,6 +355,7 @@
             });
             const container = document.getElementById('dist-content');
             container.innerHTML = holdings.map(h => `<div class="dist-row"><div class="dist-label"><span>${h.name}</span><span>$${h.val.toFixed(2)}</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${((h.val/total)*100).toFixed(0)}%"></div></div></div>`).join('');
+            container.innerHTML += (holdings.length === 0 ? `<div style="text-align:center; opacity:0.5; font-size:10px;">No assets</div>` : '');
             document.getElementById('dist-overlay').style.display = 'flex';
         }
 
@@ -372,7 +363,6 @@
         
         function openManageAssets() {
             const list = document.getElementById('asset-list-manage');
-            // PEIDAME CA-d nimekirjast:
             list.innerHTML = symbols.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;"><span>${caNames[s] || s.replace(/(USDT|USD)$/, "")}</span><span style="cursor:pointer;" onclick="removeAsset('${s}')">🗑️</span></div>`).join('');
             document.getElementById('manage-overlay').style.display = 'flex';
         }
@@ -391,6 +381,7 @@
                 symbols.push(val.toUpperCase());
             }
             localStorage.setItem('user_symbols', JSON.stringify(symbols));
+            document.getElementById('new-asset-input').value = '';
             openManageAssets(); updateMarket();
         }
 
@@ -403,7 +394,6 @@
             }).join('');
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay'; overlay.style.display = 'flex';
-            // SIIN KASUTAME t.save
             overlay.innerHTML = `<div class="modal" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">${t.save}</button></div>`;
             document.body.appendChild(overlay);
         }
@@ -425,15 +415,15 @@
         function openInfoModal(sym, fullSym, isDex) {
             document.getElementById('info-header').innerText = `${sym} ANALYSIS`;
             const theme = document.body.getAttribute('data-theme') === 'white-black' ? 'light' : 'dark';
-            
-            // SIIN LISAME CA AADRESSI AINULT DETAILVAATESSE
             let caInfo = isDex ? `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center; user-select:all;">CA: ${fullSym}</div>` : '';
 
             if (isDex) {
+                // MUUDATUS SIIN: DexScreener otse graafiku URL
+                const dexEmbedUrl = `https://dexscreener.com/bsc/${fullSym}?embed=1&theme=${theme}`;
                 document.getElementById('info-content').innerHTML = `
-                    <div id="chart-container"><iframe src="https://dexscreener.com/search?q=${fullSym}&embed=1&theme=${theme}" width="100%" height="100%" frameborder="0"></iframe></div>
+                    <div id="chart-container"><iframe src="${dexEmbedUrl}" width="100%" height="100%" frameborder="0"></iframe></div>
                     ${caInfo}
-                    <a href="https://dexscreener.com/search?q=${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 DEXSCREENER</a>
+                    <a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 DEXSCREENER</a>
                 `;
             } else {
                 document.getElementById('info-content').innerHTML = `<div id="chart-container"><div id="tv-medium-widget"></div></div><a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>`;
