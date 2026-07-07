@@ -192,10 +192,26 @@
     <script>
         const siteMap = { BTC: "https://bitcoin.org", ETH: "https://ethereum.org", SOL: "https://solana.com", BNB: "https://www.bnbchain.org", XRP: "https://ripple.com", ADA: "https://cardano.org", DOGE: "https://dogecoin.com", AVAX: "https://www.avax.network", DOT: "https://polkadot.network" };
         const translations = {
-            en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.", disclaimer_full: "<b>LEGAL NOTICE:</b> This is an experimental entertainment project. The developer is NOT a financial advisor. All data is provided 'as is'. Use at your own risk." },
-            es: { title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.", disclaimer_full: "<b>AVISO LEGAL:</b> Proyecto experimental de entretenimiento. El desarrollador NO es asesor financiero." },
-            ru: { title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.", disclaimer_full: "<b>ОФИЦИАЛЬНОЕ УВЕДОМЛЕНИЕ:</b> Экспериментальный проект. Разработчик НЕ является консультантом." },
-            zh: { title: "🚀 APLO 加密终端", networth: "净资产", assets: "资产", edit: "编辑", news: "📰 新闻中心", manage: "资产管理", disclaimer: "本项目仅供娱乐。", disclaimer_full: "<b>严格法律声明:</b> 本项目仅供娱乐。开发者并非财务顾问。" }
+            en: { 
+                title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.",
+                legal_label: "LEGAL NOTICE",
+                disclaimer_full: "This application is an experimental software project created 100% for entertainment, scientific, and personal purposes. The developer does not provide financial advice or investment recommendations. All data is provided 'as is' without warranties of any kind. Use entirely at your own risk."
+            },
+            es: { 
+                title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.",
+                legal_label: "AVISO LEGAL",
+                disclaimer_full: "Esta aplicación es un proyecto de software experimental creado 100% con fines de entretenimiento, científicos y personales. El desarrollador no ofrece asesoramiento financiero ni recomendaciones de inversión. Todos los datos se proporcionan 'tal cual' sin garantías de ningún tipo. El uso corre bajo su propio riesgo."
+            },
+            ru: { 
+                title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.",
+                legal_label: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ",
+                disclaimer_full: "Данное приложение является экспериментальным программным проектом, созданным 100% в развлекательных, научных и личных целях. Разработчик не предоставляет финансовых консультаций или инвестиционных рекомендаций. Все данные предоставляются 'как есть' без каких-либо гарантий. Используйте полностью на свой страх и риск."
+            },
+            zh: { 
+                title: "🚀 APLO 加密终端", networth: "净资产", assets: "资产", edit: "编辑", news: "📰 新闻中心", manage: "资产管理", disclaimer: "本项目仅供娱乐。",
+                legal_label: "免责声明",
+                disclaimer_full: "本应用是一个实验性软件项目，100%用于娱乐、科学和个人目的。开发者不提供任何财务建议或投资推荐。所有 info 均按“原样”提供，不附带 Free 形式的保证。使用本应用的风险完全由您自行承担。"
+            }
         };
 
         let symbols = JSON.parse(localStorage.getItem('user_symbols')) || ["BTCEUR", "ETHEUR"];
@@ -428,10 +444,10 @@
 
         function openAppInfo() {
             const t = translations[currentLang] || translations['en'];
-            document.getElementById('info-header').innerText = "LEGAL DISCLAIMER";
+            document.getElementById('info-header').innerText = t.legal_label;
             document.getElementById('info-content').innerHTML = `
                 <div style="font-size: 10px; line-height: 1.5; color: var(--text); text-align: justify;">
-                    <p style="font-weight: bold; color: var(--down); margin-top: 0; text-transform: uppercase;">Legal Disclaimer:</p>
+                    <p style="font-weight: bold; color: var(--down); margin-top: 0; text-transform: uppercase;">${t.legal_label}:</p>
                     <p>${t.disclaimer_full}</p>
                 </div>
             `;
