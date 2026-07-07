@@ -19,7 +19,6 @@
         [data-theme="terminal"] { --bg: #050505; --card: rgba(0, 20, 0, 0.2); --header: #000000; --text: #00ff00; --accent: #003300; --border: #00ff00; --title: #00ff00; --up: #00ff00; --down: #ff0000; }
         [data-theme="terminal"] .theme-btn { color: #00ff00 !important; background: #000000 !important; border: 1px solid #00ff00 !important; }
 
-
         [data-theme="gold"] { --bg: #1a140a; --card: rgba(45, 35, 15, 0.4); --header: #261e0f; --text: #f0d78c; --accent: #3d3016; --border: #d4af37; --title: #d4af37; --up: #ffd700; --down: #ff4500; }
         [data-theme="nando-gray"] { --bg: #1c1c1c; --card: #2d2d2d; --header: #141414; --text: #e0e0e0; --accent: #404040; --border: #505050; --title: #ffffff; --up: #4ade80; --down: #f87171; }
         [data-theme="forest"] { --bg: #06120B; --card: rgba(10, 45, 25, 0.4); --header: #0E3A21; --text: #A7DFB1; --accent: #1B4D31; --border: #2ECC71; --title: #2ECC71; --up: #2ecc71; --down: #e74c3c; }
@@ -68,42 +67,28 @@
 
         .bottom-row { height: 38px; display: flex; gap: 4px; flex-shrink: 0; margin-bottom: 4px; }
         .small-card { flex: 0.5; display: flex; align-items: center; justify-content: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; }
-        .half-card { flex: 1; display: flex; align-items: center; justify-content: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+        
+        /* LAIENDATUD RIBA */
+        .full-width-ticker { flex: 1; display: flex; align-items: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
         
         .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; height: 100%; display: flex; align-items: center; }
         .ticker { display: inline-flex; white-space: nowrap; font-size: 9px; font-weight: bold; padding-left: 100%; animation: marquee 300s linear infinite; }
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-                .disclaimer-box { height: auto; min-height: 50px; background-color: var(--header); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; opacity: 0.7; }
+        .disclaimer-box { height: auto; min-height: 50px; background-color: var(--header); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; opacity: 0.7; }
         .disclaimer-text { font-size: 7px; text-align: center; text-transform: uppercase; line-height: 1.3; }
-
 
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(8px); }
         .modal { background: var(--bg); border: 2px solid var(--border); width: 100%; max-width: 360px; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         .modal-scroll { padding: 20px; overflow-y: auto; max-height: 70vh; }
         
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-                                        .theme-btn { 
-            background: var(--card); 
-            color: #000000 !important; 
-            border: 1px solid var(--border); 
-            padding: 8px; 
-            border-radius: 4px; 
-            font-size: 9px; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-        }
-
-        .theme-btn:active { 
-            background: var(--accent); 
-            color: #000000 !important; 
-        }
+        .theme-btn { background: var(--card); color: #000000 !important; border: 1px solid var(--border); padding: 8px; border-radius: 4px; font-size: 9px; cursor: pointer; text-transform: uppercase; }
+        .theme-btn:active { background: var(--accent); color: #000000 !important; }
 
         .news-btn { display: block; background: var(--accent); color: var(--text); padding: 12px; text-decoration: none; text-align: center; font-weight: bold; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
-        
         #chart-container { width: 100%; height: 250px; background: #000; border-radius: 6px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; position: relative; }
-
         .dist-row { margin-bottom: 15px; }
         .dist-label { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; font-weight: bold; }
         .dist-bar-bg { height: 8px; background: var(--accent); border-radius: 4px; overflow: hidden; }
@@ -150,20 +135,17 @@
 
     <div class="mid-row">
         <div class="mid-btn" onclick="alert('Action 1')">🚀</div>
-        <div class="mid-btn" onclick="alert('Action 2')">📈</div>
+        <div class="mid-btn" onclick="openGeneralNews()">📰</div>
         <div class="mid-btn" onclick="alert('Action 3')">⚖️</div>
         <div class="mid-btn" onclick="alert('Action 4')">🔔</div>
         <div class="mid-btn" onclick="alert('Action 5')">💎</div>
     </div>
 
     <div class="bottom-row">
-        <div class="small-card" onclick="openGeneralNews()">
-            <span id="ui-news-hub" style="font-size:8px; font-weight:bold;">📰 NEWS</span>
-        </div>
         <div class="small-card" onclick="openAppInfo()">
             <span style="font-size:14px;">ℹ️</span>
         </div>
-        <div class="half-card">
+        <div class="full-width-ticker">
             <div class="ticker-wrap"><div class="ticker" id="insights-ticker">Initializing terminal data...</div></div>
         </div>
     </div>
@@ -172,46 +154,11 @@
         <div id="ui-disclaimer" class="disclaimer-text"></div>
     </div>
 
-    <div id="settings-overlay" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-scroll">
-                <div style="font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Select Environment</div>
-                <div id="theme-grid" class="theme-grid"></div>
-                <div style="margin-top:20px; font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Language / Keel</div>
-                <div class="theme-grid">
-                    <button class="theme-btn" onclick="setLang('en')">ENGLISH</button>
-                    <button class="theme-btn" onclick="setLang('et')">EESTI</button>
-                    <button class="theme-btn" onclick="setLang('es')">ESPAÑOL</button>
-                    <button class="theme-btn" onclick="setLang('ru')">РУССКИЙ</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="manage-overlay" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div id="ui-manage-title" style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;">MANAGE ASSETS</div>
-            <div id="asset-list-manage" style="overflow-y:auto; max-height:40vh; padding:5px;"></div>
-            <div style="padding:15px; border-top:1px solid var(--border);">
-                <input type="text" id="new-asset-input" placeholder="TICKER OR CA (0x...)" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; font-size:12px;">
-                <button id="ui-btn-add-asset" onclick="addNewAsset()" style="width:100%; margin-top:8px; padding:12px; background:var(--title); color:#000; border:none; font-weight:bold; border-radius:4px; font-size:11px;">ADD ASSET</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div id="info-header" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px;"></div>
-            <div id="info-content" style="padding: 20px;"></div>
-        </div>
-    </div>
-
-    <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div id="ui-dist-title" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px; color:var(--title);">ASSET DISTRIBUTION</div>
-            <div id="dist-content" style="padding: 20px; overflow-y:auto; max-height:60vh;"></div>
-        </div>
-    </div>
+    <!-- Modals -->
+    <div id="settings-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div class="modal-scroll"><div style="font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Select Environment</div><div id="theme-grid" class="theme-grid"></div><div style="margin-top:20px; font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Language / Keel</div><div class="theme-grid"><button class="theme-btn" onclick="setLang('en')">ENGLISH</button><button class="theme-btn" onclick="setLang('et')">EESTI</button><button class="theme-btn" onclick="setLang('es')">ESPAÑOL</button><button class="theme-btn" onclick="setLang('ru')">РУССКИЙ</button></div></div></div></div>
+    <div id="manage-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="ui-manage-title" style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;">MANAGE ASSETS</div><div id="asset-list-manage" style="overflow-y:auto; max-height:40vh; padding:5px;"></div><div style="padding:15px; border-top:1px solid var(--border);"><input type="text" id="new-asset-input" placeholder="TICKER OR CA (0x...)" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; font-size:12px;"><button id="ui-btn-add-asset" onclick="addNewAsset()" style="width:100%; margin-top:8px; padding:12px; background:var(--title); color:#000; border:none; font-weight:bold; border-radius:4px; font-size:11px;">ADD ASSET</button></div></div></div>
+    <div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="info-header" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px;"></div><div id="info-content" style="padding: 20px;"></div></div></div>
+    <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="ui-dist-title" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px; color:var(--title);">ASSET DISTRIBUTION</div><div id="dist-content" style="padding: 20px; overflow-y:auto; max-height:60vh;"></div></div></div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
@@ -235,12 +182,7 @@
 
         let currentPrices = {}; let marketData = []; 
         let currentLang = localStorage.getItem('lang') || 'en';
-        let langKeys = Object.keys(translations);
-        let currentLangIndex = 0;
-
-        mainWrapper.addEventListener('touchstart', (e) => { if (mainWrapper.scrollTop === 0) touchStartY = e.touches[0].clientY; });
-        mainWrapper.addEventListener('touchend', async (e) => { if (touchStartY > 0 && e.changedTouches[0].clientY - touchStartY > 60) { await updateMarket(); } touchStartY = 0; });
-
+        
         const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
         document.getElementById('theme-grid').innerHTML = themeNames.map(t => `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`).join('');
 
@@ -249,12 +191,11 @@
 
         function setLang(l) { currentLang = l; localStorage.setItem('lang', l); location.reload(); }
 
-                function rotateDisclaimer() {
+        function rotateDisclaimer() {
             const el = document.getElementById('ui-disclaimer');
             if(!el) return;
             el.innerText = translations[currentLang].disclaimer_full;
         }
-
 
         async function updateMarket() {
             const statusEl = document.getElementById('status');
@@ -372,7 +313,7 @@
         }
         function saveP(btn) { symbols.forEach(s => { const val = document.getElementById('e-'+s).value; localStorage.setItem('p_'+s, val); }); btn.parentElement.parentElement.remove(); renderPortfolio(); }
 
-                function openGeneralNews() {
+        function openGeneralNews() {
             document.getElementById('info-header').innerText = `GLOBAL CRYPTO NEWS`;
             document.getElementById('info-content').innerHTML = `
                 <a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC</a>
@@ -406,22 +347,19 @@
             }
             document.getElementById('info-overlay').style.display = 'flex';
         }
-const cryptoFacts = [
-    "BITCOIN WAS CREATED BY SATOSHI NAKAMOTO IN 2009", "ETHEREUM INTRODUCED SMART CONTRACTS", "THE TOTAL SUPPLY OF BITCOIN IS 21 MILLION", "BINANCE COIN WAS BUILT ON ETHEREUM", "THE FIRST BITCOIN TRANSACTION WAS FOR TWO PIZZAS", "SOLANA IS KNOWN FOR HIGH THROUGHPUT", "XRP IS DESIGNED FOR FAST PAYMENTS", "CARDANO USES PROOF-OF-STAKE", "AVALANCHE SUPPORTS CUSTOM BLOCKCHAINS", "STELLAR WAS FORKED FROM RIPPLE", "LITECOIN WAS CREATED BY CHARLIE LEE", "POLKADOT ENABLES INTEROPERABILITY", "CHAINLINK PROVIDES DECENTRALIZED ORACLES", "UNISWAP IS A DECENTRALIZED EXCHANGE", "AAVE IS A LENDING PROTOCOL", "THE BITCOIN HALVING OCCURS EVERY 4 YEARS", "SATOSHI NAKAMOTOS IDENTITY IS UNKNOWN", "BLOCKCHAIN IS A DISTRIBUTED LEDGER", "MINING REQUIRES COMPUTATIONAL POWER", "WALLETS STORE PRIVATE KEYS", "DOGECOIN STARTED AS A JOKE", "TETHER IS A STABLECOIN", "USD COIN IS BACKED BY RESERVES", "MONERO FOCUSES ON PRIVACY", "ZCASH USES ZERO-KNOWLEDGE PROOFS", "TEZOS SUPPORTS SELF-AMENDMENT", "ALGORAND USES PURE PROOF-OF-STAKE", "VECHAIN FOCUSES ON SUPPLY CHAIN", "THETA IS FOR VIDEO STREAMING", "FILECOIN IS FOR DECENTRALIZED STORAGE", "BITCOIN IS OFTEN CALLED DIGITAL GOLD", "BLOCKCHAIN TECHNOLOGY IS IMMUTABLE", "PROOF OF WORK IS ENERGY INTENSIVE", "PROOF OF STAKE IS ENERGY EFFICIENT", "SMART CONTRACTS ARE SELF-EXECUTING", "THE GENESIS BLOCK IS THE FIRST BLOCK", "NODES VALIDATE TRANSACTIONS", "PUBLIC KEYS ARE FOR RECEIVING", "PRIVATE KEYS ARE FOR SIGNING", "COLD STORAGE IS MORE SECURE", "DEFI STANDS FOR DECENTRALIZED FINANCE", "DAOS ARE DECENTRALIZED ORGANIZATIONS", "NFTS ARE NON-FUNGIBLE TOKENS", "GAS FEES ARE PAID TO MINERS", "SCALABILITY IS A KEY CHALLENGE", "SIDECHAINS IMPROVE SPEED", "SHARDING INCREASES CAPACITY", "LAYER 2 SOLUTIONS REDUCE COSTS", "CROSS-CHAIN BRIDGES CONNECT NETWORKS", "HASHING IS A CRYPTOGRAPHIC PROCESS", "MERKLE TREES ORGANIZE DATA", "51 PERCENT ATTACKS ARE DANGEROUS", "HARD FORKS CREATE NEW COINS", "SOFT FORKS ARE COMPATIBLE", "CRYPTO IS VOLATILE", "THE SEC REGULATES SECURITIES", "EXCHANGES ARE CENTRALIZED OR DECENTRALIZED", "STAKING YIELDS REWARDS", "FARMING PROVIDES LIQUIDITY", "DEXS USE AUTOMATED MARKET MAKERS", "TOKENOMICS DRIVE VALUE", "AIRDROPS DISTRIBUTE TOKENS", "ICO STANDS FOR INITIAL COIN OFFERING", "IEO STANDS FOR INITIAL EXCHANGE OFFERING", "IDO STANDS FOR INITIAL DEX OFFERING", "WHALES ARE LARGE HOLDERS", "BULL MARKETS HAVE RISING PRICES", "BEAR MARKETS HAVE FALLING PRICES", "CORRECTIONS ARE PRICE DROPS", "ALL TIME HIGH IS A PEAK", "FOMO LEADS TO BAD DECISIONS", "HODL MEANS HOLDING LONG TERM", "FUD SPREADS FEAR AND DOUBT", "DYOR STANDS FOR DO YOUR OWN RESEARCH", "REKT MEANS FINANCIAL LOSS", "BITCOIN IS PSEUDONYMOUS", "ETHEREUM 2.0 SWITCHED TO STAKE", "BLOCKS CONTAIN TRANSACTIONS", "DIFFICULTY ADJUSTS EVERY 2016 BLOCKS", "MEMPOOL HOLDS PENDING TRANSACTIONS", "NONCES ARE USED IN MINING", "SEGWIT IMPROVED EFFICIENCY", "LIGHTNING NETWORK ENABLES INSTANT PAYMENTS", "TAPROOT UPGRADED PRIVACY", "ORACLES BRIDGE REAL WORLD DATA", "TOKENS LIVE ON EXISTING CHAINS", "COINS HAVE THEIR OWN BLOCKCHAIN", "STABLECOINS ARE PEGGED TO FIAT", "ALGORITHMIC STABLECOINS USE CODE", "WRAP TOKENS ALLOW COMPATIBILITY", "CUSTODIAL WALLETS HOLD YOUR KEYS", "NON-CUSTODIAL WALLETS GIVE YOU CONTROL", "LEDGER AND TREZOR ARE HARDWARE WALLETS", "HOT WALLETS ARE CONNECTED TO INTERNET", "SEED PHRASES RECOVER WALLETS", "2FA ADDS SECURITY", "PHISHING IS A COMMON THREAT", "SCAMS ARE PREVALENT IN CRYPTO", "EXCHANGE HACKS HAVE OCCURRED", "SECURITY IS YOUR RESPONSIBILITY", "CRYPTO MARKETS OPERATE 24/7", "BITCOIN IS DEFLATIONARY", "ALTCOINS ARE NON-BITCOIN CRYPTOS", "MEME COINS ARE DRIVEN BY HYPE", "GOVERNANCE TOKENS ALLOW VOTING", "REAL WORLD ASSETS ARE BEING TOKENIZED", "LIQUIDITY POOLS POWER DEXS", "IMPERMANENT LOSS IS A DEFI RISK", "FLASH LOANS DO NOT REQUIRE COLLATERAL", "YIELD AGGREGATORS AUTOMATE STAKING", "STABLECOIN DE-PEGGING IS A RISK", "BITCOIN MINING DIFFICULTY IS SELF-REGULATING", "THE BITCOIN WHITE PAPER WAS PUBLISHED IN 2008", "VITALIK BUTERIN CO-FOUNDED ETHEREUM", "THE DAO HACK LED TO ETHEREUM CLASSIC", "BINANCE IS THE LARGEST EXCHANGE", "COINBASE IS A PUBLICLY TRADED COMPANY", "KRAKEN IS KNOWN FOR SECURITY", "BITSTAMP IS ONE OF THE OLDEST EXCHANGES", "BLOCKCHAIN EXPORERS TRACK TRANSACTIONS", "HASH RATE MEASURES NETWORK SECURITY", "COMPOSABILITY IS A DEFI FEATURE", "WRAPPED BITCOIN EXISTS ON ETHEREUM", "GAS FEES SPIKE DURING CONGESTION", "NFT OWNERSHIP IS VERIFIABLE", "METAMASK IS A POPULAR BROWSER WALLET", "HARDWARE WALLETS ARE OFFLINE", "PAPER WALLETS ARE ANTIQUATED", "PRIVATE KEYS SHOULD NEVER BE SHARED", "SEED PHRASES ARE THE MASTER KEY", "BITCOIN IS THE FIRST CRYPTOCURRENCY", "THE ETHEREUM MERGE OCCURRED IN 2022", "SOLANA IS A LAYER 1 BLOCKCHAIN", "AVALANCHE USES SUB-NETS", "POLYGON IS A LAYER 2 FOR ETHEREUM", "ARBITRUM USES OPTIMISTIC ROLLUPS", "OPTIMISM USES OPTIMISTIC ROLLUPS", "ZK-ROLLUPS USE ZERO-KNOWLEDGE PROOFS", "STARKNET FOCUSES ON SCALABILITY", "CHAINLINK LINKS OFF-CHAIN DATA", "GRAPH PROTOCOL INDEXES BLOCKCHAIN DATA", "UNI IS THE UNISWAP GOVERNANCE TOKEN", "CAKE IS THE PANCAKESWAP TOKEN", "DYDX IS A DECENTRALIZED DERIVATIVES EXCHANGE", "MAKERDAO ISSUES THE DAI STABLECOIN", "DAI IS A DECENTRALIZED STABLECOIN", "USDT IS ISSUED BY TETHER", "USDC IS ISSUED BY CIRCLE", "BITCOIN IS SCARCE", "BLOCKCHAIN IS TRANSPARENT", "BLOCKCHAIN IS PSEUDONYMOUS", "TRANSACTIONS ARE IRREVERSIBLE", "MINERS SECURE THE NETWORK", "STAKERS SECURE PROOF OF STAKE", "BLOCK TIME VARIES BY CHAIN", "BLOCK REWARDS DECREASE OVER TIME", "THE GENESIS BLOCK HAS NO PARENT", "BITCOIN HAS A 10 MINUTE BLOCK TIME", "ETHEREUM HAS A ~12 SECOND BLOCK TIME", "BLOCKCHAIN IS RESISTANT TO CENSORSHIP", "CRYPTO CAN BE SENT GLOBALLY", "FEES ARE INDEPENDENT OF TRANSACTION SIZE", "WALLETS CAN BE MULTI-SIG", "PUBLIC ADDRESSES START WITH DIFFERENT CHARACTERS", "HEXADECIMAL IS USED FOR ADDRESSES", "CRYPTO IS A GLOBAL PHENOMENON", "REGULATION IS INCREASING", "INSTITUTIONS ARE ENTERING THE MARKET", "ETFS ARE A SIGN OF MATURITY", "BITCOIN IS NOT CONTROLLED BY ANY GOVERNMENT", "DEFI REMOVES INTERMEDIARIES", "CRYPTO IS PROGRAMMABLE MONEY", "THE FUTURE OF FINANCE IS DECENTRALIZED", "BLOCKCHAIN IS MORE THAN JUST MONEY", "SMART CONTRACTS CAN RUN DAPS", "CRYPTO IS AN EVOLVING TECHNOLOGY"
-];
 
-const tickerEl = document.getElementById('insights-ticker');
-if(tickerEl) {
-    tickerEl.innerText = cryptoFacts.join(" *** ");
-}
+        const cryptoFacts = ["BITCOIN WAS CREATED BY SATOSHI NAKAMOTO IN 2009", "ETHEREUM INTRODUCED SMART CONTRACTS", "THE TOTAL SUPPLY OF BITCOIN IS 21 MILLION", "BINANCE COIN WAS BUILT ON ETHEREUM", "THE FIRST BITCOIN TRANSACTION WAS FOR TWO PIZZAS", "SOLANA IS KNOWN FOR HIGH THROUGHPUT", "XRP IS DESIGNED FOR FAST PAYMENTS", "CARDANO USES PROOF-OF-STAKE", "AVALANCHE SUPPORTS CUSTOM BLOCKCHAINS", "STELLAR WAS FORKED FROM RIPPLE", "LITECOIN WAS CREATED BY CHARLIE LEE", "POLKADOT ENABLES INTEROPERABILITY", "CHAINLINK PROVIDES DECENTRALIZED ORACLES", "UNISWAP IS A DECENTRALIZED EXCHANGE", "AAVE IS A LENDING PROTOCOL", "THE BITCOIN HALVING OCCURS EVERY 4 YEARS", "SATOSHI NAKAMOTOS IDENTITY IS UNKNOWN", "BLOCKCHAIN IS A DISTRIBUTED LEDGER", "MINING REQUIRES COMPUTATIONAL POWER", "WALLETS STORE PRIVATE KEYS", "DOGECOIN STARTED AS A JOKE", "TETHER IS A STABLECOIN", "USD COIN IS BACKED BY RESERVES", "MONERO FOCUSES ON PRIVACY", "ZCASH USES ZERO-KNOWLEDGE PROOFS", "TEZOS SUPPORTS SELF-AMENDMENT", "ALGORAND USES PURE PROOF-OF-STAKE", "VECHAIN FOCUSES ON SUPPLY CHAIN", "THETA IS FOR VIDEO STREAMING", "FILECOIN IS FOR DECENTRALIZED STORAGE", "BITCOIN IS OFTEN CALLED DIGITAL GOLD", "BLOCKCHAIN TECHNOLOGY IS IMMUTABLE", "PROOF OF WORK IS ENERGY INTENSIVE", "PROOF OF STAKE IS ENERGY EFFICIENT", "SMART CONTRACTS ARE SELF-EXECUTING", "THE GENESIS BLOCK IS THE FIRST BLOCK", "NODES VALIDATE TRANSACTIONS", "PUBLIC KEYS ARE FOR RECEIVING", "PRIVATE KEYS ARE FOR SIGNING", "COLD STORAGE IS MORE SECURE", "DEFI STANDS FOR DECENTRALIZED FINANCE", "DAOS ARE DECENTRALIZED ORGANIZATIONS", "NFTS ARE NON-FUNGIBLE TOKENS", "GAS FEES ARE PAID TO MINERS", "SCALABILITY IS A KEY CHALLENGE", "SIDECHAINS IMPROVE SPEED", "SHARDING INCREASES CAPACITY", "LAYER 2 SOLUTIONS REDUCE COSTS", "CROSS-CHAIN BRIDGES CONNECT NETWORKS", "HASHING IS A CRYPTOGRAPHIC PROCESS", "MERKLE TREES ORGANIZE DATA", "51 PERCENT ATTACKS ARE DANGEROUS", "HARD FORKS CREATE NEW COINS", "SOFT FORKS ARE COMPATIBLE", "CRYPTO IS VOLATILE", "THE SEC REGULATES SECURITIES", "EXCHANGES ARE CENTRALIZED OR DECENTRALIZED", "STAKING YIELDS REWARDS", "FARMING PROVIDES LIQUIDITY", "DEXS USE AUTOMATED MARKET MAKERS", "TOKENOMICS DRIVE VALUE", "AIRDROPS DISTRIBUTE TOKENS", "ICO STANDS FOR INITIAL COIN OFFERING", "IEO STANDS FOR INITIAL EXCHANGE OFFERING", "IDO STANDS FOR INITIAL DEX OFFERING", "WHALES ARE LARGE HOLDERS", "BULL MARKETS HAVE RISING PRICES", "BEAR MARKETS HAVE FALLING PRICES", "CORRECTIONS ARE PRICE DROPS", "ALL TIME HIGH IS A PEAK", "FOMO LEADS TO BAD DECISIONS", "HODL MEANS HOLDING LONG TERM", "FUD SPREADS FEAR AND DOUBT", "DYOR STANDS FOR DO YOUR OWN RESEARCH", "REKT MEANS FINANCIAL LOSS", "BITCOIN IS PSEUDONYMOUS", "ETHEREUM 2.0 SWITCHED TO STAKE", "BLOCKS CONTAIN TRANSACTIONS", "DIFFICULTY ADJUSTS EVERY 2016 BLOCKS", "MEMPOOL HOLDS PENDING TRANSACTIONS", "NONCES ARE USED IN MINING", "SEGWIT IMPROVED EFFICIENCY", "LIGHTNING NETWORK ENABLES INSTANT PAYMENTS", "TAPROOT UPGRADED PRIVACY", "ORACLES BRIDGE REAL WORLD DATA", "TOKENS LIVE ON EXISTING CHAINS", "COINS HAVE THEIR OWN BLOCKCHAIN", "STABLECOINS ARE PEGGED TO FIAT", "ALGORITHMIC STABLECOINS USE CODE", "WRAP TOKENS ALLOW COMPATIBILITY", "CUSTODIAL WALLETS HOLD YOUR KEYS", "NON-CUSTODIAL WALLETS GIVE YOU CONTROL", "LEDGER AND TREZOR ARE HARDWARE WALLETS", "HOT WALLETS ARE CONNECTED TO INTERNET", "SEED PHRASES RECOVER WALLETS", "2FA ADDS SECURITY", "PHISHING IS A COMMON THREAT", "SCAMS ARE PREVALENT IN CRYPTO", "EXCHANGE HACKS HAVE OCCURRED", "SECURITY IS YOUR RESPONSIBILITY", "CRYPTO MARKETS OPERATE 24/7", "BITCOIN IS DEFLATIONARY", "ALTCOINS ARE NON-BITCOIN CRYPTOS", "MEME COINS ARE DRIVEN BY HYPE", "GOVERNANCE TOKENS ALLOW VOTING", "REAL WORLD ASSETS ARE BEING TOKENIZED", "LIQUIDITY POOLS POWER DEXS", "IMPERMANENT LOSS IS A DEFI RISK", "FLASH LOANS DO NOT REQUIRE COLLATERAL", "YIELD AGGREGATORS AUTOMATE STAKING", "STABLECOIN DE-PEGGING IS A RISK", "BITCOIN MINING DIFFICULTY IS SELF-REGULATING", "THE BITCOIN WHITE PAPER WAS PUBLISHED IN 2008", "VITALIK BUTERIN CO-FOUNDED ETHEREUM", "THE DAO HACK LED TO ETHEREUM CLASSIC", "BINANCE IS THE LARGEST EXCHANGE", "COINBASE IS A PUBLICLY TRADED COMPANY", "KRAKEN IS KNOWN FOR SECURITY", "BITSTAMP IS ONE OF THE OLDEST EXCHANGES", "BLOCKCHAIN EXPORERS TRACK TRANSACTIONS", "HASH RATE MEASURES NETWORK SECURITY", "COMPOSABILITY IS A DEFI FEATURE", "WRAPPED BITCOIN EXISTS ON ETHEREUM", "GAS FEES SPIKE DURING CONGESTION", "NFT OWNERSHIP IS VERIFIABLE", "METAMASK IS A POPULAR BROWSER WALLET", "HARDWARE WALLETS ARE OFFLINE", "PAPER WALLETS ARE ANTIQUATED", "PRIVATE KEYS SHOULD NEVER BE SHARED", "SEED PHRASES ARE THE MASTER KEY", "BITCOIN IS THE FIRST CRYPTOCURRENCY", "THE ETHEREUM MERGE OCCURRED IN 2022", "SOLANA IS A LAYER 1 BLOCKCHAIN", "AVALANCHE USES SUB-NETS", "POLYGON IS A LAYER 2 FOR ETHEREUM", "ARBITRUM USES OPTIMISTIC ROLLUPS", "OPTIMISM USES OPTIMISTIC ROLLUPS", "ZK-ROLLUPS USE ZERO-KNOWLEDGE PROOFS", "STARKNET FOCUSES ON SCALABILITY", "CHAINLINK LINKS OFF-CHAIN DATA", "GRAPH PROTOCOL INDEXES BLOCKCHAIN DATA", "UNI IS THE UNISWAP GOVERNANCE TOKEN", "CAKE IS THE PANCAKESWAP TOKEN", "DYDX IS A DECENTRALIZED DERIVATIVES EXCHANGE", "MAKERDAO ISSUES THE DAI STABLECOIN", "DAI IS A DECENTRALIZED STABLECOIN", "USDT IS ISSUED BY TETHER", "USDC IS ISSUED BY CIRCLE", "BITCOIN IS SCARCE", "BLOCKCHAIN IS TRANSPARENT", "BLOCKCHAIN IS PSEUDONYMOUS", "TRANSACTIONS ARE IRREVERSIBLE", "MINERS SECURE THE NETWORK", "STAKERS SECURE PROOF OF STAKE", "BLOCK TIME VARIES BY CHAIN", "BLOCK REWARDS DECREASE OVER TIME", "THE GENESIS BLOCK HAS NO PARENT", "BITCOIN HAS A 10 MINUTE BLOCK TIME", "ETHEREUM HAS A ~12 SECOND BLOCK TIME", "BLOCKCHAIN IS RESISTANT TO CENSORSHIP", "CRYPTO CAN BE SENT GLOBALLY", "FEES ARE INDEPENDENT OF TRANSACTION SIZE", "WALLETS CAN BE MULTI-SIG", "PUBLIC ADDRESSES START WITH DIFFERENT CHARACTERS", "HEXADECIMAL IS USED FOR ADDRESSES", "CRYPTO IS A GLOBAL PHENOMENON", "REGULATION IS INCREASING", "INSTITUTIONS ARE ENTERING THE MARKET", "ETFS ARE A SIGN OF MATURITY", "BITCOIN IS NOT CONTROLLED BY ANY GOVERNMENT", "DEFI REMOVES INTERMEDIARIES", "CRYPTO IS PROGRAMMABLE MONEY", "THE FUTURE OF FINANCE IS DECENTRALIZED", "BLOCKCHAIN IS MORE THAN JUST MONEY", "SMART CONTRACTS CAN RUN DAPS", "CRYPTO IS AN EVOLVING TECHNOLOGY"];
 
+        const tickerEl = document.getElementById('insights-ticker');
+        if(tickerEl) {
+            tickerEl.innerText = cryptoFacts.join(" *** ");
+        }
 
-setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
-updateMarket();
-setInterval(updateMarket, 30000);
-rotateDisclaimer();
-setInterval(rotateDisclaimer, 20000);
-
+        setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
+        updateMarket();
+        setInterval(updateMarket, 30000);
+        rotateDisclaimer();
+        setInterval(rotateDisclaimer, 20000);
     </script>
 </body>
 </html>
