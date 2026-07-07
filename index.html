@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="et">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -153,12 +153,12 @@
             <div class="modal-scroll">
                 <div style="font-size:10px; font-weight:bold; margin-bottom:12px; color:var(--title); text-transform:uppercase;">Select Environment</div>
                 <div id="theme-grid" class="theme-grid"></div>
-                <div style="margin-top:20px; font-size:10px; font-weight:bold; margin-bottom:12px; color:var(--title); text-transform:uppercase;">Language</div>
+                <div style="margin-top:20px; font-size:10px; font-weight:bold; margin-bottom:12px; color:var(--title); text-transform:uppercase;">Language / Keel</div>
                 <div class="theme-grid">
                     <button class="theme-btn" onclick="setLang('en')">ENGLISH</button>
+                    <button class="theme-btn" onclick="setLang('et')">EESTI</button>
                     <button class="theme-btn" onclick="setLang('es')">ESPAÑOL</button>
                     <button class="theme-btn" onclick="setLang('ru')">РУССКИЙ</button>
-                    <button class="theme-btn" onclick="setLang('zh')">中文</button>
                 </div>
             </div>
         </div>
@@ -170,7 +170,7 @@
             <div id="asset-list-manage" style="overflow-y:auto; max-height:40vh; padding:5px;"></div>
             <div style="padding:15px; border-top:1px solid var(--border);">
                 <input type="text" id="new-asset-input" placeholder="TICKER OR CA (0x...)" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; font-size:12px;">
-                <button onclick="addNewAsset()" style="width:100%; margin-top:8px; padding:12px; background:var(--title); color:#000; border:none; font-weight:bold; border-radius:4px; font-size:11px;">ADD ASSET</button>
+                <button id="ui-btn-add-asset" onclick="addNewAsset()" style="width:100%; margin-top:8px; padding:12px; background:var(--title); color:#000; border:none; font-weight:bold; border-radius:4px; font-size:11px;">ADD ASSET</button>
             </div>
         </div>
     </div>
@@ -184,7 +184,7 @@
 
     <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'">
         <div class="modal" onclick="event.stopPropagation()">
-            <div style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px; color:var(--title);">ASSET DISTRIBUTION</div>
+            <div id="ui-dist-title" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px; color:var(--title);">ASSET DISTRIBUTION</div>
             <div id="dist-content" style="padding: 20px; overflow-y:auto; max-height:60vh;"></div>
         </div>
     </div>
@@ -194,23 +194,23 @@
         const translations = {
             en: { 
                 title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.",
-                legal_label: "LEGAL NOTICE",
+                legal_label: "LEGAL NOTICE", btn_add: "ADD ASSET", dist_title: "ASSET DISTRIBUTION", no_assets: "No assets.", no_assets_dist: "No assets to display.",
                 disclaimer_full: "This application is an experimental software project created 100% for entertainment, scientific, and personal purposes. The developer does not provide financial advice or investment recommendations. All data is provided 'as is' without warranties of any kind. Use entirely at your own risk."
+            },
+            et: { 
+                title: "🚀 APLO KRÜPTO TERMINAL", networth: "Netoväärtus", assets: "VARAD", edit: "MUUDA", news: "📰 UUDISED", manage: "HALDA VARASID", disclaimer: "Eksperimentaalne projekt. Kasuta omal vastutusel.",
+                legal_label: "ÕIGUSLIK TEADE", btn_add: "LISA VARA", dist_title: "VARADE JAOTUS", no_assets: "Varad puuduvad.", no_assets_dist: "Kuvamiseks pole varasid.",
+                disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt, mis on loodud 100% meelelahutuslikel, teaduslikel ja isiklikel eesmärkidel. Arendaja ei paku finantsnõustamist ega investeerimissoovitusi. Kõik andmed esitatakse olemasoleval kujul ('as is') ilma igasuguste garantiideta. Kasutamine täielikult omal vastutusel."
             },
             es: { 
                 title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.",
-                legal_label: "AVISO LEGAL",
-                disclaimer_full: "Esta aplicación is un proyecto de software experimental creado 100% con fines de entertainment, científicos y personales. El desarrollador no ofrece asesoramiento financiero ni recomendaciones de inversión. Todos los datos se proporcionan 'tal cual' sin garantías de ningún tipo. El uso corre bajo su propio riesgo."
+                legal_label: "AVISO LEGAL", btn_add: "AÑADIR ACTIVO", dist_title: "DISTRIBUCIÓN DE ACTIVOS", no_assets: "Sin activos.", no_assets_dist: "No hay activos para mostrar.",
+                disclaimer_full: "Esta aplicación es un proyecto de software experimental creado 100% con fines de entretenimiento, científicos y personales. El desarrollador no ofrece asesoramiento financiero ni recomendaciones de inversión. Todos los datos se proporcionan 'tal cual' sin garantías de ningún tipo. El uso corre bajo su propio riesgo."
             },
             ru: { 
                 title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.",
-                legal_label: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ",
+                legal_label: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ", btn_add: "ДОBAВИТЬ АКТИВ", dist_title: "РАСПРЕДЕЛЕНИЕ АКТИВОВ", no_assets: "Нет активов.", no_assets_dist: "Нет активов для отображения.",
                 disclaimer_full: "Данное приложение является экспериментальным программным проектом, созданным 100% в развлекательных, научных и личных целях. Разработчик не предоставляет финансовых консультаций или инвестиционных рекомендаций. Все данные предоставляются 'как есть' без каких-либо гарантий. Используйте полностью на свой страх и риск."
-            },
-            zh: { 
-                title: "🚀 APLO 加密终端", networth: "净资产", assets: "资产", edit: "编辑", news: "📰 新闻中心", manage: "资产管理", disclaimer: "本项目仅供娱乐。",
-                legal_label: "免责声明",
-                disclaimer_full: "本应用是一个实验性软件项目，100%用于娱乐、科学和个人目的。开发者不提供任何财务建议 or 投资推荐。所有 info 均按“原样”提供，不附带 Free 形式的保证。使用本应用的风险完全由您自行承担。"
             }
         };
 
@@ -219,21 +219,15 @@
             const saved = localStorage.getItem('user_symbols');
             if (saved) {
                 const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                    symbols = parsed;
-                }
+                if (Array.isArray(parsed) && parsed.length > 0) symbols = parsed;
             }
         } catch(e) {}
 
-        let currentPrices = {}; let marketData = []; 
-        let currency = localStorage.getItem('currency') || 'USD'; 
+        let currentPrices = {}; 
+        let marketData = []; 
         let currentLang = localStorage.getItem('lang') || 'en';
-        let usdRate = 1.0;
-        let cnyRate = 7.25;
-        let rubRate = 91.50;
         let langKeys = Object.keys(translations);
         let currentLangIndex = 0;
-
         let touchStartPageY = 0;
 
         const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
@@ -243,23 +237,18 @@
         setTheme(localStorage.getItem('theme') || 'nando-gray');
 
         function setLang(l) {
-            currentLang = l; localStorage.setItem('lang', l);
-            if (!localStorage.getItem('currency')) {
-                if (l === 'en') currency = 'USD';
-                else if (l === 'zh') currency = 'CNY';
-                else if (l === 'ru') currency = 'RUB';
-                else currency = 'EUR';
-                localStorage.setItem('currency', currency);
-            } else {
-                currency = localStorage.getItem('currency');
-            }
+            currentLang = l; 
+            localStorage.setItem('lang', l);
             const t = translations[l] || translations['en'];
+            
             document.getElementById('ui-title').innerText = t.title;
             document.getElementById('ui-networth').innerText = t.networth;
             document.getElementById('ui-btn-assets').innerText = t.assets;
             document.getElementById('ui-btn-edit').innerText = t.edit;
             document.getElementById('ui-news-hub').innerText = t.news;
             document.getElementById('ui-manage-title').innerText = t.manage;
+            document.getElementById('ui-btn-add-asset').innerText = t.btn_add;
+            document.getElementById('ui-dist-title').innerText = t.dist_title;
             
             renderUI();
         }
@@ -283,15 +272,6 @@
                 const statusEl = document.getElementById('status');
                 if(statusEl) statusEl.classList.add('status-refreshing');
                 
-                const rateRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
-                if(rateRes.ok) { const rd = await rateRes.json(); usdRate = 1 / parseFloat(rd.price); }
-
-                const cnyRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDCCNY');
-                if(cnyRes.ok) { const cd = await cnyRes.json(); cnyRate = parseFloat(cd.price); }
-
-                const rubRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTRUB');
-                if(rubRes.ok) { const rubd = await rubRes.json(); rubRate = parseFloat(rubd.price); }
-                
                 const binanceSyms = symbols.filter(s => !s.startsWith('0x'));
                 const dexAddrs = symbols.filter(s => s.startsWith('0x'));
                 let combinedData = [];
@@ -307,7 +287,7 @@
                         const data = await res.json();
                         if(data.pairs && data.pairs[0]) {
                             const p = data.pairs[0];
-                            combinedData.push({ symbol: p.baseToken.symbol, isDex: true, address: addr, lastPrice: parseFloat(p.priceUsd) * usdRate, priceChangePercent: p.priceChange.h24 || 0 });
+                            combinedData.push({ symbol: p.baseToken.symbol, isDex: true, address: addr, lastPrice: parseFloat(p.priceUsd), priceChangePercent: p.priceChange.h24 || 0 });
                         }
                     } catch(e) {}
                 }
@@ -319,96 +299,55 @@
                 renderUI();
                 if(statusEl) statusEl.classList.remove('status-refreshing');
             } catch (e) {
-                const statusEl = document.getElementById('status');
                 if(statusEl) statusEl.classList.remove('status-refreshing');
-                renderUI();
             }
-        }
-
-        function getCurrencyChar() {
-            if (currency === 'EUR') return '€';
-            if (currency === 'USD') return '$';
-            if (currency === 'CNY') return '¥';
-            if (currency === 'RUB') return '₽';
-            return '$';
-        }
-
-        function convertPrice(priceInEUR) {
-            if (currency === 'EUR') return priceInEUR;
-            if (currency === 'USD') return priceInEUR / usdRate;
-            if (currency === 'CNY') return (priceInEUR / usdRate) * cnyRate;
-            if (currency === 'RUB') return (priceInEUR / usdRate) * rubRate;
-            return priceInEUR;
         }
 
         function renderUI() {
             const wrapper = document.getElementById('main-wrapper');
             if (!wrapper) return;
-            
-            // PARANDUS: Kui andmeid pole, kuvame hoiatuse wrapperis, kuid EI KATKESTA funktsiooni
-            if (marketData.length === 0) {
-                wrapper.innerHTML = '<div style="opacity:0.5; font-size:10px; text-align:center; padding: 20px;">Connecting to API or list empty...</div>';
-            } else {
-                wrapper.innerHTML = '';
-                const char = getCurrencyChar();
+            if (marketData.length === 0) return;
 
-                marketData.forEach(c => {
-                    const sym = c.isDex ? c.symbol : c.symbol.replace(/(EUR|USDT|USD|CNY|RUB)$/, "");
-                    
-                    let p = parseFloat(c.lastPrice);
-                    if (!c.isDex && c.symbol.endsWith("USDT")) {
-                        p = p * usdRate; 
-                    }
-                    
-                    const ch = parseFloat(c.priceChangePercent);
-                    currentPrices[c.isDex ? c.address : c.symbol] = p;
-                    const dp = convertPrice(p);
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.onclick = () => c.isDex ? window.open(`https://dexscreener.com/search?q=${c.address}`) : openInfoModal(sym, c.symbol);
-                    card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}${c.isDex?'*':''}</span> <span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">24h: ${ch >= 0 ? '+' : ''}${ch.toFixed(2)}%</span></div><div class="value-text" onclick="event.stopPropagation(); toggleCurrency();">${char}${dp.toLocaleString('en-US', {minimumFractionDigits: dp < 0.0001 ? 10 : 2})}</div></div>`;
-                    wrapper.appendChild(card);
-                });
-            }
+            wrapper.innerHTML = '';
+            marketData.forEach(c => {
+                const sym = c.isDex ? c.symbol : c.symbol.replace(/(USDT|USD)$/, "");
+                const p = parseFloat(c.lastPrice);
+                const ch = parseFloat(c.priceChangePercent);
+                currentPrices[c.isDex ? c.address : c.symbol] = p;
 
-            // Portfolio kutsutakse igal juhul välja, tagades et Net Worth väärtus uueneb alati!
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => c.isDex ? window.open(`https://dexscreener.com/search?q=${c.address}`) : openInfoModal(sym, c.symbol);
+                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}${c.isDex?'*':''}</span> <span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">24h: ${ch >= 0 ? '+' : ''}${ch.toFixed(2)}%</span></div><div class="value-text">$${p.toLocaleString('en-US', {minimumFractionDigits: p < 0.0001 ? 8 : 2})}</div></div>`;
+                wrapper.appendChild(card);
+            });
+
             renderPortfolio();
         }
 
-        function toggleCurrency() { 
-            if (currency === 'EUR') currency = 'USD';
-            else if (currency === 'USD') currency = 'CNY';
-            else if (currency === 'CNY') currency = 'RUB';
-            else currency = 'EUR';
-            localStorage.setItem('currency', currency); 
-            renderUI(); 
-        }
-        
         function renderPortfolio() {
-            let totalEUR = 0; let items = '';
-            const char = getCurrencyChar();
+            let total = 0; let items = '';
+            const t = translations[currentLang] || translations['en'];
+
             symbols.forEach(s => {
                 const isDex = s.startsWith('0x');
-                const priceKey = isDex ? s : s;
                 const qty = parseFloat(localStorage.getItem('p_'+s)) || 0;
-                const price = currentPrices[priceKey] || 0;
+                const price = currentPrices[s] || 0;
                 if (qty > 0 && price > 0) {
-                    const valEUR = qty * price;
-                    totalEUR += valEUR;
-                    const displayVal = convertPrice(valEUR);
-                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? s.substring(0,6) : s.replace(/(EUR|USDT|USD|CNY|RUB)$/,"")}</span><span style="font-weight:bold;">${char}${displayVal.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>`;
+                    const val = qty * price;
+                    total += val;
+                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? s.substring(0,6) : s.replace(/(USDT|USD)$/,"")}</span><span style="font-weight:bold;">$${val.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>`;
                 }
             });
-            const displayTotal = convertPrice(totalEUR);
-            document.getElementById('portfolio-total').innerText = `${char}${displayTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-            document.getElementById('portfolio-list').innerHTML = items || '<div style="opacity:0.5; font-size:10px; text-align:center;">No assets.</div>';
 
-            if (totalEUR > 0) {
+            document.getElementById('portfolio-total').innerText = `$${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('portfolio-list').innerHTML = items || `<div style="opacity:0.5; font-size:10px; text-align:center;">${t.no_assets}</div>`;
+
+            if (total > 0) {
                 const now = Date.now();
                 let history = JSON.parse(localStorage.getItem('portfolio_history')) || [];
-                
                 if (history.length === 0 || (now - history[history.length - 1].time) > 15 * 60 * 1000) {
-                    history.push({ time: now, val: totalEUR });
+                    history.push({ time: now, val: total });
                     if (history.length > 1000) history.shift();
                     localStorage.setItem('portfolio_history', JSON.stringify(history));
                 }
@@ -416,10 +355,8 @@
                 function getPerformance(hours) {
                     const targetTime = now - (hours * 60 * 60 * 1000);
                     const closest = history.reduce((prev, curr) => Math.abs(curr.time - targetTime) < Math.abs(prev.time - targetTime) ? curr : prev, history[0]);
-                    
                     if (!closest || Math.abs(closest.time - targetTime) > (hours * 0.5 * 60 * 60 * 1000)) return '--';
-                    
-                    const pct = ((totalEUR - closest.val) / closest.val) * 100;
+                    const pct = ((total - closest.val) / closest.val) * 100;
                     return `<span class="${pct >= 0 ? 'up' : 'down'}">${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%</span>`;
                 }
 
@@ -433,58 +370,40 @@
         }
 
         function openDistribution() {
-            let totalEUR = 0;
-            let holdings = [];
-            const char = getCurrencyChar();
+            let total = 0; let holdings = [];
+            const t = translations[currentLang] || translations['en'];
 
             symbols.forEach(s => {
                 const isDex = s.startsWith('0x');
                 const qty = parseFloat(localStorage.getItem('p_' + s)) || 0;
                 const price = currentPrices[s] || 0;
                 if (qty > 0 && price > 0) {
-                    const valEUR = qty * price;
-                    totalEUR += valEUR;
-                    holdings.push({ 
-                        name: isDex ? s.substring(0, 6) + '...' : s.replace(/(EUR|USDT|USD|CNY|RUB)$/, ""), 
-                        val: valEUR 
-                    });
+                    const val = qty * price;
+                    total += val;
+                    holdings.push({ name: isDex ? s.substring(0, 6) + '...' : s.replace(/(USDT|USD)$/, ""), val: val });
                 }
             });
 
             holdings.sort((a, b) => b.val - a.val);
-
             const container = document.getElementById('dist-content');
-            if (totalEUR === 0) {
-                container.innerHTML = '<div style="opacity:0.5; font-size:10px; text-align:center;">No assets to display.</div>';
+            
+            if (total === 0) {
+                container.innerHTML = `<div style="opacity:0.5; font-size:10px; text-align:center;">${t.no_assets_dist}</div>`;
             } else {
                 container.innerHTML = holdings.map(h => {
-                    const pct = ((h.val / totalEUR) * 100).toFixed(1);
-                    const displayVal = convertPrice(h.val);
-                    return `
-                        <div class="dist-row">
-                            <div class="dist-label">
-                                <span>${h.name} (${pct}%)</span>
-                                <span>${char}${displayVal.toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
-                            </div>
-                            <div class="dist-bar-bg">
-                                <div class="dist-bar-fill" style="width: ${pct}%"></div>
-                            </div>
-                        </div>
-                    `;
+                    const pct = ((h.val / total) * 100).toFixed(1);
+                    return `<div class="dist-row"><div class="dist-label"><span>${h.name} (${pct}%)</span><span>$${h.val.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${pct}%"></div></div></div>`;
                 }).join('');
             }
-
             document.getElementById('dist-overlay').style.display = 'flex';
         }
 
         function togglePortfolio() { const d = document.getElementById('portfolio-details'); d.style.display = (d.style.display === 'none' || d.style.display === '') ? 'block' : 'none'; }
-        
         function openManageAssets() {
             const list = document.getElementById('asset-list-manage');
             list.innerHTML = symbols.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;"><span>${s}</span><span style="cursor:pointer;" onclick="removeAsset('${s}')">🗑️</span></div>`).join('');
             document.getElementById('manage-overlay').style.display = 'flex';
         }
-
         function removeAsset(s) { symbols = symbols.filter(item => item !== s); localStorage.setItem('user_symbols', JSON.stringify(symbols)); openManageAssets(); updateMarket(); }
 
         async function addNewAsset() {
@@ -546,27 +465,14 @@
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
-        window.addEventListener('touchstart', function(e) {
-            if (window.scrollY === 0) {
-                touchStartPageY = e.touches[0].pageY;
-            }
-        }, { passive: true });
-
+        window.addEventListener('touchstart', function(e) { if (window.scrollY === 0) touchStartPageY = e.touches[0].pageY; }, { passive: true });
         window.addEventListener('touchmove', function(e) {
             if (touchStartPageY === 0) return;
-            const currentY = e.touches[0].pageY;
-            const diff = currentY - touchStartPageY;
-            if (diff > 60 && window.scrollY === 0) {
-                touchStartPageY = 0;
-                updateMarket();
-            }
+            const diff = e.touches[0].pageY - touchStartPageY;
+            if (diff > 60 && window.scrollY === 0) { touchStartPageY = 0; updateMarket(); }
         }, { passive: true });
+        window.addEventListener('touchend', function() { touchStartPageY = 0; }, { passive: true });
 
-        window.addEventListener('touchend', function() {
-            touchStartPageY = 0;
-        }, { passive: true });
-
-        // Käivitusloogika korrastamine
         startClock(); 
         setLang(currentLang); 
         updateMarket(); 
