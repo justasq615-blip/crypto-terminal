@@ -51,7 +51,8 @@
         
         .coin-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .label-text { font-weight: 800; font-size: 12px; letter-spacing: 0.5px; }
-        .value-text { font-weight: 900; font-size: 13px; text-align: right; min-width: 90px; }
+        .value-text { font-weight: 900; font-size: 13px; text-align: right; min-width: 90px; padding: 4px; border-radius: 4px; }
+        .value-text:active { background-color: var(--border); }
 
         .up { color: var(--up) !important; }
         .down { color: var(--down) !important; }
@@ -78,7 +79,7 @@
         .theme-btn { padding: 12px; font-size: 9px; font-weight: bold; border: 1px solid var(--border); background: var(--accent); color: var(--text); border-radius: 4px; }
         .news-btn { display: block; background: var(--accent); color: var(--text); padding: 12px; text-decoration: none; text-align: center; font-weight: bold; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
         
-        #chart-container { width: 100%; height: 250px; background: #000; border-radius: 6px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; }
+        #chart-container { width: 100%; height: 250px; background: #000; border-radius: 6px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; position: relative; }
 
         .dist-row { margin-bottom: 15px; }
         .dist-label { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; font-weight: bold; }
@@ -189,6 +190,8 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
     <script>
         const siteMap = { BTC: "https://bitcoin.org", ETH: "https://ethereum.org", SOL: "https://solana.com", BNB: "https://www.bnbchain.org", XRP: "https://ripple.com", ADA: "https://cardano.org", DOGE: "https://dogecoin.com", AVAX: "https://www.avax.network", DOT: "https://polkadot.network" };
         const translations = {
@@ -200,7 +203,7 @@
             et: { 
                 title: "🚀 APLO KRÜPTO TERMINAL", networth: "Netoväärtus", assets: "VARAD", edit: "MUUDA", news: "📰 UUDISED", manage: "HALDA VARASID", disclaimer: "Eksperimentaalne projekt. Kasuta omal vastutusel.",
                 legal_label: "ÕIGUSLIK TEADE", btn_add: "LISA VARA", dist_title: "VARADE JAOTUS", no_assets: "Varad puuduvad.", no_assets_dist: "Kuvamiseks pole varasid.",
-                disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt, mis on loodud 100% meelelahutuslikel, teaduslikel ja isiklikel eesmärkidel. Arendaja ei paku finantsnõustamist ega investeerimissoovitusi. Kõik andmed esitatakse olemasoleval kujul ('as is') ilma igasuguste garantiideta. Kasutamine täielikult omal vastutusel."
+                disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt, mis on loodud 100% meelelahutuslikel, teaduslikel ja isiklikel eesmärkidel. Arendaja ei paku finantsnõustavamist ega investeerimissoovitusi. Kõik data esitatakse olemasoleval kujul ('as is') ilma igasuguste garantiideta. Kasutamine täielikult omal vastutusel."
             },
             es: { 
                 title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.",
@@ -210,7 +213,7 @@
             ru: { 
                 title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.",
                 legal_label: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ", btn_add: "ДОBAВИТЬ АКТИВ", dist_title: "РАСПРЕДЕЛЕНИЕ АКТИВОВ", no_assets: "Нет активов.", no_assets_dist: "Нет активов для отображения.",
-                disclaimer_full: "Данное приложение является экспериментальным программным проектом, созданным 100% в развлекательных, научных и личных целях. Разработчик не предоставляет финансовых консультаций или инвестиционных рекомендаций. Все данные предоставляются 'как есть' без каких-либо гарантий. Используйте полностью на свой страх и риск."
+                disclaimer_full: "Данное приложение является экспериментальным программным проектом, созданным 100% в развлекательных, научных и личных целях. Аредлагаемый разработчик не предоставляет финансовых консультаций или инвестиционных рекомендаций. Все данные предоставляются 'как есть' без каких-либо гарантий. Используйте полностью на свой страх и риск."
             }
         };
 
@@ -229,6 +232,7 @@
         let langKeys = Object.keys(translations);
         let currentLangIndex = 0;
         let touchStartPageY = 0;
+        let currencyMode = 'USD'; // Globaalne muutuja valuuta / väärtuse kuva haldamiseks
 
         const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
         document.getElementById('theme-grid').innerHTML = themeNames.map(t => `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`).join('');
@@ -315,14 +319,52 @@
                 const ch = parseFloat(c.priceChangePercent);
                 currentPrices[c.isDex ? c.address : c.symbol] = p;
 
+                const qty = parseFloat(localStorage.getItem('p_' + (c.isDex ? c.address : c.symbol))) || 0;
+
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = () => c.isDex ? window.open(`https://dexscreener.com/search?q=${c.address}`) : openInfoModal(sym, c.symbol);
-                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}${c.isDex?'*':''}</span> <span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">24h: ${ch >= 0 ? '+' : ''}${ch.toFixed(2)}%</span></div><div class="value-text">$${p.toLocaleString('en-US', {minimumFractionDigits: p < 0.0001 ? 8 : 2})}</div></div>`;
+                card.onclick = () => openInfoModal(sym, c.isDex ? c.address : c.symbol, c.isDex);
+
+                // Dünaamiline hinna teksti määramine vastavalt valitud režiimile
+                let displayValue = '';
+                if (currencyMode === 'USD') {
+                    displayValue = `$${p.toLocaleString('en-US', {minimumFractionDigits: p < 0.0001 ? 8 : 2})}`;
+                } else if (currencyMode === 'EUR') {
+                    const pEur = p * 0.92; // Staatiline EUR kurss teisenduseks
+                    displayValue = `€${pEur.toLocaleString('en-US', {minimumFractionDigits: pEur < 0.0001 ? 8 : 2})}`;
+                } else if (currencyMode === 'HOLDING') {
+                    const holdingVal = qty * p;
+                    displayValue = `H: $${holdingVal.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                }
+
+                card.innerHTML = `
+                    <div class="coin-row">
+                        <div>
+                            <span class="label-text">${sym}${c.isDex?'*':''}</span> 
+                            <span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">24h: ${ch >= 0 ? '+' : ''}${ch.toFixed(2)}%</span>
+                        </div>
+                        <div class="value-text" onclick="toggleCurrencyMode(event)">
+                            ${displayValue}
+                        </div>
+                    </div>
+                `;
                 wrapper.appendChild(card);
             });
 
             renderPortfolio();
+        }
+
+        // Vahetab väärtuse režiimi ja peatab kliki leviku kaardile
+        function toggleCurrencyMode(event) {
+            event.stopPropagation(); 
+            if (currencyMode === 'USD') {
+                currencyMode = 'EUR';
+            } else if (currencyMode === 'EUR') {
+                currencyMode = 'HOLDING';
+            } else {
+                currencyMode = 'USD';
+            }
+            renderUI();
         }
 
         function renderPortfolio() {
@@ -452,16 +494,42 @@
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
-        function openInfoModal(sym, fullSym) {
+        function openInfoModal(sym, fullSym, isDex) {
             document.getElementById('info-header').innerText = `${sym} ANALYSIS`;
             const theme = document.body.getAttribute('data-theme') === 'white-black' ? 'light' : 'dark';
-            const officialUrl = siteMap[sym] || `https://www.google.com/search?q=${sym}+official+website`;
-            document.getElementById('info-content').innerHTML = `
-                <div id="chart-container"><iframe src="https://www.tradingview.com/widgetembed/?symbol=BINANCE%3A${fullSym}&interval=60&theme=${theme}" width="100%" height="100%" frameborder="0" allowtransparency="true"></iframe></div>
-                <a href="${officialUrl}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none;">🌐 OFFICIAL WEBSITE</a>
-                <a href="https://cryptopanic.com/news/${sym.toLowerCase()}/" target="_blank" class="news-btn">VIEW ${sym} NEWS FEED</a>
-                <a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>
-            `;
+            
+            if (isDex) {
+                document.getElementById('info-content').innerHTML = `
+                    <div id="chart-container">
+                        <iframe src="https://dexscreener.com/search?q=${fullSym}&embed=1&theme=${theme}" width="100%" height="100%" frameborder="0"></iframe>
+                    </div>
+                    <a href="https://dexscreener.com/search?q=${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none;">📊 DEXSCREENER WEBSITE</a>
+                `;
+            } else {
+                document.getElementById('info-content').innerHTML = `
+                    <div id="chart-container"><div id="tv-medium-widget"></div></div>
+                    <a href="${siteMap[sym] || 'https://www.google.com/search?q='+sym+'+official+website'}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none;">🌐 OFFICIAL WEBSITE</a>
+                    <a href="https://cryptopanic.com/news/${sym.toLowerCase()}/" target="_blank" class="news-btn">VIEW ${sym} NEWS FEED</a>
+                    <a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>
+                `;
+
+                setTimeout(() => {
+                    new TradingView.MediumWidget({
+                        "container_id": "tv-medium-widget",
+                        "symbols": [["BINANCE:" + fullSym + "|1H"]],
+                        "chartOnly": true,
+                        "width": "100%",
+                        "height": "100%",
+                        "locale": "et",
+                        "colorTheme": theme,
+                        "gridLineColor": "transparent",
+                        "fontColor": "var(--text)",
+                        "underLineColor": "rgba(88, 166, 255, 0.3)",
+                        "trendLineColor": "var(--title)"
+                    });
+                }, 100);
+            }
+            
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
