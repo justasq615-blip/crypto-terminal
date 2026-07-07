@@ -200,7 +200,7 @@
             es: { 
                 title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.",
                 legal_label: "AVISO LEGAL",
-                disclaimer_full: "Esta aplicación is un proyecto de software experimental creado 100% con fines de entretenimiento, científicos y personales. El desarrollador no ofrece asesoramiento financiero ni recomendaciones de inversión. Todos los datos se proporcionan 'tal cual' sin garantías de ningún tipo. El uso corre bajo su propio riesgo."
+                disclaimer_full: "Esta aplicación is un proyecto de software experimental creado 100% con fines de entertainment, científicos y personales. El desarrollador no ofrece asesoramiento financiero ni recomendaciones de inversión. Todos los datos se proporcionan 'tal cual' sin garantías de ningún tipo. El uso corre bajo su propio riesgo."
             },
             ru: { 
                 title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.",
@@ -214,11 +214,21 @@
             }
         };
 
-        let symbols = JSON.parse(localStorage.getItem('user_symbols')) || ["BTCUSDT", "ETHUSDT", "SOLUSDT"];
+        let symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
+        try {
+            const saved = localStorage.getItem('user_symbols');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    symbols = parsed;
+                }
+            }
+        } catch(e) {}
+
         let currentPrices = {}; let marketData = []; 
-        let currency = localStorage.getItem('currency') || 'EUR'; 
+        let currency = localStorage.getItem('currency') || 'USD'; 
         let currentLang = localStorage.getItem('lang') || 'en';
-        let usdRate = 1.08;
+        let usdRate = 1.0;
         let cnyRate = 7.25;
         let rubRate = 91.50;
         let langKeys = Object.keys(translations);
@@ -250,6 +260,7 @@
             document.getElementById('ui-btn-edit').innerText = t.edit;
             document.getElementById('ui-news-hub').innerText = t.news;
             document.getElementById('ui-manage-title').innerText = t.manage;
+            
             renderUI();
         }
 
@@ -301,13 +312,16 @@
                     } catch(e) {}
                 }
 
-                marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
-                renderUI();
+                if (combinedData.length > 0) {
+                    marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
+                }
                 
+                renderUI();
                 if(statusEl) statusEl.classList.remove('status-refreshing');
             } catch (e) {
                 const statusEl = document.getElementById('status');
                 if(statusEl) statusEl.classList.remove('status-refreshing');
+                renderUI();
             }
         }
 
@@ -316,7 +330,7 @@
             if (currency === 'USD') return '$';
             if (currency === 'CNY') return '¥';
             if (currency === 'RUB') return '₽';
-            return '€';
+            return '$';
         }
 
         function convertPrice(priceInEUR) {
@@ -329,31 +343,35 @@
 
         function renderUI() {
             const wrapper = document.getElementById('main-wrapper');
-            wrapper.innerHTML = '';
-            const char = getCurrencyChar();
+            if (!wrapper) return;
             
+            // PARANDUS: Kui andmeid pole, kuvame hoiatuse wrapperis, kuid EI KATKESTA funktsiooni
             if (marketData.length === 0) {
                 wrapper.innerHTML = '<div style="opacity:0.5; font-size:10px; text-align:center; padding: 20px;">Connecting to API or list empty...</div>';
-                return;
+            } else {
+                wrapper.innerHTML = '';
+                const char = getCurrencyChar();
+
+                marketData.forEach(c => {
+                    const sym = c.isDex ? c.symbol : c.symbol.replace(/(EUR|USDT|USD|CNY|RUB)$/, "");
+                    
+                    let p = parseFloat(c.lastPrice);
+                    if (!c.isDex && c.symbol.endsWith("USDT")) {
+                        p = p * usdRate; 
+                    }
+                    
+                    const ch = parseFloat(c.priceChangePercent);
+                    currentPrices[c.isDex ? c.address : c.symbol] = p;
+                    const dp = convertPrice(p);
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.onclick = () => c.isDex ? window.open(`https://dexscreener.com/search?q=${c.address}`) : openInfoModal(sym, c.symbol);
+                    card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}${c.isDex?'*':''}</span> <span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">24h: ${ch >= 0 ? '+' : ''}${ch.toFixed(2)}%</span></div><div class="value-text" onclick="event.stopPropagation(); toggleCurrency();">${char}${dp.toLocaleString('en-US', {minimumFractionDigits: dp < 0.0001 ? 10 : 2})}</div></div>`;
+                    wrapper.appendChild(card);
+                });
             }
 
-            marketData.forEach(c => {
-                const sym = c.isDex ? c.symbol : c.symbol.replace(/(EUR|USDT|USD|CNY|RUB)$/, "");
-                
-                let p = parseFloat(c.lastPrice);
-                if (!c.isDex && c.symbol.endsWith("USDT")) {
-                    p = p * usdRate; 
-                }
-                
-                const ch = parseFloat(c.priceChangePercent);
-                currentPrices[c.isDex ? c.address : c.symbol] = p;
-                const dp = convertPrice(p);
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => c.isDex ? window.open(`https://dexscreener.com/search?q=${c.address}`) : openInfoModal(sym, c.symbol);
-                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}${c.isDex?'*':''}</span> <span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">24h: ${ch >= 0 ? '+' : ''}${ch.toFixed(2)}%</span></div><div class="value-text" onclick="event.stopPropagation(); toggleCurrency();">${char}${dp.toLocaleString('en-US', {minimumFractionDigits: dp < 0.0001 ? 10 : 2})}</div></div>`;
-                wrapper.appendChild(card);
-            });
+            // Portfolio kutsutakse igal juhul välja, tagades et Net Worth väärtus uueneb alati!
             renderPortfolio();
         }
 
@@ -548,7 +566,13 @@
             touchStartPageY = 0;
         }, { passive: true });
 
-        startClock(); setLang(currentLang); updateMarket(); setInterval(updateMarket, 30000); rotateDisclaimer(); setInterval(rotateDisclaimer, 20000);
+        // Käivitusloogika korrastamine
+        startClock(); 
+        setLang(currentLang); 
+        updateMarket(); 
+        setInterval(updateMarket, 30000); 
+        rotateDisclaimer(); 
+        setInterval(rotateDisclaimer, 20000);
     </script>
 </body>
 </html>
