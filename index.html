@@ -248,17 +248,12 @@
 
         function setLang(l) { currentLang = l; localStorage.setItem('lang', l); location.reload(); }
 
-        function rotateDisclaimer() {
+                function rotateDisclaimer() {
             const el = document.getElementById('ui-disclaimer');
             if(!el) return;
-            el.style.opacity = 0;
-            setTimeout(() => {
-                const langKey = langKeys[currentLangIndex];
-                el.innerText = translations[langKey].disclaimer;
-                el.style.opacity = 1;
-                currentLangIndex = (currentLangIndex + 1) % langKeys.length;
-            }, 500);
+            el.innerText = translations[currentLang].disclaimer_full;
         }
+
 
         async function updateMarket() {
             const statusEl = document.getElementById('status');
