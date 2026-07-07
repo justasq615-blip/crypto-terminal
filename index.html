@@ -210,11 +210,11 @@
             zh: { 
                 title: "🚀 APLO 加密终端", networth: "净资产", assets: "资产", edit: "编辑", news: "📰 新闻中心", manage: "资产管理", disclaimer: "本项目仅供娱乐。",
                 legal_label: "免责声明",
-                disclaimer_full: "本应用是一个实验性软件项目，100%用于娱乐、科学和个人目的。开发者不提供任何财务建议或投资推荐。所有 info 均按“原样”提供，不附带 Free 形式的保证。使用本应用的风险完全由您自行承担。"
+                disclaimer_full: "本应用是一个实验性软件项目，100%用于娱乐、科学和个人目的。开发者不提供任何财务建议 or 投资推荐。所有 info 均按“原样”提供，不附带 Free 形式的保证。使用本应用的风险完全由您自行承担。"
             }
         };
 
-        let symbols = JSON.parse(localStorage.getItem('user_symbols')) || ["BTCEUR", "ETHEUR"];
+        let symbols = JSON.parse(localStorage.getItem('user_symbols')) || ["BTCUSDT", "ETHUSDT", "SOLUSDT"];
         let currentPrices = {}; let marketData = []; 
         let currency = localStorage.getItem('currency') || 'EUR'; 
         let currentLang = localStorage.getItem('lang') || 'en';
@@ -234,16 +234,15 @@
 
         function setLang(l) {
             currentLang = l; localStorage.setItem('lang', l);
-            if (l === 'en') {
-                currency = 'USD';
-            } else if (l === 'zh') {
-                currency = 'CNY';
-            } else if (l === 'ru') {
-                currency = 'RUB';
+            if (!localStorage.getItem('currency')) {
+                if (l === 'en') currency = 'USD';
+                else if (l === 'zh') currency = 'CNY';
+                else if (l === 'ru') currency = 'RUB';
+                else currency = 'EUR';
+                localStorage.setItem('currency', currency);
             } else {
-                currency = 'EUR';
+                currency = localStorage.getItem('currency');
             }
-            localStorage.setItem('currency', currency);
             const t = translations[l] || translations['en'];
             document.getElementById('ui-title').innerText = t.title;
             document.getElementById('ui-networth').innerText = t.networth;
@@ -274,7 +273,7 @@
                 if(statusEl) statusEl.classList.add('status-refreshing');
                 
                 const rateRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
-                if(rateRes.ok) { const rd = await rateRes.json(); usdRate = parseFloat(rd.price); }
+                if(rateRes.ok) { const rd = await rateRes.json(); usdRate = 1 / parseFloat(rd.price); }
 
                 const cnyRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDCCNY');
                 if(cnyRes.ok) { const cd = await cnyRes.json(); cnyRate = parseFloat(cd.price); }
@@ -297,7 +296,7 @@
                         const data = await res.json();
                         if(data.pairs && data.pairs[0]) {
                             const p = data.pairs[0];
-                            combinedData.push({ symbol: p.baseToken.symbol, isDex: true, address: addr, lastPrice: parseFloat(p.priceUsd) / usdRate, priceChangePercent: p.priceChange.h24 || 0 });
+                            combinedData.push({ symbol: p.baseToken.symbol, isDex: true, address: addr, lastPrice: parseFloat(p.priceUsd) * usdRate, priceChangePercent: p.priceChange.h24 || 0 });
                         }
                     } catch(e) {}
                 }
@@ -322,9 +321,9 @@
 
         function convertPrice(priceInEUR) {
             if (currency === 'EUR') return priceInEUR;
-            if (currency === 'USD') return priceInEUR * usdRate;
-            if (currency === 'CNY') return priceInEUR * usdRate * cnyRate;
-            if (currency === 'RUB') return priceInEUR * usdRate * rubRate;
+            if (currency === 'USD') return priceInEUR / usdRate;
+            if (currency === 'CNY') return (priceInEUR / usdRate) * cnyRate;
+            if (currency === 'RUB') return (priceInEUR / usdRate) * rubRate;
             return priceInEUR;
         }
 
@@ -332,9 +331,20 @@
             const wrapper = document.getElementById('main-wrapper');
             wrapper.innerHTML = '';
             const char = getCurrencyChar();
+            
+            if (marketData.length === 0) {
+                wrapper.innerHTML = '<div style="opacity:0.5; font-size:10px; text-align:center; padding: 20px;">Connecting to API or list empty...</div>';
+                return;
+            }
+
             marketData.forEach(c => {
                 const sym = c.isDex ? c.symbol : c.symbol.replace(/(EUR|USDT|USD|CNY|RUB)$/, "");
-                const p = parseFloat(c.lastPrice);
+                
+                let p = parseFloat(c.lastPrice);
+                if (!c.isDex && c.symbol.endsWith("USDT")) {
+                    p = p * usdRate; 
+                }
+                
                 const ch = parseFloat(c.priceChangePercent);
                 currentPrices[c.isDex ? c.address : c.symbol] = p;
                 const dp = convertPrice(p);
