@@ -24,6 +24,9 @@
         * { box-sizing: border-box; transition: background-color 0.2s, border-color 0.2s, transform 0.5s ease; -webkit-user-select: none; font-family: 'SF Mono', 'Roboto Mono', monospace; -webkit-tap-highlight-color: transparent; }
         body { height: 100dvh; margin: 0; padding: 6px; overflow: hidden; background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; touch-action: pan-y; overscroll-behavior-y: contain; }
         
+        /* Pull-to-refresh indikaator */
+        #refresh-indicator { position: absolute; top: 0; left: 0; right: 0; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--title); z-index: 500; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+        
         .header { height: 36px; display: flex; justify-content: space-between; align-items: center; padding: 0 12px; border: 1px solid var(--border); background-color: var(--header); border-radius: 6px; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .header h2 { font-size: 13px; margin: 0; color: var(--title); text-transform: uppercase; letter-spacing: 1px; }
         
@@ -45,7 +48,7 @@
         .perf-item { font-size: 9px; font-weight: bold; display: flex; flex-direction: column; align-items: center; }
         .perf-label { opacity: 0.5; font-size: 7px; margin-bottom: 2px; text-transform: uppercase; }
 
-        #main-wrapper { flex: 1; display: flex; flex-direction: column; margin: 4px 0; gap: 2px; overflow-y: auto; scrollbar-width: none; }
+        #main-wrapper { flex: 1; display: flex; flex-direction: column; margin: 4px 0; gap: 2px; overflow-y: auto; scrollbar-width: none; position: relative; }
         .card { background-color: var(--card); border-radius: 6px; padding: 0 12px; border: 1px solid var(--border); display: flex; align-items: center; height: 42px; min-height: 42px; flex-shrink: 0; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
         .card:active { background-color: var(--accent); }
         
@@ -88,6 +91,7 @@
 </head>
 <body data-theme="nando-gray">
 
+    <div id="refresh-indicator">↓ PULL TO REFRESH ↓</div>
     <div class="header">
         <div id="status"><span class="live-dot"></span> LIVE • --:--:--</div>
         <h2 id="ui-title">🚀 APLO CRYPTO TERMINAL</h2>
@@ -115,8 +119,8 @@
                 <div class="perf-item"><span class="perf-label">24h</span><span id="perf-24h">--</span></div>
                 <div class="perf-item"><span class="perf-label">72h</span><span id="perf-72h">--</span></div>
                 <div class="perf-item"><span class="perf-label">1w</span><span id="perf-1w">--</span></div>
-                <div class="perf-item"><span class="perf-label">1m</span><span id="perf-1m">--</span></div>
-                <div class="perf-item"><span class="perf-label">3m</span><span id="perf-m3">--</span></div>
+                <div class="perf-item"><span class="perf-label">1m</span><span id="perf-m3">--</span></div>
+                <div class="perf-item"><span class="perf-label">3m</span><span id="perf-m6">--</span></div>
                 <div class="perf-item"><span class="perf-label">6m</span><span id="perf-m6">--</span></div>
             </div>
         </div>
@@ -234,6 +238,11 @@
         let langKeys = Object.keys(translations);
         let currentLangIndex = 0;
         let currencyMode = 'USD';
+        
+        // Pull-to-refresh muutujad
+        let touchStartY = 0;
+        const mainWrapper = document.getElementById('main-wrapper');
+        const refreshIndicator = document.getElementById('refresh-indicator');
 
         const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
         document.getElementById('theme-grid').innerHTML = themeNames.map(t => `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`).join('');
@@ -255,6 +264,27 @@
             document.getElementById('ui-dist-title').innerText = t.dist_title;
             renderUI();
         }
+
+        // Pull-to-refresh sündmused
+        mainWrapper.addEventListener('touchstart', (e) => {
+            if (mainWrapper.scrollTop === 0) touchStartY = e.touches[0].clientY;
+        });
+
+        mainWrapper.addEventListener('touchmove', (e) => {
+            if (touchStartY > 0 && e.touches[0].clientY - touchStartY > 60) {
+                refreshIndicator.style.opacity = '1';
+                refreshIndicator.innerText = "RELEASE TO REFRESH";
+            }
+        });
+
+        mainWrapper.addEventListener('touchend', async (e) => {
+            if (touchStartY > 0 && e.changedTouches[0].clientY - touchStartY > 60) {
+                refreshIndicator.innerText = "UPDATING...";
+                await updateMarket();
+            }
+            touchStartY = 0;
+            refreshIndicator.style.opacity = '0';
+        });
 
         function rotateDisclaimer() {
             const el = document.getElementById('ui-disclaimer');
@@ -418,7 +448,6 @@
             let caInfo = isDex ? `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center; user-select:all;">CA: ${fullSym}</div>` : '';
 
             if (isDex) {
-                // MUUDATUS: Eemaldatud iframe, kuvatakse vaid link
                 document.getElementById('info-content').innerHTML = `
                     ${caInfo}
                     <a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 AVAGE DEXSCREENERIS</a>
