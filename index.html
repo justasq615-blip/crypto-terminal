@@ -68,12 +68,9 @@
         .bottom-row { height: 38px; display: flex; gap: 4px; flex-shrink: 0; margin-bottom: 4px; }
         .small-card { flex: 0.5; display: flex; align-items: center; justify-content: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; }
         
-        /* LAIENDATUD RIBA */
         .full-width-ticker { flex: 1; display: flex; align-items: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-        
         .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; height: 100%; display: flex; align-items: center; }
         .ticker { display: inline-flex; white-space: nowrap; font-size: 9px; font-weight: bold; padding-left: 100%; animation: marquee 300s linear infinite; }
-
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .disclaimer-box { height: auto; min-height: 50px; background-color: var(--header); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; opacity: 0.7; }
@@ -93,6 +90,10 @@
         .dist-label { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; font-weight: bold; }
         .dist-bar-bg { height: 8px; background: var(--accent); border-radius: 4px; overflow: hidden; }
         .dist-bar-fill { height: 100%; background: var(--title); border-radius: 4px; transition: width 1s ease-out; }
+        
+        /* Table styles for History */
+        .history-table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px; }
+        .history-table td { padding: 8px; border-bottom: 1px solid var(--border); }
     </style>
 </head>
 <body data-theme="nando-gray">
@@ -136,7 +137,7 @@
     <div class="mid-row">
         <div class="mid-btn" onclick="alert('Action 1')">🚀</div>
         <div class="mid-btn" onclick="openGeneralNews()">📰</div>
-        <div class="mid-btn" onclick="alert('Action 3')">⚖️</div>
+        <div class="mid-btn" onclick="openComparisonList()">⚖️</div>
         <div class="mid-btn" onclick="alert('Action 4')">🔔</div>
         <div class="mid-btn" onclick="alert('Action 5')">💎</div>
     </div>
@@ -159,9 +160,21 @@
     <div id="manage-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="ui-manage-title" style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;">MANAGE ASSETS</div><div id="asset-list-manage" style="overflow-y:auto; max-height:40vh; padding:5px;"></div><div style="padding:15px; border-top:1px solid var(--border);"><input type="text" id="new-asset-input" placeholder="TICKER OR CA (0x...)" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; font-size:12px;"><button id="ui-btn-add-asset" onclick="addNewAsset()" style="width:100%; margin-top:8px; padding:12px; background:var(--title); color:#000; border:none; font-weight:bold; border-radius:4px; font-size:11px;">ADD ASSET</button></div></div></div>
     <div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="info-header" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px;"></div><div id="info-content" style="padding: 20px;"></div></div></div>
     <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="ui-dist-title" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px; color:var(--title);">ASSET DISTRIBUTION</div><div id="dist-content" style="padding: 20px; overflow-y:auto; max-height:60vh;"></div></div></div>
+    
+    <!-- New Comparison Modals -->
+    <div id="comp-list-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;">VALI VARA VÕRDLUSEKS</div><div id="comp-asset-list" style="padding:10px;"></div></div></div>
+    <div id="comp-detail-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="comp-detail-header" style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;"></div><div id="comp-detail-content" style="padding:15px;"></div></div></div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
+        // Ajaloolised hinnad (näidisandmed)
+        const historicalData = {
+            "BTC": { 2023: 16500, 2024: 42000, 2025: 68000 },
+            "ETH": { 2023: 1200, 2024: 2200, 2025: 3500 },
+            "SOL": { 2023: 10, 2024: 100, 2025: 140 },
+            "BNB": { 2023: 250, 2024: 310, 2025: 550 }
+        };
+
         const translations = {
             en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", save: "SAVE", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.", legal_label: "LEGAL NOTICE", btn_add: "ADD ASSET", dist_title: "ASSET DISTRIBUTION", no_assets: "No assets.", no_assets_dist: "No assets to display.", disclaimer_full: "This application is an experimental software project created 100% for entertainment, scientific, and personal purposes. The developer does not provide financial advice or investment recommendations. All data is provided 'as is' without warranties of any kind. Use entirely at your own risk." },
             et: { title: "🚀 APLO KRÜPTO TERMINAL", networth: "Netoväärtus", assets: "VARAD", edit: "MUUDA", save: "SALVESTA", news: "📰 UUDISED", manage: "HALDA VARASID", disclaimer: "Eksperimentaalne projekt. Kasuta omal vastutusel.", legal_label: "ÕIGUSLIK TEADE", btn_add: "LISA VARA", dist_title: "VARADE JAOTUS", no_assets: "Varad puuduvad.", no_assets_dist: "Kuvamiseks pole varasid.", disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt, mis on loodud 100% meelelahutuslikel, teaduslikel ja isiklikel eesmärkidel. Arendaja ei paku finantsnõustavamist ega investeerimissoovitusi. Kõik data esitatakse olemasoleval kujul ('as is') ilma igasuguste garantiideta. Kasutamine täielikult omal vastutusel." },
@@ -195,6 +208,33 @@
             const el = document.getElementById('ui-disclaimer');
             if(!el) return;
             el.innerText = translations[currentLang].disclaimer_full;
+        }
+
+        // Action 3 loogika
+        function openComparisonList() {
+            const list = document.getElementById('comp-asset-list');
+            list.innerHTML = symbols.map(s => {
+                const name = s.replace(/(USDT|USD)$/, "");
+                return `<div class="card" onclick="openComparisonDetail('${name}')" style="margin-bottom:5px;">${name}</div>`;
+            }).join('');
+            document.getElementById('comp-list-overlay').style.display = 'flex';
+        }
+
+        function openComparisonDetail(name) {
+            const price = currentPrices[name + "USDT"] || 0;
+            const history = historicalData[name] || {};
+            let rows = Object.keys(history).map(year => `<tr><td>${year}</td><td>$${history[year].toLocaleString()}</td></tr>`).join('');
+            rows += `<tr><td><strong>2026</strong></td><td><strong>$${price.toFixed(2)}</strong></td></tr>`;
+            
+            document.getElementById('comp-detail-header').innerText = `${name} HINNAD`;
+            document.getElementById('comp-detail-content').innerHTML = `
+                <table class="history-table">
+                    <tr><th>Aasta</th><th>Hind</th></tr>
+                    ${rows}
+                </table>
+                <button onclick="document.getElementById('comp-detail-overlay').style.display='none'" style="width:100%; margin-top:15px; padding:10px; background:var(--title); border:none; border-radius:4px; font-weight:bold;">SULE</button>
+            `;
+            document.getElementById('comp-detail-overlay').style.display = 'flex';
         }
 
         async function updateMarket() {
