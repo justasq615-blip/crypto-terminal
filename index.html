@@ -193,7 +193,7 @@
         const siteMap = { BTC: "https://bitcoin.org", ETH: "https://ethereum.org", SOL: "https://solana.com", BNB: "https://www.bnbchain.org", XRP: "https://ripple.com", ADA: "https://cardano.org", DOGE: "https://dogecoin.com", AVAX: "https://www.avax.network", DOT: "https://polkadot.network" };
         const translations = {
             en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", news: "📰 NEWS", disclaimer: "<b>STRICT LEGAL NOTICE:</b> This is an experimental entertainment project. The developer is NOT a financial advisor. All data is provided 'as is' without guarantee. Use at your own risk.", manage: "MANAGE ASSETS" },
-            es: { title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", news: "📰 NOTICIAS", disclaimer: "<b>AVISO LEGAL ESTRICTO:</b> Proyecto experimental de entretenimiento. El desarrollador NO es asesor financiero.", manage: "GESTIONAR ACTIVOS" },
+            es: { title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", news: "📰 NOTICIAS", disclaimer: "<b>AVISO LEGAL ESTRICTO:</b> Proyecto experimental de entertainment. El desarrollador NO es asesor financiero.", manage: "GESTIONAR ACTIVOS" },
             ru: { title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", news: "📰 НОВОСТИ", disclaimer: "<b>ОФИЦИАЛЬНОЕ УВЕДОМЛЕНИЕ:</b> Экспериментальный проект. Разработчик НЕ является консультантом.", manage: "УПРАВЛЕНИЕ" },
             zh: { title: "🚀 APLO 加密终端", networth: "净资产", assets: "资产", edit: "编辑", news: "📰 新闻中心", disclaimer: "<b>严格法律声明:</b> 本项目仅供娱乐。开发者并非财务顾问。", manage: "资产管理" }
         };
@@ -423,6 +423,20 @@
         function openGeneralNews() {
             document.getElementById('info-header').innerText = `GLOBAL CRYPTO NEWS`;
             document.getElementById('info-content').innerHTML = `<a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC AGGREGATOR</a><a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a>`;
+            document.getElementById('info-overlay').style.display = 'flex';
+        }
+
+        function openAppInfo() {
+            document.getElementById('info-header').innerText = "LEGAL DISCLAIMER & INFO";
+            document.getElementById('info-content').innerHTML = `
+                <div style="font-size: 10px; line-height: 1.5; color: var(--text); text-align: justify;">
+                    <p style="font-weight: bold; color: var(--down); margin-top: 0; text-transform: uppercase;">Avaldus vastutuse välistamise kohta / Legal Disclaimer:</p>
+                    <p>Käesolev rakendus (edaspidi "Rakendus") on eksperimentaalne tarkvaraprojekt, mis on loodud 100% meelelahutuslikel, teaduslikel ja isiklikel eesmärkidel. Rakenduse looja, arendaja ega haldaja ei pakuta finantsnõustamist, investeerimissoovitusi ega muid finantsteenuseid.</p>
+                    <p>Kõik Rakenduses kuvatavad andmed, sealhulgas krüptovara hinnad, turuväärtused, portfelli jaotused ja ajaloolised arvutused, on imporditud kolmandate osapoolte avalikest API-liidestest "nii nagu on" (<i>"as is"</i>) režiimis. Rakenduse omanik ei taga esitatud andmete täpsust, terviklikkust, ajakohasust ega vigade puudumist.</p>
+                    <p>Rakenduse kasutamine toimub täielikult kasutaja omal vastutusel. Rakenduse arendaja ja omanik on maksimaalses seadusega lubatud ulatuses vabastatud igasugusest otsesest või kaudsest vastutusest mis tahes varalise või mittevaralise kahju, saamata jäänud tulu, finantskaotuste või andmekao eest, mis võivad tekkida Rakenduse kasutamise, talitlushäirete, tehniliste vigade või kuvatava info tõlgendamise tagajärjel.</p>
+                    <p style="border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 8px; font-style: italic; opacity: 0.8;">This application is for entertainment purposes only. The developer is not a financial advisor. All data is unverified and provided without warranties of any kind. Use at your own risk.</p>
+                </div>
+            `;
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
