@@ -418,12 +418,10 @@
             let caInfo = isDex ? `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center; user-select:all;">CA: ${fullSym}</div>` : '';
 
             if (isDex) {
-                // MUUDATUS SIIN: DexScreener otse graafiku URL
-                const dexEmbedUrl = `https://dexscreener.com/bsc/${fullSym}?embed=1&theme=${theme}`;
+                // MUUDATUS: Eemaldatud iframe, kuvatakse vaid link
                 document.getElementById('info-content').innerHTML = `
-                    <div id="chart-container"><iframe src="${dexEmbedUrl}" width="100%" height="100%" frameborder="0"></iframe></div>
                     ${caInfo}
-                    <a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 DEXSCREENER</a>
+                    <a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 AVAGE DEXSCREENERIS</a>
                 `;
             } else {
                 document.getElementById('info-content').innerHTML = `<div id="chart-container"><div id="tv-medium-widget"></div></div><a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>`;
