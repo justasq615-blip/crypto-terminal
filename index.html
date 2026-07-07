@@ -71,7 +71,7 @@
         .half-card { flex: 1; display: flex; align-items: center; justify-content: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
         
         .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; height: 100%; display: flex; align-items: center; }
-        .ticker { display: inline-flex; white-space: nowrap; font-size: 9px; font-weight: bold; padding-left: 100%; animation: marquee 8s linear infinite; }
+        .ticker { display: inline-flex; white-space: nowrap; font-size: 9px; font-weight: bold; padding-left: 100%; animation: marquee 5s linear infinite; }
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
@@ -416,13 +416,18 @@ let factIndex = 0;
 function rotateTickerText() {
     const el = document.getElementById('insights-ticker');
     if(!el) return;
+    
     const separator = "   |   ";
-    el.innerText = cryptoFacts[factIndex] + separator + cryptoFacts[(factIndex + 1) % cryptoFacts.length];
-    factIndex = (factIndex + 2) % cryptoFacts.length;
+    
+    // Võtame praegused faktid ja liigume nimekirjas edasi
+    const fact1 = cryptoFacts[factIndex];
+    const fact2 = cryptoFacts[(factIndex + 1) % cryptoFacts.length];
+    
+    el.innerText = fact1 + separator + fact2;
+    
+    // Suurendame indeksit ühe võrra, et järgmisel korral oleksid uued faktid
+    factIndex = (factIndex + 1) % cryptoFacts.length;
 }
-
-rotateTickerText();
-setInterval(rotateTickerText, 21000);
 
         setInterval(() => { document.getElementById('status').innerHTML = `<span class="live-dot"></span> LIVE • ${new Date().toLocaleTimeString('en-GB')}`; }, 1000);
         updateMarket(); setInterval(updateMarket, 30000); rotateDisclaimer(); setInterval(rotateDisclaimer, 20000);
