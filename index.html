@@ -333,7 +333,7 @@
             wrapper.innerHTML = '';
             const char = getCurrencyChar();
             marketData.forEach(c => {
-                const sym = c.isDex ? c.symbol : c.symbol.replace("EUR", "").replace("USDT", "");
+                const sym = c.isDex ? c.symbol : c.symbol.replace(/(EUR|USDT|USD|CNY|RUB)$/, "");
                 const p = parseFloat(c.lastPrice);
                 const ch = parseFloat(c.priceChangePercent);
                 currentPrices[c.isDex ? c.address : c.symbol] = p;
@@ -368,7 +368,7 @@
                     const valEUR = qty * price;
                     totalEUR += valEUR;
                     const displayVal = convertPrice(valEUR);
-                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? s.substring(0,6) : s.replace("EUR","")}</span><span style="font-weight:bold;">${char}${displayVal.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>`;
+                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? s.substring(0,6) : s.replace(/(EUR|USDT|USD|CNY|RUB)$/,"")}</span><span style="font-weight:bold;">${char}${displayVal.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>`;
                 }
             });
             const displayTotal = convertPrice(totalEUR);
@@ -417,7 +417,7 @@
                     const valEUR = qty * price;
                     totalEUR += valEUR;
                     holdings.push({ 
-                        name: isDex ? s.substring(0, 6) + '...' : s.replace("EUR", "").replace("USDT", ""), 
+                        name: isDex ? s.substring(0, 6) + '...' : s.replace(/(EUR|USDT|USD|CNY|RUB)$/, ""), 
                         val: valEUR 
                     });
                 }
