@@ -371,9 +371,20 @@
         }
         function saveP(btn) { symbols.forEach(s => { const val = document.getElementById('e-'+s).value; localStorage.setItem('p_'+s, val); }); btn.parentElement.parentElement.remove(); renderPortfolio(); }
 
-        function openGeneralNews() {
+                function openGeneralNews() {
             document.getElementById('info-header').innerText = `GLOBAL CRYPTO NEWS`;
-            document.getElementById('info-content').innerHTML = `<a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC AGGREGATOR</a><a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a>`;
+            document.getElementById('info-content').innerHTML = `
+                <a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC</a>
+                <a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a>
+                <a href="https://cointelegraph.com" target="_blank" class="news-btn">COINTELEGRAPH</a>
+                <a href="https://decrypt.co" target="_blank" class="news-btn">DECRYPT</a>
+                <a href="https://www.theblock.co" target="_blank" class="news-btn">THE BLOCK</a>
+                <a href="https://bitcoinmagazine.com" target="_blank" class="news-btn">BITCOIN MAGAZINE</a>
+                <a href="https://www.newsbtc.com" target="_blank" class="news-btn">NEWSBTC</a>
+                <a href="https://cryptoslate.com" target="_blank" class="news-btn">CRYPTOSLATE</a>
+                <a href="https://dailyhodl.com" target="_blank" class="news-btn">THE DAILY HODL</a>
+                <a href="https://ambcrypto.com" target="_blank" class="news-btn">AMBCRYPTO</a>
+            `;
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
