@@ -307,6 +307,79 @@
             const displayTotal = currency === 'EUR' ? totalEUR : totalEUR * usdRate;
             document.getElementById('portfolio-total').innerText = `${char}${displayTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
             document.getElementById('portfolio-list').innerHTML = items || '<div style="opacity:0.5; font-size:10px; text-align:center;">No assets.</div>';
+
+            if (totalEUR > 0) {
+                const now = Date.now();
+                let history = JSON.parse(localStorage.getItem('portfolio_history')) || [];
+                
+                if (history.length === 0 || (now - history[history.length - 1].time) > 15 * 60 * 1000) {
+                    history.push({ time: now, val: totalEUR });
+                    if (history.length > 1000) history.shift();
+                    localStorage.setItem('portfolio_history', JSON.stringify(history));
+                }
+
+                function getPerformance(hours) {
+                    const targetTime = now - (hours * 60 * 60 * 1000);
+                    const closest = history.reduce((prev, curr) => Math.abs(curr.time - targetTime) < Math.abs(prev.time - targetTime) ? curr : prev, history[0]);
+                    
+                    if (!closest || Math.abs(closest.time - targetTime) > (hours * 0.5 * 60 * 60 * 1000)) return '--';
+                    
+                    const pct = ((totalEUR - closest.val) / closest.val) * 100;
+                    return `<span class="${pct >= 0 ? 'up' : 'down'}">${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%</span>`;
+                }
+
+                document.getElementById('perf-24h').innerHTML = getPerformance(24);
+                document.getElementById('perf-72h').innerHTML = getPerformance(72);
+                document.getElementById('perf-1w').innerHTML = getPerformance(24 * 7);
+                document.getElementById('perf-1m').innerHTML = getPerformance(24 * 30);
+                document.getElementById('perf-3m').innerHTML = getPerformance(24 * 90);
+                document.getElementById('perf-m6').innerHTML = getPerformance(24 * 180);
+            }
+        }
+
+        function openDistribution() {
+            let totalEUR = 0;
+            let holdings = [];
+            const char = currency === 'EUR' ? '€' : '$';
+
+            symbols.forEach(s => {
+                const isDex = s.startsWith('0x');
+                const qty = parseFloat(localStorage.getItem('p_' + s)) || 0;
+                const price = currentPrices[s] || 0;
+                if (qty > 0 && price > 0) {
+                    const valEUR = qty * price;
+                    totalEUR += valEUR;
+                    holdings.push({ 
+                        name: isDex ? s.substring(0, 6) + '...' : s.replace("EUR", "").replace("USDT", ""), 
+                        val: valEUR 
+                    });
+                }
+            });
+
+            holdings.sort((a, b) => b.val - a.val);
+
+            const container = document.getElementById('dist-content');
+            if (totalEUR === 0) {
+                container.innerHTML = '<div style="opacity:0.5; font-size:10px; text-align:center;">No assets to display.</div>';
+            } else {
+                container.innerHTML = holdings.map(h => {
+                    const pct = ((h.val / totalEUR) * 100).toFixed(1);
+                    const displayVal = currency === 'EUR' ? h.val : h.val * usdRate;
+                    return `
+                        <div class="dist-row">
+                            <div class="dist-label">
+                                <span>${h.name} (${pct}%)</span>
+                                <span>${char}${displayVal.toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
+                            </div>
+                            <div class="dist-bar-bg">
+                                <div class="dist-bar-fill" style="width: ${pct}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('dist-overlay').style.display = 'flex';
         }
 
         function togglePortfolio() { const d = document.getElementById('portfolio-details'); d.style.display = (d.style.display === 'none' || d.style.display === '') ? 'block' : 'none'; }
