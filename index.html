@@ -413,10 +413,16 @@
     const card = document.getElementById('cp-card').value;
     const border = document.getElementById('cp-border').value;
     const text = document.getElementById('cp-text').value;
-    const css = `:root { --bg: ${bg} !important; --card: ${card} !important; --border: ${border} !important; --text: ${text} !important; }`;
+    const css = `
+        :root { --bg: ${bg} !important; --card: ${card} !important; --border: ${border} !important; --text: ${text} !important; --title: ${text} !important; }
+        body { background-color: ${bg} !important; color: ${text} !important; }
+        .card, .header, .modal { background-color: ${card} !important; border-color: ${border} !important; color: ${text} !important; }
+        .label-text, .value-text, h2 { color: ${text} !important; }
+    `;
     document.getElementById('custom-style').innerHTML = css;
     localStorage.setItem('custom_theme', JSON.stringify({bg, card, border, text}));
 }
+
 
 window.addEventListener('load', () => {
     const saved = localStorage.getItem('custom_theme');
