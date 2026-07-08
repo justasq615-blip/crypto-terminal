@@ -50,12 +50,12 @@
         .perf-label { opacity: 0.5; font-size: 7px; margin-bottom: 2px; text-transform: uppercase; }
 
         #main-wrapper { flex: 1; display: flex; flex-direction: column; margin: 4px 0; gap: 2px; overflow-y: auto; scrollbar-width: none; }
-        .card { background-color: var(--card); border-radius: 6px; padding: 0 12px; border: 1px solid var(--border); display: flex; align-items: center; height: 42px; min-height: 42px; flex-shrink: 0; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .card { background-color: var(--card); border-radius: 6px; padding: 0 12px; border: 1px solid var(--border); display: flex; align-items: center; height: 42px; min-height: 42px; flex-shrink: 0; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
         .card:active { background-color: var(--accent); }
         
         .coin-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .label-text { font-weight: 800; font-size: 12px; letter-spacing: 0.5px; cursor: pointer; }
-        .value-text { font-weight: 900; font-size: 13px; text-align: right; min-width: 90px; padding: 4px; border-radius: 4px; cursor: pointer; }
+        .label-text { font-weight: 800; font-size: 12px; letter-spacing: 0.5px; }
+        .value-text { font-weight: 900; font-size: 13px; text-align: right; min-width: 90px; padding: 4px; border-radius: 4px; }
         .value-text:active { background-color: var(--border); }
 
         .up { color: var(--up) !important; }
@@ -69,7 +69,7 @@
         
         .full-width-ticker { flex: 1; display: flex; align-items: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
         .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; height: 100%; display: flex; align-items: center; }
-        .ticker { display: inline-flex; white-space: nowrap; font-size: 9px; font-weight: bold; padding-left: 100%; animation: marquee 350s linear infinite; }
+        .ticker { display: inline-flex; white-space: nowrap; font-size: 9px; font-weight: bold; padding-left: 100%; animation: marquee 300s linear infinite; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .disclaimer-box { height: auto; min-height: 50px; background-color: var(--header); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; opacity: 0.7; }
@@ -90,6 +90,7 @@
         .dist-bar-bg { height: 8px; background: var(--accent); border-radius: 4px; overflow: hidden; }
         .dist-bar-fill { height: 100%; background: var(--title); border-radius: 4px; transition: width 1s ease-out; }
         
+        /* Table styles for History */
         .history-table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px; }
         .history-table td { padding: 8px; border-bottom: 1px solid var(--border); }
     </style>
@@ -135,7 +136,7 @@
     <div class="mid-row">
         <div class="mid-btn" onclick="alert('Action 1')">🚀</div>
         <div class="mid-btn" onclick="openGeneralNews()">📰</div>
-        <div class="mid-btn"></div>
+        <div class="mid-btn" onclick="openComparisonList()">⚖️</div>
         <div class="mid-btn" onclick="alert('Action 4')">🔔</div>
         <div class="mid-btn" onclick="alert('Action 5')">💎</div>
     </div>
@@ -156,12 +157,20 @@
     <div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="info-header" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px;"></div><div id="info-content" style="padding: 20px;"></div></div></div>
     <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="ui-dist-title" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px; color:var(--title);">ASSET DISTRIBUTION</div><div id="dist-content" style="padding: 20px; overflow-y:auto; max-height:60vh;"></div></div></div>
     
+    <!-- New Comparison Modals -->
     <div id="comp-list-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;">VALI VARA VÕRDLUSEKS</div><div id="comp-asset-list" style="padding:10px;"></div></div></div>
     <div id="comp-detail-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="comp-detail-header" style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;"></div><div id="comp-detail-content" style="padding:15px;"></div></div></div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        const historicalData = { "BTC": { 2023: 16500, 2024: 42000, 2025: 68000 }, "ETH": { 2023: 1200, 2024: 2200, 2025: 3500 }, "SOL": { 2023: 10, 2024: 100, 2025: 140 }, "BNB": { 2023: 250, 2024: 310, 2025: 550 } };
+        // Ajaloolised hinnad (näidisandmed)
+        const historicalData = {
+            "BTC": { 2023: 16500, 2024: 42000, 2025: 68000 },
+            "ETH": { 2023: 1200, 2024: 2200, 2025: 3500 },
+            "SOL": { 2023: 10, 2024: 100, 2025: 140 },
+            "BNB": { 2023: 250, 2024: 310, 2025: 550 }
+        };
+
         const translations = {
             en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", save: "SAVE", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.", legal_label: "LEGAL NOTICE", btn_add: "ADD ASSET", dist_title: "ASSET DISTRIBUTION", no_assets: "No assets.", no_assets_dist: "No assets to display.", disclaimer_full: "This application is an experimental software project created 100% for entertainment, scientific, and personal purposes. The developer does not provide financial advice or investment recommendations. All data is provided 'as is' without warranties of any kind. Use entirely at your own risk." },
             et: { title: "🚀 APLO KRÜPTO TERMINAL", networth: "Netoväärtus", assets: "VARAD", edit: "MUUDA", save: "SALVESTA", news: "📰 UUDISED", manage: "HALDA VARASID", disclaimer: "Eksperimentaalne projekt. Kasuta omal vastutusel.", legal_label: "ÕIGUSLIK TEADE", btn_add: "LISA VARA", dist_title: "VARADE JAOTUS", no_assets: "Varad puuduvad.", no_assets_dist: "Kuvamiseks pole varasid.", disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt, mis on loodud 100% meelelahutuslikel, teaduslikel ja isiklikel eesmärkidel. Arendaja ei paku finantsnõustavamist ega investeerimissoovitusi. Kõik data esitatakse olemasoleval kujul ('as is') ilma igasuguste garantiideta. Kasutamine täielikult omal vastutusel." },
@@ -170,17 +179,63 @@
         };
 
         let symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
-        let caNames = {}; let currentPrices = {}; let currentCurrency = 'USD';
-        let currentLang = localStorage.getItem('lang') || 'en';
+        let caNames = {}; let touchStartY = 0;
         const mainWrapper = document.getElementById('main-wrapper');
+        
+        try {
+            const saved = localStorage.getItem('user_symbols');
+            if (saved) { const parsed = JSON.parse(saved); if (Array.isArray(parsed) && parsed.length > 0) symbols = parsed; }
+            const savedNames = localStorage.getItem('ca_names');
+            if (savedNames) caNames = JSON.parse(savedNames);
+        } catch(e) {}
 
-        function setLang(l) { currentLang = l; localStorage.setItem('lang', l); location.reload(); }
+        let currentPrices = {}; let marketData = []; 
+        let currentLang = localStorage.getItem('lang') || 'en';
+        
+        const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
+        document.getElementById('theme-grid').innerHTML = themeNames.map(t => `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`).join('');
+
         function setTheme(t) { document.body.setAttribute('data-theme', t); localStorage.setItem('theme', t); }
         setTheme(localStorage.getItem('theme') || 'nando-gray');
 
-        function toggleCurrency() { currentCurrency = (currentCurrency === 'USD') ? 'EUR' : 'USD'; renderUI(); }
+        function setLang(l) { currentLang = l; localStorage.setItem('lang', l); location.reload(); }
+
+        function rotateDisclaimer() {
+            const el = document.getElementById('ui-disclaimer');
+            if(!el) return;
+            el.innerText = translations[currentLang].disclaimer_full;
+        }
+
+        // Action 3 loogika
+        function openComparisonList() {
+            const list = document.getElementById('comp-asset-list');
+            list.innerHTML = symbols.map(s => {
+                const name = s.replace(/(USDT|USD)$/, "");
+                return `<div class="card" onclick="openComparisonDetail('${name}')" style="margin-bottom:5px;">${name}</div>`;
+            }).join('');
+            document.getElementById('comp-list-overlay').style.display = 'flex';
+        }
+
+        function openComparisonDetail(name) {
+            const price = currentPrices[name + "USDT"] || 0;
+            const history = historicalData[name] || {};
+            let rows = Object.keys(history).map(year => `<tr><td>${year}</td><td>$${history[year].toLocaleString()}</td></tr>`).join('');
+            rows += `<tr><td><strong>2026</strong></td><td><strong>$${price.toFixed(2)}</strong></td></tr>`;
+            
+            document.getElementById('comp-detail-header').innerText = `${name} HINNAD`;
+            document.getElementById('comp-detail-content').innerHTML = `
+                <table class="history-table">
+                    <tr><th>Aasta</th><th>Hind</th></tr>
+                    ${rows}
+                </table>
+                <button onclick="document.getElementById('comp-detail-overlay').style.display='none'" style="width:100%; margin-top:15px; padding:10px; background:var(--title); border:none; border-radius:4px; font-weight:bold;">SULE</button>
+            `;
+            document.getElementById('comp-detail-overlay').style.display = 'flex';
+        }
 
         async function updateMarket() {
+            const statusEl = document.getElementById('status');
+            if(statusEl) statusEl.classList.add('status-refreshing');
             const binanceSyms = symbols.filter(s => !s.startsWith('0x') && s.length < 15);
             const dexAddrs = symbols.filter(s => s.startsWith('0x') || s.length >= 15);
             let combinedData = [];
@@ -201,40 +256,114 @@
                     }
                 } catch(e) {}
             }
-            marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
+            localStorage.setItem('ca_names', JSON.stringify(caNames));
+            if (combinedData.length > 0) marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
             renderUI();
+            if(statusEl) statusEl.classList.remove('status-refreshing');
         }
 
         function renderUI() {
-            document.getElementById('ui-networth').innerText = translations[currentLang].networth;
             const wrapper = document.getElementById('main-wrapper');
+            if (!wrapper) return;
             wrapper.innerHTML = '';
             marketData.forEach(c => {
                 const sym = c.isDex ? (caNames[c.address] || "DEX") : c.symbol.replace(/(USDT|USD)$/, "");
-                const usdPrice = parseFloat(c.lastPrice);
-                const displayPrice = (currentCurrency === 'EUR') ? usdPrice * 0.92 : usdPrice;
-                currentPrices[c.isDex ? c.address : c.symbol] = usdPrice;
-                
+                const p = parseFloat(c.lastPrice);
+                const ch = parseFloat(c.priceChangePercent);
+                currentPrices[c.isDex ? c.address : c.symbol] = p;
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.innerHTML = `<div class="coin-row">
-                    <div onclick="openInfoModal('${sym}', '${c.isDex ? c.address : c.symbol}', ${c.isDex})"><span class="label-text">${sym}</span></div>
-                    <div class="value-text" onclick="toggleCurrency()">${currentCurrency === 'EUR' ? '€' : '$'}${displayPrice.toFixed(2)}</div>
-                </div>`;
+                card.onclick = () => openInfoModal(sym, c.isDex ? c.address : c.symbol, c.isDex);
+                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}</span><span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${ch.toFixed(1)}%</span></div><div class="value-text">$${p.toFixed(2)}</div></div>`;
                 wrapper.appendChild(card);
             });
             renderPortfolio();
         }
 
         function renderPortfolio() {
-            let total = 0;
+            let total = 0; let items = '';
             symbols.forEach(s => {
+                const isDex = s.startsWith('0x') || s.length >= 15;
                 const qty = parseFloat(localStorage.getItem('p_'+s)) || 0;
                 const price = currentPrices[s] || 0;
-                total += (qty * price);
+                if (qty > 0 && price > 0) {
+                    total += (qty * price);
+                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/,"")}</span><span>$${(qty*price).toFixed(2)}</span></div>`;
+                }
             });
-            const displayTotal = (currentCurrency === 'EUR') ? total * 0.92 : total;
-            document.getElementById('portfolio-total').innerText = (currentCurrency === 'EUR' ? '€' : '$') + displayTotal.toFixed(2);
+            document.getElementById('portfolio-total').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('portfolio-list').innerHTML = items || `<div style="opacity:0.5; font-size:10px; text-align:center;">No assets</div>`;
+        }
+
+        function openDistribution() {
+            let total = 0; let holdings = [];
+            symbols.forEach(s => {
+                const isDex = s.startsWith('0x') || s.length >= 15;
+                const qty = parseFloat(localStorage.getItem('p_' + s)) || 0;
+                const price = currentPrices[s] || 0;
+                if (qty > 0 && price > 0) {
+                    total += (qty * price);
+                    holdings.push({ name: isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/, ""), val: (qty * price) });
+                }
+            });
+            const container = document.getElementById('dist-content');
+            container.innerHTML = holdings.map(h => `<div class="dist-row"><div class="dist-label"><span>${h.name}</span><span>$${h.val.toFixed(2)}</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${total > 0 ? ((h.val/total)*100).toFixed(0) : 0}%"></div></div></div>`).join('');
+            document.getElementById('dist-overlay').style.display = 'flex';
+        }
+
+        function togglePortfolio() { const d = document.getElementById('portfolio-details'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
+        
+        function openManageAssets() {
+            const list = document.getElementById('asset-list-manage');
+            list.innerHTML = symbols.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;"><span>${caNames[s] || s.replace(/(USDT|USD)$/, "")}</span><span style="cursor:pointer;" onclick="removeAsset('${s}')">🗑️</span></div>`).join('');
+            document.getElementById('manage-overlay').style.display = 'flex';
+        }
+        
+        function removeAsset(s) { symbols = symbols.filter(item => item !== s); localStorage.setItem('user_symbols', JSON.stringify(symbols)); openManageAssets(); updateMarket(); }
+
+        async function addNewAsset() {
+            const val = document.getElementById('new-asset-input').value.trim();
+            if(!val) return;
+            if(val.startsWith('0x')) {
+                const res = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${val}`);
+                const data = await res.json();
+                if(data.pairs && data.pairs.length > 0) caNames[val] = data.pairs[0].baseToken.symbol;
+                symbols.push(val);
+            } else { symbols.push(val.toUpperCase()); }
+            localStorage.setItem('user_symbols', JSON.stringify(symbols));
+            document.getElementById('new-asset-input').value = '';
+            openManageAssets(); updateMarket();
+        }
+
+        function openEdit() {
+            const fields = symbols.map(s => {
+                const isDex = s.startsWith('0x') || s.length >= 15;
+                const displayName = isDex ? (caNames[s] || s) : s.replace(/(USDT|USD)$/,"");
+                return `<div style="margin-bottom:12px;"><label style="font-size:10px; font-weight:bold; color:var(--title);">${displayName} QTY</label><br><input type="number" id="e-${s}" value="${localStorage.getItem('p_'+s)||''}" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"></div>`;
+            }).join('');
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay'; overlay.style.display = 'flex';
+            overlay.innerHTML = `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">SAVE</button></div>`;
+            overlay.onclick = () => overlay.remove();
+            document.body.appendChild(overlay);
+        }
+        function saveP(btn) { symbols.forEach(s => { const val = document.getElementById('e-'+s).value; localStorage.setItem('p_'+s, val); }); btn.parentElement.parentElement.remove(); renderPortfolio(); }
+
+        function openGeneralNews() {
+            document.getElementById('info-header').innerText = `GLOBAL CRYPTO NEWS`;
+            document.getElementById('info-content').innerHTML = `
+                <a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC</a>
+                <a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a>
+                <a href="https://cointelegraph.com" target="_blank" class="news-btn">COINTELEGRAPH</a>
+                <a href="https://decrypt.co" target="_blank" class="news-btn">DECRYPT</a>
+                <a href="https://www.theblock.co" target="_blank" class="news-btn">THE BLOCK</a>
+                <a href="https://bitcoinmagazine.com" target="_blank" class="news-btn">BITCOIN MAGAZINE</a>
+                <a href="https://www.newsbtc.com" target="_blank" class="news-btn">NEWSBTC</a>
+                <a href="https://cryptoslate.com" target="_blank" class="news-btn">CRYPTOSLATE</a>
+                <a href="https://dailyhodl.com" target="_blank" class="news-btn">THE DAILY HODL</a>
+                <a href="https://ambcrypto.com" target="_blank" class="news-btn">AMBCRYPTO</a>
+            `;
+            document.getElementById('info-overlay').style.display = 'flex';
         }
 
         function openInfoModal(sym, fullSym, isDex) {
@@ -249,15 +378,18 @@
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
-        function openGeneralNews() { window.open("https://cryptopanic.com", "_blank"); }
-        function openManageAssets() { document.getElementById('manage-overlay').style.display = 'flex'; }
-        function togglePortfolio() { const d = document.getElementById('portfolio-details'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
-        function openDistribution() { document.getElementById('dist-overlay').style.display = 'flex'; }
-        function openEdit() { /* Sinu algne kood siia */ }
-        function addNewAsset() { /* Sinu algne kood siia */ }
+        const cryptoFacts = ["BITCOIN WAS CREATED BY SATOSHI NAKAMOTO IN 2009", "ETHEREUM INTRODUCED SMART CONTRACTS", "THE TOTAL SUPPLY OF BITCOIN IS 21 MILLION", "BINANCE COIN WAS BUILT ON ETHEREUM", "THE FIRST BITCOIN TRANSACTION WAS FOR TWO PIZZAS", "SOLANA IS KNOWN FOR HIGH THROUGHPUT", "XRP IS DESIGNED FOR FAST PAYMENTS", "CARDANO USES PROOF-OF-STAKE", "AVALANCHE SUPPORTS CUSTOM BLOCKCHAINS", "STELLAR WAS FORKED FROM RIPPLE", "LITECOIN WAS CREATED BY CHARLIE LEE", "POLKADOT ENABLES INTEROPERABILITY", "CHAINLINK PROVIDES DECENTRALIZED ORACLES", "UNISWAP IS A DECENTRALIZED EXCHANGE", "AAVE IS A LENDING PROTOCOL", "THE BITCOIN HALVING OCCURS EVERY 4 YEARS", "SATOSHI NAKAMOTOS IDENTITY IS UNKNOWN", "BLOCKCHAIN IS A DISTRIBUTED LEDGER", "MINING REQUIRES COMPUTATIONAL POWER", "WALLETS STORE PRIVATE KEYS", "DOGECOIN STARTED AS A JOKE", "TETHER IS A STABLECOIN", "USD COIN IS BACKED BY RESERVES", "MONERO FOCUSES ON PRIVACY", "ZCASH USES ZERO-KNOWLEDGE PROOFS", "TEZOS SUPPORTS SELF-AMENDMENT", "ALGORAND USES PURE PROOF-OF-STAKE", "VECHAIN FOCUSES ON SUPPLY CHAIN", "THETA IS FOR VIDEO STREAMING", "FILECOIN IS FOR DECENTRALIZED STORAGE", "BITCOIN IS OFTEN CALLED DIGITAL GOLD", "BLOCKCHAIN TECHNOLOGY IS IMMUTABLE", "PROOF OF WORK IS ENERGY INTENSIVE", "PROOF OF STAKE IS ENERGY EFFICIENT", "SMART CONTRACTS ARE SELF-EXECUTING", "THE GENESIS BLOCK IS THE FIRST BLOCK", "NODES VALIDATE TRANSACTIONS", "PUBLIC KEYS ARE FOR RECEIVING", "PRIVATE KEYS ARE FOR SIGNING", "COLD STORAGE IS MORE SECURE", "DEFI STANDS FOR DECENTRALIZED FINANCE", "DAOS ARE DECENTRALIZED ORGANIZATIONS", "NFTS ARE NON-FUNGIBLE TOKENS", "GAS FEES ARE PAID TO MINERS", "SCALABILITY IS A KEY CHALLENGE", "SIDECHAINS IMPROVE SPEED", "SHARDING INCREASES CAPACITY", "LAYER 2 SOLUTIONS REDUCE COSTS", "CROSS-CHAIN BRIDGES CONNECT NETWORKS", "HASHING IS A CRYPTOGRAPHIC PROCESS", "MERKLE TREES ORGANIZE DATA", "51 PERCENT ATTACKS ARE DANGEROUS", "HARD FORKS CREATE NEW COINS", "SOFT FORKS ARE COMPATIBLE", "CRYPTO IS VOLATILE", "THE SEC REGULATES SECURITIES", "EXCHANGES ARE CENTRALIZED OR DECENTRALIZED", "STAKING YIELDS REWARDS", "FARMING PROVIDES LIQUIDITY", "DEXS USE AUTOMATED MARKET MAKERS", "TOKENOMICS DRIVE VALUE", "AIRDROPS DISTRIBUTE TOKENS", "ICO STANDS FOR INITIAL COIN OFFERING", "IEO STANDS FOR INITIAL EXCHANGE OFFERING", "IDO STANDS FOR INITIAL DEX OFFERING", "WHALES ARE LARGE HOLDERS", "BULL MARKETS HAVE RISING PRICES", "BEAR MARKETS HAVE FALLING PRICES", "CORRECTIONS ARE PRICE DROPS", "ALL TIME HIGH IS A PEAK", "FOMO LEADS TO BAD DECISIONS", "HODL MEANS HOLDING LONG TERM", "FUD SPREADS FEAR AND DOUBT", "DYOR STANDS FOR DO YOUR OWN RESEARCH", "REKT MEANS FINANCIAL LOSS", "BITCOIN IS PSEUDONYMOUS", "ETHEREUM 2.0 SWITCHED TO STAKE", "BLOCKS CONTAIN TRANSACTIONS", "DIFFICULTY ADJUSTS EVERY 2016 BLOCKS", "MEMPOOL HOLDS PENDING TRANSACTIONS", "NONCES ARE USED IN MINING", "SEGWIT IMPROVED EFFICIENCY", "LIGHTNING NETWORK ENABLES INSTANT PAYMENTS", "TAPROOT UPGRADED PRIVACY", "ORACLES BRIDGE REAL WORLD DATA", "TOKENS LIVE ON EXISTING CHAINS", "COINS HAVE THEIR OWN BLOCKCHAIN", "STABLECOINS ARE PEGGED TO FIAT", "ALGORITHMIC STABLECOINS USE CODE", "WRAP TOKENS ALLOW COMPATIBILITY", "CUSTODIAL WALLETS HOLD YOUR KEYS", "NON-CUSTODIAL WALLETS GIVE YOU CONTROL", "LEDGER AND TREZOR ARE HARDWARE WALLETS", "HOT WALLETS ARE CONNECTED TO INTERNET", "SEED PHRASES RECOVER WALLETS", "2FA ADDS SECURITY", "PHISHING IS A COMMON THREAT", "SCAMS ARE PREVALENT IN CRYPTO", "EXCHANGE HACKS HAVE OCCURRED", "SECURITY IS YOUR RESPONSIBILITY", "CRYPTO MARKETS OPERATE 24/7", "BITCOIN IS DEFLATIONARY", "ALTCOINS ARE NON-BITCOIN CRYPTOS", "MEME COINS ARE DRIVEN BY HYPE", "GOVERNANCE TOKENS ALLOW VOTING", "REAL WORLD ASSETS ARE BEING TOKENIZED", "LIQUIDITY POOLS POWER DEXS", "IMPERMANENT LOSS IS A DEFI RISK", "FLASH LOANS DO NOT REQUIRE COLLATERAL", "YIELD AGGREGATORS AUTOMATE STAKING", "STABLECOIN DE-PEGGING IS A RISK", "BITCOIN MINING DIFFICULTY IS SELF-REGULATING", "THE BITCOIN WHITE PAPER WAS PUBLISHED IN 2008", "VITALIK BUTERIN CO-FOUNDED ETHEREUM", "THE DAO HACK LED TO ETHEREUM CLASSIC", "BINANCE IS THE LARGEST EXCHANGE", "COINBASE IS A PUBLICLY TRADED COMPANY", "KRAKEN IS KNOWN FOR SECURITY", "BITSTAMP IS ONE OF THE OLDEST EXCHANGES", "BLOCKCHAIN EXPORERS TRACK TRANSACTIONS", "HASH RATE MEASURES NETWORK SECURITY", "COMPOSABILITY IS A DEFI FEATURE", "WRAPPED BITCOIN EXISTS ON ETHEREUM", "GAS FEES SPIKE DURING CONGESTION", "NFT OWNERSHIP IS VERIFIABLE", "METAMASK IS A POPULAR BROWSER WALLET", "HARDWARE WALLETS ARE OFFLINE", "PAPER WALLETS ARE ANTIQUATED", "PRIVATE KEYS SHOULD NEVER BE SHARED", "SEED PHRASES ARE THE MASTER KEY", "BITCOIN IS THE FIRST CRYPTOCURRENCY", "THE ETHEREUM MERGE OCCURRED IN 2022", "SOLANA IS A LAYER 1 BLOCKCHAIN", "AVALANCHE USES SUB-NETS", "POLYGON IS A LAYER 2 FOR ETHEREUM", "ARBITRUM USES OPTIMISTIC ROLLUPS", "OPTIMISM USES OPTIMISTIC ROLLUPS", "ZK-ROLLUPS USE ZERO-KNOWLEDGE PROOFS", "STARKNET FOCUSES ON SCALABILITY", "CHAINLINK LINKS OFF-CHAIN DATA", "GRAPH PROTOCOL INDEXES BLOCKCHAIN DATA", "UNI IS THE UNISWAP GOVERNANCE TOKEN", "CAKE IS THE PANCAKESWAP TOKEN", "DYDX IS A DECENTRALIZED DERIVATIVES EXCHANGE", "MAKERDAO ISSUES THE DAI STABLECOIN", "DAI IS A DECENTRALIZED STABLECOIN", "USDT IS ISSUED BY TETHER", "USDC IS ISSUED BY CIRCLE", "BITCOIN IS SCARCE", "BLOCKCHAIN IS TRANSPARENT", "BLOCKCHAIN IS PSEUDONYMOUS", "TRANSACTIONS ARE IRREVERSIBLE", "MINERS SECURE THE NETWORK", "STAKERS SECURE PROOF OF STAKE", "BLOCK TIME VARIES BY CHAIN", "BLOCK REWARDS DECREASE OVER TIME", "THE GENESIS BLOCK HAS NO PARENT", "BITCOIN HAS A 10 MINUTE BLOCK TIME", "ETHEREUM HAS A ~12 SECOND BLOCK TIME", "BLOCKCHAIN IS RESISTANT TO CENSORSHIP", "CRYPTO CAN BE SENT GLOBALLY", "FEES ARE INDEPENDENT OF TRANSACTION SIZE", "WALLETS CAN BE MULTI-SIG", "PUBLIC ADDRESSES START WITH DIFFERENT CHARACTERS", "HEXADECIMAL IS USED FOR ADDRESSES", "CRYPTO IS A GLOBAL PHENOMENON", "REGULATION IS INCREASING", "INSTITUTIONS ARE ENTERING THE MARKET", "ETFS ARE A SIGN OF MATURITY", "BITCOIN IS NOT CONTROLLED BY ANY GOVERNMENT", "DEFI REMOVES INTERMEDIARIES", "CRYPTO IS PROGRAMMABLE MONEY", "THE FUTURE OF FINANCE IS DECENTRALIZED", "BLOCKCHAIN IS MORE THAN JUST MONEY", "SMART CONTRACTS CAN RUN DAPS", "CRYPTO IS AN EVOLVING TECHNOLOGY"];
 
-        setInterval(updateMarket, 30000);
+        const tickerEl = document.getElementById('insights-ticker');
+        if(tickerEl) {
+            tickerEl.innerText = cryptoFacts.join(" *** ");
+        }
+
+        setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
         updateMarket();
+        setInterval(updateMarket, 30000);
+        rotateDisclaimer();
+        setInterval(rotateDisclaimer, 20000);
     </script>
 </body>
 </html>
