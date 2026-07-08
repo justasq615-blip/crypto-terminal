@@ -462,12 +462,14 @@ document.addEventListener('touchend', (e) => {
 function triggerRefreshAnimation() {
     const status = document.getElementById('status');
     if (status) {
-        status.style.opacity = '0';
+        status.style.transition = 'opacity 0.4s';
+        status.style.opacity = '0.1';
         setTimeout(() => {
             status.style.opacity = '1';
-        }, 200);
+        }, 400);
     }
 }
+
 
 
 
