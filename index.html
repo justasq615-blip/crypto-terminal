@@ -50,7 +50,7 @@
         .perf-label { opacity: 0.5; font-size: 7px; margin-bottom: 2px; text-transform: uppercase; }
 
         #main-wrapper { flex: 1; display: flex; flex-direction: column; margin: 4px 0; gap: 2px; overflow-y: auto; scrollbar-width: none; }
-        .card { background-color: var(--card); border-radius: 6px; padding: 0 12px; border: 1px solid var(--border); display: flex; align-items: center; height: 42px; min-height: 42px; flex-shrink: 0; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .card { background-color: var(--card); border-radius: 6px; padding: 0 12px; border: 1px solid var(--border); display: flex; align-items: center; height: 42px; min-height: 42px; flex-shrink: 0; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
         .card:active { background-color: var(--accent); }
         
         .coin-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -119,6 +119,14 @@
         </div>
         <div id="portfolio-details">
             <div id="portfolio-list" style="margin-bottom: 10px;"></div>
+            <div class="perf-row">
+                <div class="perf-item"><span class="perf-label">24h</span><span id="perf-24h">--</span></div>
+                <div class="perf-item"><span class="perf-label">72h</span><span id="perf-72h">--</span></div>
+                <div class="perf-item"><span class="perf-label">1w</span><span id="perf-1w">--</span></div>
+                <div class="perf-item"><span class="perf-label">1m</span><span id="perf-m3">--</span></div>
+                <div class="perf-item"><span class="perf-label">3m</span><span id="perf-m6">--</span></div>
+                <div class="perf-item"><span class="perf-label">6m</span><span id="perf-m6">--</span></div>
+            </div>
         </div>
     </div>
 
@@ -147,34 +155,30 @@
     <div id="manage-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="ui-manage-title" style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;">MANAGE ASSETS</div><div id="asset-list-manage" style="overflow-y:auto; max-height:40vh; padding:5px;"></div><div style="padding:15px; border-top:1px solid var(--border);"><input type="text" id="new-asset-input" placeholder="TICKER OR CA (0x...)" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; font-size:12px;"><button id="ui-btn-add-asset" onclick="addNewAsset()" style="width:100%; margin-top:8px; padding:12px; background:var(--title); color:#000; border:none; font-weight:bold; border-radius:4px; font-size:11px;">ADD ASSET</button></div></div></div>
     <div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="info-header" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px;"></div><div id="info-content" style="padding: 20px;"></div></div></div>
     <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="ui-dist-title" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px; color:var(--title);">ASSET DISTRIBUTION</div><div id="dist-content" style="padding: 20px; overflow-y:auto; max-height:60vh;"></div></div></div>
+    
+    <div id="comp-list-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;">VALI VARA VÕRDLUSEKS</div><div id="comp-asset-list" style="padding:10px;"></div></div></div>
+    <div id="comp-detail-overlay" class="modal-overlay" onclick="this.style.display='none'"><div class="modal" onclick="event.stopPropagation()"><div id="comp-detail-header" style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;"></div><div id="comp-detail-content" style="padding:15px;"></div></div></div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         const historicalData = { "BTC": { 2023: 16500, 2024: 42000, 2025: 68000 }, "ETH": { 2023: 1200, 2024: 2200, 2025: 3500 }, "SOL": { 2023: 10, 2024: 100, 2025: 140 }, "BNB": { 2023: 250, 2024: 310, 2025: 550 } };
         const translations = {
-            en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", save: "SAVE", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.", btn_add: "ADD ASSET", dist_title: "ASSET DISTRIBUTION", no_assets: "No assets.", disclaimer_full: "This application is an experimental software project created 100% for entertainment, scientific, and personal purposes." },
-            et: { title: "🚀 APLO KRÜPTO TERMINAL", networth: "Netoväärtus", assets: "VARAD", edit: "MUUDA", save: "SALVESTA", news: "📰 UUDISED", manage: "HALDA VARASID", disclaimer: "Eksperimentaalne projekt.", btn_add: "LISA VARA", dist_title: "VARADE JAOTUS", no_assets: "Varad puuduvad.", disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt, mis on loodud 100% meelelahutuslikel, teaduslikel ja isiklikel eesmärkidel." },
-            es: { title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", save: "GUARDAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.", btn_add: "AÑADIR ACTIVO", dist_title: "DISTRIBUCIÓN DE ACTIVOS", no_assets: "Sin activos.", disclaimer_full: "Esta aplicación is un proyecto de software experimental creado 100% con fines de entretenimiento, científicos y personales." },
-            ru: { title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", save: "СОХРАНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.", btn_add: "ДОBAВИТЬ АКТИВ", dist_title: "РАСПРЕДЕЛЕНИЕ АКТИВОВ", no_assets: "Нет активов.", disclaimer_full: "Данное приложение является экспериментальным программным проектом, созданным 100% в развлекательных, научных и личных целях." }
+            en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", save: "SAVE", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.", legal_label: "LEGAL NOTICE", btn_add: "ADD ASSET", dist_title: "ASSET DISTRIBUTION", no_assets: "No assets.", no_assets_dist: "No assets to display.", disclaimer_full: "This application is an experimental software project created 100% for entertainment, scientific, and personal purposes. The developer does not provide financial advice or investment recommendations. All data is provided 'as is' without warranties of any kind. Use entirely at your own risk." },
+            et: { title: "🚀 APLO KRÜPTO TERMINAL", networth: "Netoväärtus", assets: "VARAD", edit: "MUUDA", save: "SALVESTA", news: "📰 UUDISED", manage: "HALDA VARASID", disclaimer: "Eksperimentaalne projekt. Kasuta omal vastutusel.", legal_label: "ÕIGUSLIK TEADE", btn_add: "LISA VARA", dist_title: "VARADE JAOTUS", no_assets: "Varad puuduvad.", no_assets_dist: "Kuvamiseks pole varasid.", disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt, mis on loodud 100% meelelahutuslikel, teaduslikel ja isiklikel eesmärkidel. Arendaja ei paku finantsnõustavamist ega investeerimissoovitusi. Kõik data esitatakse olemasoleval kujul ('as is') ilma igasuguste garantiideta. Kasutamine täielikult omal vastutusel." },
+            es: { title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", save: "GUARDAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.", legal_label: "AVISO LEGAL", btn_add: "AÑADIR ACTIVO", dist_title: "DISTRIBUCIÓN DE ACTIVOS", no_assets: "Sin activos.", no_assets_dist: "No hay activos para mostrar.", disclaimer_full: "Esta aplicación is un proyecto de software experimental creado 100% con fines de entretenimiento, científicos y personales. El desarrollador no ofrece asesoramiento financiero ni recomendaciones de inversión. Todos los datos se proporcionan 'tal cual' sin garantías de ningún tipo. El uso corre bajo su propio riesgo." },
+            ru: { title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", save: "СОХРАНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.", legal_label: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ", btn_add: "ДОBAВИТЬ АКТИВ", dist_title: "РАСПРЕДЕЛЕНИЕ АКТИВОВ", no_assets: "Нет активов.", no_assets_dist: "Нет активов для отображения.", disclaimer_full: "Данное приложение является экспериментальным программным проектом, созданным 100% в развлекательных, научных и личных целях. Аредлагаемый разработчик не предоставляет финансовых консультаций или инвестиционных рекомендаций. Все данные предоставляются 'как есть' без каких-либо гарантий. Используйте полностью на свой страх и риск." }
         };
 
         let symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
-        let caNames = {}; 
-        let currentPrices = {}; 
-        let currentDisplayCurrency = 'USD'; // USD või EUR
+        let caNames = {}; let currentPrices = {}; let currentCurrency = 'USD';
         let currentLang = localStorage.getItem('lang') || 'en';
-        
-        function updateNetWorthLabel() { document.getElementById('ui-networth').innerText = translations[currentLang].networth; }
-        
-        const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
-        document.getElementById('theme-grid').innerHTML = themeNames.map(t => `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`).join('');
+        const mainWrapper = document.getElementById('main-wrapper');
 
+        function setLang(l) { currentLang = l; localStorage.setItem('lang', l); location.reload(); }
         function setTheme(t) { document.body.setAttribute('data-theme', t); localStorage.setItem('theme', t); }
         setTheme(localStorage.getItem('theme') || 'nando-gray');
 
-        function setLang(l) { currentLang = l; localStorage.setItem('lang', l); location.reload(); }
-        
-        function toggleCurrency() { currentDisplayCurrency = (currentDisplayCurrency === 'USD') ? 'EUR' : 'USD'; renderUI(); }
+        function toggleCurrency() { currentCurrency = (currentCurrency === 'USD') ? 'EUR' : 'USD'; renderUI(); }
 
         async function updateMarket() {
             const binanceSyms = symbols.filter(s => !s.startsWith('0x') && s.length < 15);
@@ -197,29 +201,29 @@
                     }
                 } catch(e) {}
             }
-            if (combinedData.length > 0) marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
+            marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
             renderUI();
         }
 
         function renderUI() {
+            document.getElementById('ui-networth').innerText = translations[currentLang].networth;
             const wrapper = document.getElementById('main-wrapper');
             wrapper.innerHTML = '';
             marketData.forEach(c => {
                 const sym = c.isDex ? (caNames[c.address] || "DEX") : c.symbol.replace(/(USDT|USD)$/, "");
                 const usdPrice = parseFloat(c.lastPrice);
-                const displayPrice = (currentDisplayCurrency === 'EUR') ? usdPrice * 0.92 : usdPrice;
+                const displayPrice = (currentCurrency === 'EUR') ? usdPrice * 0.92 : usdPrice;
                 currentPrices[c.isDex ? c.address : c.symbol] = usdPrice;
                 
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `<div class="coin-row">
-                    <div><span class="label-text" onclick="openInfoModal('${sym}', '${c.isDex ? c.address : c.symbol}', ${c.isDex})">${sym}</span></div>
-                    <div class="value-text" onclick="toggleCurrency()">${currentDisplayCurrency === 'EUR' ? '€' : '$'}${displayPrice.toFixed(2)}</div>
+                    <div onclick="openInfoModal('${sym}', '${c.isDex ? c.address : c.symbol}', ${c.isDex})"><span class="label-text">${sym}</span></div>
+                    <div class="value-text" onclick="toggleCurrency()">${currentCurrency === 'EUR' ? '€' : '$'}${displayPrice.toFixed(2)}</div>
                 </div>`;
                 wrapper.appendChild(card);
             });
             renderPortfolio();
-            updateNetWorthLabel();
         }
 
         function renderPortfolio() {
@@ -229,8 +233,8 @@
                 const price = currentPrices[s] || 0;
                 total += (qty * price);
             });
-            const displayTotal = (currentDisplayCurrency === 'EUR') ? total * 0.92 : total;
-            document.getElementById('portfolio-total').innerText = (currentDisplayCurrency === 'EUR' ? '€' : '$') + displayTotal.toFixed(2);
+            const displayTotal = (currentCurrency === 'EUR') ? total * 0.92 : total;
+            document.getElementById('portfolio-total').innerText = (currentCurrency === 'EUR' ? '€' : '$') + displayTotal.toFixed(2);
         }
 
         function openInfoModal(sym, fullSym, isDex) {
@@ -244,18 +248,16 @@
             }
             document.getElementById('info-overlay').style.display = 'flex';
         }
-        
+
         function openGeneralNews() { window.open("https://cryptopanic.com", "_blank"); }
-        function openDistribution() { document.getElementById('dist-overlay').style.display = 'flex'; }
         function openManageAssets() { document.getElementById('manage-overlay').style.display = 'flex'; }
         function togglePortfolio() { const d = document.getElementById('portfolio-details'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
-        function openEdit() { /* edit logic */ }
-        function addNewAsset() { /* add logic */ }
-        
-        setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
-        updateMarket();
+        function openDistribution() { document.getElementById('dist-overlay').style.display = 'flex'; }
+        function openEdit() { /* Sinu algne kood siia */ }
+        function addNewAsset() { /* Sinu algne kood siia */ }
+
         setInterval(updateMarket, 30000);
-        document.getElementById('insights-ticker').innerText = "APLO TERMINAL IS READY *** WELCOME TO THE FUTURE OF TRADING";
+        updateMarket();
     </script>
 </body>
 </html>
