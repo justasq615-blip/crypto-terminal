@@ -172,8 +172,7 @@
         let symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
         let caNames = {}; let currentPrices = {}; let currentCurrency = 'USD';
         let currentLang = localStorage.getItem('lang') || 'en';
-        const mainWrapper = document.getElementById('main-wrapper');
-
+        
         function setLang(l) { currentLang = l; localStorage.setItem('lang', l); location.reload(); }
         function setTheme(t) { document.body.setAttribute('data-theme', t); localStorage.setItem('theme', t); }
         setTheme(localStorage.getItem('theme') || 'nando-gray');
@@ -253,8 +252,8 @@
         function openManageAssets() { document.getElementById('manage-overlay').style.display = 'flex'; }
         function togglePortfolio() { const d = document.getElementById('portfolio-details'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
         function openDistribution() { document.getElementById('dist-overlay').style.display = 'flex'; }
-        function openEdit() { /* Sinu algne kood siia */ }
-        function addNewAsset() { /* Sinu algne kood siia */ }
+        function openEdit() { /* Sinu olemasolev kood */ }
+        function addNewAsset() { /* Sinu olemasolev kood */ }
 
         setInterval(updateMarket, 30000);
         updateMarket();
