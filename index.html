@@ -96,6 +96,10 @@
         .dist-label { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; font-weight: bold; }
         .dist-bar-bg { height: 8px; background: var(--accent); border-radius: 4px; overflow: hidden; }
         .dist-bar-fill { height: 100%; background: var(--title); border-radius: 4px; transition: width 1s ease-out; }
+        .custom-control { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 10px; color: #fff; }
+.modal-scroll * { color: #fff !important; }
+.custom-control { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 10px; color: #fff; }
+
     </style>
 </head>
 <body data-theme="nando-gray">
@@ -166,6 +170,12 @@
                 <div id="ui-env-title" style="font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Select Environment</div>
                 <div id="theme-grid" class="theme-grid"></div>
                 <div id="ui-lang-title" style="margin-top:20px; font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Language / Keel</div>
+                            <div style="font-size:10px; font-weight:bold; color:var(--title); margin-top:10px;">CUSTOM THEME</div>
+            <div class="custom-control">Background <input type="color" id="cp-bg" onchange="updateCustomTheme()"></div>
+            <div class="custom-control">Cards <input type="color" id="cp-card" onchange="updateCustomTheme()"></div>
+            <div class="custom-control">Border <input type="color" id="cp-border" onchange="updateCustomTheme()"></div>
+            <div class="custom-control">Text <input type="color" id="cp-text" onchange="updateCustomTheme()"></div>
+
                 <div class="theme-grid">
                     <button class="theme-btn" onclick="setLang('en')">ENGLISH</button>
                     <button class="theme-btn" onclick="setLang('et')">EESTI</button>
@@ -397,7 +407,28 @@
         if(tickerEl) tickerEl.innerText = "CRYPTO TERMINAL READY *** TRACKING LIVE ASSETS *** MARKET DATA UPDATING ***";
 
         setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
-        
+        function updateCustomTheme() {
+    const bg = document.getElementById('cp-bg').value;
+    const card = document.getElementById('cp-card').value;
+    const border = document.getElementById('cp-border').value;
+    const text = document.getElementById('cp-text').value;
+    const css = `:root { --bg: ${bg} !important; --card: ${card} !important; --border: ${border} !important; --text: ${text} !important; }`;
+    document.getElementById('custom-style').innerHTML = css;
+    localStorage.setItem('custom_theme', JSON.stringify({bg, card, border, text}));
+}
+
+window.addEventListener('load', () => {
+    const saved = localStorage.getItem('custom_theme');
+    if(saved) {
+        const {bg, card, border, text} = JSON.parse(saved);
+        document.getElementById('cp-bg').value = bg;
+        document.getElementById('cp-card').value = card;
+        document.getElementById('cp-border').value = border;
+        document.getElementById('cp-text').value = text;
+        updateCustomTheme();
+    }
+});
+
         applyLang();
         updateMarket();
         setInterval(updateMarket, 30000);
