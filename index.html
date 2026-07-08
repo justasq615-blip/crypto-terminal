@@ -422,27 +422,30 @@ async function openGasTracker() {
     document.getElementById('info-overlay').style.display = 'flex';
 
     try {
-        // Kasutame DefiPulse API-t
-        const res = await fetch('https://data-api.defipulse.com/api/v1/egs/api/ethgasAPI.json?api-key=9214736636737527181c00d4187289569769352e825a072483861c8340d2');
+        const res = await fetch('https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=YourApiKeyToken');
         const data = await res.json();
         
-        // DefiPulse API andmed on jagatud 10-ga
-        const fast = (data.fast / 10).toFixed(0);
-        const med = (data.average / 10).toFixed(0);
-        const slow = (data.safeLow / 10).toFixed(0);
+        if (data.status === "1") {
+            const fast = data.result.FastGasPrice;
+            const med = data.result.ProposeGasPrice;
+            const slow = data.result.SafeGasPrice;
 
-        content.innerHTML = `
-            <div style="display:flex; flex-direction:column; gap:10px;">
-                <div class="perf-row"><div class="perf-item"><span class="perf-label">FAST</span><span>${fast} Gwei</span></div></div>
-                <div class="perf-row"><div class="perf-item"><span class="perf-label">NORMAL</span><span>${med} Gwei</span></div></div>
-                <div class="perf-row"><div class="perf-item"><span class="perf-label">SLOW</span><span>${slow} Gwei</span></div></div>
-            </div>
-            <p style="font-size:9px; margin-top:15px; opacity:0.6;">Andmed: DefiPulse</p>
-        `;
+            content.innerHTML = `
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div class="perf-row"><div class="perf-item"><span class="perf-label">FAST</span><span>${fast} Gwei</span></div></div>
+                    <div class="perf-row"><div class="perf-item"><span class="perf-label">NORMAL</span><span>${med} Gwei</span></div></div>
+                    <div class="perf-row"><div class="perf-item"><span class="perf-label">SLOW</span><span>${slow} Gwei</span></div></div>
+                </div>
+                <p style="font-size:9px; margin-top:15px; opacity:0.6;">Andmed: Etherscan</p>
+            `;
+        } else {
+            throw new Error();
+        }
     } catch (e) {
-        content.innerHTML = `<div style="color:var(--down); text-align:center;">Andmeid ei õnnestunud laadida. API on kättesaamatu.</div>`;
+        content.innerHTML = `<div style="color:var(--down); text-align:center;">Andmeid ei õnnestunud laadida. API-l on hetkel liiga palju päringuid.</div>`;
     }
 }
+
 
 
         setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
