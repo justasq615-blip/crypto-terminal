@@ -422,7 +422,8 @@ async function openGasTracker() {
     document.getElementById('info-overlay').style.display = 'flex';
 
     try {
-        const res = await fetch('https://gas.mytokenpocket.vip/v1/gas/eth');
+        const res = await fetch('https://ethgasstation.info/api/ethgasAPI.json');
+
         const data = await res.json();
         
         const fast = data.data.fast;
