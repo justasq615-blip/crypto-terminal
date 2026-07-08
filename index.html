@@ -30,8 +30,8 @@
         
         .header { height: 36px; display: flex; justify-content: space-between; align-items: center; padding: 0 12px; border: 1px solid var(--border); background-color: var(--header); border-radius: 6px; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .header h2 { font-size: 13px; margin: 0; color: var(--title); text-transform: uppercase; letter-spacing: 1px; }
-        
-        #status { font-size: 8px; display: flex; align-items: center; gap: 5px; font-weight: bold; }
+        #status { font-size: 8px; display: flex; align-items: center; gap: 5px; font-weight: bold; transition: opacity 0.2s; }
+
         .status-refreshing { color: var(--up) !important; }
         .live-dot { width: 6px; height: 6px; background: var(--up); border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
         @keyframes blink { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
@@ -443,6 +443,29 @@ async function openGasTracker() {
         }
     } catch (e) {
         content.innerHTML = `<div style="color:var(--down); text-align:center;">Andmeid ei õnnestunud laadida. API-l on hetkel liiga palju päringuid.</div>`;
+    }
+}
+let touchStartY = 0;
+
+document.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+    const touchEndY = e.changedTouches[0].clientY;
+    if (touchEndY - touchStartY > 100 && window.scrollY === 0) {
+        triggerRefreshAnimation();
+        updateMarket();
+    }
+}, { passive: true });
+
+function triggerRefreshAnimation() {
+    const status = document.getElementById('status');
+    if (status) {
+        status.style.opacity = '0';
+        setTimeout(() => {
+            status.style.opacity = '1';
+        }, 200);
     }
 }
 
