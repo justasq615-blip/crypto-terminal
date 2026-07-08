@@ -230,19 +230,23 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
         let currentLang = localStorage.getItem('lang') || 'en';
         
         function applyLang() {
-            const t = translations[currentLang];
-            document.getElementById('ui-title').innerText = t.title;
-            document.getElementById('ui-networth').innerText = t.networth;
-            document.getElementById('ui-btn-assets').innerText = t.assets;
-            document.getElementById('ui-btn-edit').innerText = t.edit;
-            document.getElementById('ui-news-hub').innerText = t.news;
-            document.getElementById('ui-manage-title').innerText = t.manage;
-            document.getElementById('ui-btn-add').innerText = t.btn_add;
-            document.getElementById('ui-dist-title').innerText = t.dist_title;
-            document.getElementById('ui-env-title').innerText = t.env;
-            document.getElementById('ui-lang-title').innerText = t.lang;
-            rotateDisclaimer();
-        }
+    const t = translations[currentLang];
+    document.getElementById('ui-title').innerText = t.title;
+    document.getElementById('ui-networth').innerText = t.networth;
+    document.getElementById('ui-btn-assets').innerText = t.assets;
+    document.getElementById('ui-btn-edit').innerText = t.edit;
+    document.getElementById('ui-news-hub').innerText = t.news;
+    document.getElementById('ui-manage-title').innerText = t.manage;
+    document.getElementById('ui-btn-add').innerText = t.btn_add;
+    document.getElementById('ui-dist-title').innerText = t.dist_title;
+    
+    document.querySelectorAll('[data-lang-key]').forEach(el => {
+        const key = el.getAttribute('data-lang-key');
+        if(t[key]) el.innerText = t[key];
+    });
+    
+    renderUI();
+}
 
         let symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
         let caNames = {}; let touchStartY = 0;
