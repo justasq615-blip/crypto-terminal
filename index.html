@@ -136,7 +136,8 @@
     <div class="mid-row">
         <div class="mid-btn" onclick="alert('Action 1')">🚀</div>
         <div class="mid-btn" onclick="openGeneralNews()">📰</div>
-        <div class="mid-btn" onclick="openComparisonList()">⚖️</div>
+        <div class="mid-btn" onclick="openGasTracker()">⛽</div>
+
         <div class="mid-btn" onclick="alert('Action 4')">🔔</div>
         <div class="mid-btn" onclick="alert('Action 5')">💎</div>
     </div>
@@ -414,6 +415,32 @@
         if(tickerEl) {
             tickerEl.innerText = cryptoFacts.join(" *** ");
         }
+async function openGasTracker() {
+    document.getElementById('info-header').innerText = `GAS TRACKER (GWEI)`;
+    const content = document.getElementById('info-content');
+    content.innerHTML = `<div style="text-align:center; font-size:24px; padding:20px;">LAADIMINE...</div>`;
+    document.getElementById('info-overlay').style.display = 'flex';
+
+    try {
+        const res = await fetch('https://gas.mytokenpocket.vip/v1/gas/eth');
+        const data = await res.json();
+        
+        const fast = data.data.fast;
+        const med = data.data.propose;
+        const slow = data.data.safe;
+
+        content.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div class="perf-row"><div class="perf-item"><span class="perf-label">FAST</span><span>${fast} Gwei</span></div></div>
+                <div class="perf-row"><div class="perf-item"><span class="perf-label">NORMAL</span><span>${med} Gwei</span></div></div>
+                <div class="perf-row"><div class="perf-item"><span class="perf-label">SLOW</span><span>${slow} Gwei</span></div></div>
+            </div>
+            <p style="font-size:9px; margin-top:15px; opacity:0.6;">Andmed: MyTokenPocket API</p>
+        `;
+    } catch (e) {
+        content.innerHTML = `<div style="color:var(--down); text-align:center;">Gaasitasusid ei õnnestunud laadida. Proovi uuesti.</div>`;
+    }
+}
 
         setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
         updateMarket();
