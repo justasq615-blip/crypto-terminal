@@ -257,8 +257,16 @@
         const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
         document.getElementById('theme-grid').innerHTML = themeNames.map(t => `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`).join('');
 
-        function setTheme(t) { document.body.setAttribute('data-theme', t); localStorage.setItem('theme', t); }
-        setTheme(localStorage.getItem('theme') || 'nando-gray');
+        function setTheme(t) { 
+    // Rakenda teema
+    document.body.setAttribute('data-theme', t); 
+    localStorage.setItem('theme', t); 
+    
+    // Tühjenda custom stiilid, et vaikimisi teema üle võtaks
+    document.getElementById('custom-style').innerHTML = ''; 
+    localStorage.removeItem('custom_theme');
+}
+
 
         function setLang(l) { currentLang = l; localStorage.setItem('lang', l); applyLang(); renderUI(); openManageAssets(); }
 
@@ -413,15 +421,15 @@
     const card = document.getElementById('cp-card').value;
     const border = document.getElementById('cp-border').value;
     const text = document.getElementById('cp-text').value;
+    
     const css = `
-        :root { --bg: ${bg} !important; --card: ${card} !important; --border: ${border} !important; --text: ${text} !important; --title: ${text} !important; }
-        body { background-color: ${bg} !important; color: ${text} !important; }
-        .card, .header, .modal { background-color: ${card} !important; border-color: ${border} !important; color: ${text} !important; }
-        .label-text, .value-text, h2 { color: ${text} !important; }
+        :root { --bg: ${bg}; --card: ${card}; --border: ${border}; --text: ${text}; --title: ${text}; }
     `;
+    
     document.getElementById('custom-style').innerHTML = css;
     localStorage.setItem('custom_theme', JSON.stringify({bg, card, border, text}));
 }
+
 
 
 window.addEventListener('load', () => {
