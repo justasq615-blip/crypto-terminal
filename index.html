@@ -25,6 +25,9 @@
         [data-theme="retro"] { --bg: #281800; --card: rgba(60, 30, 0, 0.3); --header: #3d2400; --text: #ffb000; --accent: #4d2d00; --border: #ffb000; --title: #ffb000; --up: #ffb000; --down: #ff0000; }
         [data-theme="midnight"] { --bg: #020617; --card: #1e293b; --header: #0f172a; --text: #f1f5f9; --accent: #334155; --border: #38bdf8; --title: #38bdf8; --up: #22c55e; --down: #ef4444; }
 
+        /* Täiendus: Seadete akna teksti lugemiskindlus */
+        .modal-scroll * { color: #ffffff !important; }
+
         * { box-sizing: border-box; transition: background-color 0.2s, border-color 0.2s, transform 0.5s ease; -webkit-user-select: none; font-family: 'SF Mono', 'Roboto Mono', monospace; -webkit-tap-highlight-color: transparent; }
         body { height: 100dvh; margin: 0; padding: 6px; overflow: hidden; background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; touch-action: pan-y; overscroll-behavior-y: contain; }
         
@@ -82,8 +85,8 @@
         .modal-scroll { padding: 20px; overflow-y: auto; max-height: 70vh; }
         
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        .theme-btn { background: var(--card); color: #000000 !important; border: 1px solid var(--border); padding: 8px; border-radius: 4px; font-size: 9px; cursor: pointer; text-transform: uppercase; }
-        .theme-btn:active { background: var(--accent); color: #000000 !important; }
+        .theme-btn { background: var(--card); color: #ffffff !important; border: 1px solid var(--border); padding: 8px; border-radius: 4px; font-size: 9px; cursor: pointer; text-transform: uppercase; }
+        .theme-btn:active { background: var(--accent); color: #ffffff !important; }
 
         .news-btn { display: block; background: var(--accent); color: var(--text); padding: 12px; text-decoration: none; text-align: center; font-weight: bold; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
         
