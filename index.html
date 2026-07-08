@@ -66,7 +66,6 @@
         .mid-btn:active { background-color: var(--accent); }
 
         .bottom-row { height: 38px; display: flex; gap: 4px; flex-shrink: 0; margin-bottom: 4px; }
-        .small-card { flex: 0.5; display: flex; align-items: center; justify-content: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; }
         
         .full-width-ticker { flex: 1; display: flex; align-items: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
         .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; height: 100%; display: flex; align-items: center; }
@@ -143,9 +142,6 @@
     </div>
 
     <div class="bottom-row">
-        <div class="small-card" onclick="openAppInfo()">
-            <span style="font-size:14px;">ℹ️</span>
-        </div>
         <div class="full-width-ticker">
             <div class="ticker-wrap"><div class="ticker" id="insights-ticker">Initializing terminal data...</div></div>
         </div>
@@ -367,12 +363,6 @@
                 <a href="https://dailyhodl.com" target="_blank" class="news-btn">THE DAILY HODL</a>
                 <a href="https://ambcrypto.com" target="_blank" class="news-btn">AMBCRYPTO</a>
             `;
-            document.getElementById('info-overlay').style.display = 'flex';
-        }
-
-        function openAppInfo() {
-            document.getElementById('info-header').innerText = `LEGAL NOTICE`;
-            document.getElementById('info-content').innerHTML = `<div style="font-size: 10px; line-height: 1.5; color: var(--text);">This application is an experimental software project. Use entirely at your own risk.</div>`;
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
