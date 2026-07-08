@@ -75,30 +75,16 @@
 
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-                .disclaimer-box { height: auto; min-height: 50px; background-color: var(--header); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; opacity: 0.7; }
+        .disclaimer-box { height: auto; min-height: 50px; background-color: var(--header); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; opacity: 0.7; }
         .disclaimer-text { font-size: 7px; text-align: center; text-transform: uppercase; line-height: 1.3; }
-
 
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(8px); }
         .modal { background: var(--bg); border: 2px solid var(--border); width: 100%; max-width: 360px; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         .modal-scroll { padding: 20px; overflow-y: auto; max-height: 70vh; }
         
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-                                        .theme-btn { 
-            background: var(--card); 
-            color: #000000 !important; 
-            border: 1px solid var(--border); 
-            padding: 8px; 
-            border-radius: 4px; 
-            font-size: 9px; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-        }
-
-        .theme-btn:active { 
-            background: var(--accent); 
-            color: #000000 !important; 
-        }
+        .theme-btn { background: var(--card); color: #000000 !important; border: 1px solid var(--border); padding: 8px; border-radius: 4px; font-size: 9px; cursor: pointer; text-transform: uppercase; }
+        .theme-btn:active { background: var(--accent); color: #000000 !important; }
 
         .news-btn { display: block; background: var(--accent); color: var(--text); padding: 12px; text-decoration: none; text-align: center; font-weight: bold; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
         
@@ -175,9 +161,9 @@
     <div id="settings-overlay" class="modal-overlay" onclick="this.style.display='none'">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-scroll">
-                <div style="font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Select Environment</div>
+                <div id="ui-select-env" style="font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Select Environment</div>
                 <div id="theme-grid" class="theme-grid"></div>
-                <div style="margin-top:20px; font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Language / Keel</div>
+                <div id="ui-lang-select" style="margin-top:20px; font-size:10px; font-weight:bold; color:var(--title); text-transform:uppercase;">Language / Keel</div>
                 <div class="theme-grid">
                     <button class="theme-btn" onclick="setLang('en')">ENGLISH</button>
                     <button class="theme-btn" onclick="setLang('et')">EESTI</button>
@@ -216,11 +202,26 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         const translations = {
-            en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", save: "SAVE", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.", legal_label: "LEGAL NOTICE", btn_add: "ADD ASSET", dist_title: "ASSET DISTRIBUTION", no_assets: "No assets.", no_assets_dist: "No assets to display.", disclaimer_full: "This application is an experimental software project created 100% for entertainment, scientific, and personal purposes. The developer does not provide financial advice or investment recommendations. All data is provided 'as is' without warranties of any kind. Use entirely at your own risk." },
-            et: { title: "🚀 APLO KRÜPTO TERMINAL", networth: "Netoväärtus", assets: "VARAD", edit: "MUUDA", save: "SALVESTA", news: "📰 UUDISED", manage: "HALDA VARASID", disclaimer: "Eksperimentaalne projekt. Kasuta omal vastutusel.", legal_label: "ÕIGUSLIK TEADE", btn_add: "LISA VARA", dist_title: "VARADE JAOTUS", no_assets: "Varad puuduvad.", no_assets_dist: "Kuvamiseks pole varasid.", disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt, mis on loodud 100% meelelahutuslikel, teaduslikel ja isiklikel eesmärkidel. Arendaja ei paku finantsnõustavamist ega investeerimissoovitusi. Kõik data esitatakse olemasoleval kujul ('as is') ilma igasuguste garantiideta. Kasutamine täielikult omal vastutusel." },
-            es: { title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", save: "GUARDAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.", legal_label: "AVISO LEGAL", btn_add: "AÑADIR ACTIVO", dist_title: "DISTRIBUCIÓN DE ACTIVOS", no_assets: "Sin activos.", no_assets_dist: "No hay activos para mostrar.", disclaimer_full: "Esta aplicación is un proyecto de software experimental creado 100% con fines de entretenimiento, científicos y personales. El desarrollador no ofrece asesoramiento financiero ni recomendaciones de inversión. Todos los datos se proporcionan 'tal cual' sin garantías de ningún tipo. El uso corre bajo su propio riesgo." },
-            ru: { title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", save: "СОХРАНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.", legal_label: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ", btn_add: "ДОBAВИТЬ АКТИВ", dist_title: "РАСПРЕДЕЛЕНИЕ АКТИВОВ", no_assets: "Нет активов.", no_assets_dist: "Нет активов для отображения.", disclaimer_full: "Данное приложение является экспериментальным программным проектом, созданным 100% в развлекательных, научных и личных целях. Аредлагаемый разработчик не предоставляет финансовых консультаций или инвестиционных рекомендаций. Все данные предоставляются 'как есть' без каких-либо гарантий. Используйте полностью на свой страх и риск." }
+            en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", save: "SAVE", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.", legal_label: "LEGAL NOTICE", btn_add: "ADD ASSET", dist_title: "ASSET DISTRIBUTION", no_assets: "No assets.", no_assets_dist: "No assets to display.", disclaimer_full: "This application is an experimental software project.", remove: "Remove", env: "Select Environment", lang: "Language / Keel" },
+            et: { title: "🚀 APLO KRÜPTO TERMINAL", networth: "Netoväärtus", assets: "VARAD", edit: "MUUDA", save: "SALVESTA", news: "📰 UUDISED", manage: "HALDA VARASID", disclaimer: "Eksperimentaalne projekt.", legal_label: "ÕIGUSLIK TEADE", btn_add: "LISA VARA", dist_title: "VARADE JAOTUS", no_assets: "Varad puuduvad.", no_assets_dist: "Kuvamiseks pole varasid.", disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt.", remove: "Eemalda", env: "Vali keskkond", lang: "Keel" },
+            es: { title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", save: "GUARDAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.", legal_label: "AVISO LEGAL", btn_add: "AÑADIR ACTIVO", dist_title: "DISTRIBUCIÓN DE ACTIVOS", no_assets: "Sin activos.", no_assets_dist: "No hay activos para mostrar.", disclaimer_full: "Esta aplicación es un proyecto de software experimental.", remove: "Eliminar", env: "Seleccionar entorno", lang: "Idioma" },
+            ru: { title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", save: "СОХРАНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.", legal_label: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ", btn_add: "ДОBAВИТЬ АКТИВ", dist_title: "РАСПРЕДЕЛЕНИЕ АКТИВОВ", no_assets: "Нет активов.", no_assets_dist: "Нет активов для отображения.", disclaimer_full: "Данное приложение является экспериментальным программным проектом.", remove: "Удалить", env: "Выберите среду", lang: "Язык" }
         };
+
+        let currentLang = localStorage.getItem('lang') || 'en';
+        function applyTranslations() {
+            const t = translations[currentLang];
+            document.getElementById('ui-title').innerText = t.title;
+            document.getElementById('ui-networth').innerText = t.networth;
+            document.getElementById('ui-btn-assets').innerText = t.assets;
+            document.getElementById('ui-btn-edit').innerText = t.edit;
+            document.getElementById('ui-news-hub').innerText = t.news;
+            document.getElementById('ui-manage-title').innerText = t.manage;
+            document.getElementById('ui-btn-add-asset').innerText = t.btn_add;
+            document.getElementById('ui-dist-title').innerText = t.dist_title;
+            document.getElementById('ui-select-env').innerText = t.env;
+            document.getElementById('ui-lang-select').innerText = t.lang;
+        }
 
         let symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
         let caNames = {}; let touchStartY = 0;
@@ -234,9 +235,6 @@
         } catch(e) {}
 
         let currentPrices = {}; let marketData = []; 
-        let currentLang = localStorage.getItem('lang') || 'en';
-        let langKeys = Object.keys(translations);
-        let currentLangIndex = 0;
 
         mainWrapper.addEventListener('touchstart', (e) => { if (mainWrapper.scrollTop === 0) touchStartY = e.touches[0].clientY; });
         mainWrapper.addEventListener('touchend', async (e) => { if (touchStartY > 0 && e.changedTouches[0].clientY - touchStartY > 60) { await updateMarket(); } touchStartY = 0; });
@@ -247,14 +245,13 @@
         function setTheme(t) { document.body.setAttribute('data-theme', t); localStorage.setItem('theme', t); }
         setTheme(localStorage.getItem('theme') || 'nando-gray');
 
-        function setLang(l) { currentLang = l; localStorage.setItem('lang', l); location.reload(); }
+        function setLang(l) { currentLang = l; localStorage.setItem('lang', l); applyTranslations(); location.reload(); }
 
-                function rotateDisclaimer() {
+        function rotateDisclaimer() {
             const el = document.getElementById('ui-disclaimer');
             if(!el) return;
             el.innerText = translations[currentLang].disclaimer_full;
         }
-
 
         async function updateMarket() {
             const statusEl = document.getElementById('status');
@@ -315,7 +312,7 @@
                 }
             });
             document.getElementById('portfolio-total').innerText = `$${total.toFixed(2)}`;
-            document.getElementById('portfolio-list').innerHTML = items || `<div style="opacity:0.5; font-size:10px; text-align:center;">No assets</div>`;
+            document.getElementById('portfolio-list').innerHTML = items || `<div style="opacity:0.5; font-size:10px; text-align:center;">${translations[currentLang].no_assets}</div>`;
         }
 
         function openDistribution() {
@@ -330,7 +327,7 @@
                 }
             });
             const container = document.getElementById('dist-content');
-            container.innerHTML = holdings.map(h => `<div class="dist-row"><div class="dist-label"><span>${h.name}</span><span>$${h.val.toFixed(2)}</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${total > 0 ? ((h.val/total)*100).toFixed(0) : 0}%"></div></div></div>`).join('');
+            container.innerHTML = holdings.length > 0 ? holdings.map(h => `<div class="dist-row"><div class="dist-label"><span>${h.name}</span><span>$${h.val.toFixed(2)}</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${total > 0 ? ((h.val/total)*100).toFixed(0) : 0}%"></div></div></div>`).join('') : `<div style="text-align:center; opacity:0.5;">${translations[currentLang].no_assets_dist}</div>`;
             document.getElementById('dist-overlay').style.display = 'flex';
         }
 
@@ -338,7 +335,7 @@
         
         function openManageAssets() {
             const list = document.getElementById('asset-list-manage');
-            list.innerHTML = symbols.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;"><span>${caNames[s] || s.replace(/(USDT|USD)$/, "")}</span><span style="cursor:pointer;" onclick="removeAsset('${s}')">🗑️</span></div>`).join('');
+            list.innerHTML = symbols.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;"><span>${caNames[s] || s.replace(/(USDT|USD)$/, "")}</span><span style="cursor:pointer;" onclick="removeAsset('${s}')">🗑️ ${translations[currentLang].remove}</span></div>`).join('');
             document.getElementById('manage-overlay').style.display = 'flex';
         }
         
@@ -366,62 +363,63 @@
             }).join('');
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay'; overlay.style.display = 'flex';
-            overlay.innerHTML = `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">SAVE</button></div>`;
+            overlay.innerHTML = `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">${translations[currentLang].save}</button></div>`;
             overlay.onclick = () => overlay.remove();
             document.body.appendChild(overlay);
         }
         function saveP(btn) { symbols.forEach(s => { const val = document.getElementById('e-'+s).value; localStorage.setItem('p_'+s, val); }); btn.parentElement.parentElement.remove(); renderPortfolio(); }
 
-                function openGeneralNews() {
+        function openGeneralNews() {
             document.getElementById('info-header').innerText = `GLOBAL CRYPTO NEWS`;
             document.getElementById('info-content').innerHTML = `
                 <a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC</a>
                 <a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a>
                 <a href="https://cointelegraph.com" target="_blank" class="news-btn">COINTELEGRAPH</a>
                 <a href="https://decrypt.co" target="_blank" class="news-btn">DECRYPT</a>
-                <a href="https://www.theblock.co" target="_blank" class="news-btn">THE BLOCK</a>
-                <a href="https://bitcoinmagazine.com" target="_blank" class="news-btn">BITCOIN MAGAZINE</a>
-                <a href="https://www.newsbtc.com" target="_blank" class="news-btn">NEWSBTC</a>
-                <a href="https://cryptoslate.com" target="_blank" class="news-btn">CRYPTOSLATE</a>
-                <a href="https://dailyhodl.com" target="_blank" class="news-btn">THE DAILY HODL</a>
-                <a href="https://ambcrypto.com" target="_blank" class="news-btn">AMBCRYPTO</a>
             `;
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
         function openAppInfo() {
-            document.getElementById('info-header').innerText = `LEGAL NOTICE`;
-            document.getElementById('info-content').innerHTML = `<div style="font-size: 10px; line-height: 1.5; color: var(--text);">This application is an experimental software project. Use entirely at your own risk.</div>`;
+            document.getElementById('info-header').innerText = translations[currentLang].legal_label;
+            document.getElementById('info-content').innerHTML = `<div style="font-size: 10px; line-height: 1.5; color: var(--text);">${translations[currentLang].disclaimer_full}</div>`;
             document.getElementById('info-overlay').style.display = 'flex';
+        }
+
+        function copyCA(ca) {
+            navigator.clipboard.writeText(ca).then(() => {
+                alert("CA: " + ca + "\nCopied to clipboard!");
+            });
         }
 
         function openInfoModal(sym, fullSym, isDex) {
             document.getElementById('info-header').innerText = `${sym} ANALYSIS`;
             const theme = document.body.getAttribute('data-theme') === 'white-black' ? 'light' : 'dark';
             if (isDex) {
-                document.getElementById('info-content').innerHTML = `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center;">CA: ${fullSym}</div><a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 AVAGE DEXSCREENERIS</a>`;
+                document.getElementById('info-content').innerHTML = `
+                    <div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center; cursor:pointer;" onclick="copyCA('${fullSym}')">
+                        CA: ${fullSym}<br><small>(Tap to copy)</small>
+                    </div>
+                    <a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 AVAGE DEXSCREENERIS</a>
+                `;
             } else {
                 document.getElementById('info-content').innerHTML = `<div id="chart-container"><div id="tv-medium-widget"></div></div><a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>`;
-                setTimeout(() => { new TradingView.MediumWidget({ "container_id": "tv-medium-widget", "symbols": [["BINANCE:" + fullSym + "|1H"]], "chartOnly": true, "width": "100%", "height": "100%", "locale": "et", "colorTheme": theme, "gridLineColor": "transparent", "fontColor": "var(--text)", "trendLineColor": "var(--title)" }); }, 100);
+                setTimeout(() => { new TradingView.MediumWidget({ "container_id": "tv-medium-widget", "symbols": [["BINANCE:" + fullSym + "|1H"]], "chartOnly": true, "width": "100%", "height": "100%", "locale": "en", "colorTheme": theme, "gridLineColor": "transparent", "fontColor": "var(--text)", "trendLineColor": "var(--title)" }); }, 100);
             }
             document.getElementById('info-overlay').style.display = 'flex';
         }
-const cryptoFacts = [
-    "BITCOIN WAS CREATED BY SATOSHI NAKAMOTO IN 2009", "ETHEREUM INTRODUCED SMART CONTRACTS", "THE TOTAL SUPPLY OF BITCOIN IS 21 MILLION", "BINANCE COIN WAS BUILT ON ETHEREUM", "THE FIRST BITCOIN TRANSACTION WAS FOR TWO PIZZAS", "SOLANA IS KNOWN FOR HIGH THROUGHPUT", "XRP IS DESIGNED FOR FAST PAYMENTS", "CARDANO USES PROOF-OF-STAKE", "AVALANCHE SUPPORTS CUSTOM BLOCKCHAINS", "STELLAR WAS FORKED FROM RIPPLE", "LITECOIN WAS CREATED BY CHARLIE LEE", "POLKADOT ENABLES INTEROPERABILITY", "CHAINLINK PROVIDES DECENTRALIZED ORACLES", "UNISWAP IS A DECENTRALIZED EXCHANGE", "AAVE IS A LENDING PROTOCOL", "THE BITCOIN HALVING OCCURS EVERY 4 YEARS", "SATOSHI NAKAMOTOS IDENTITY IS UNKNOWN", "BLOCKCHAIN IS A DISTRIBUTED LEDGER", "MINING REQUIRES COMPUTATIONAL POWER", "WALLETS STORE PRIVATE KEYS", "DOGECOIN STARTED AS A JOKE", "TETHER IS A STABLECOIN", "USD COIN IS BACKED BY RESERVES", "MONERO FOCUSES ON PRIVACY", "ZCASH USES ZERO-KNOWLEDGE PROOFS", "TEZOS SUPPORTS SELF-AMENDMENT", "ALGORAND USES PURE PROOF-OF-STAKE", "VECHAIN FOCUSES ON SUPPLY CHAIN", "THETA IS FOR VIDEO STREAMING", "FILECOIN IS FOR DECENTRALIZED STORAGE", "BITCOIN IS OFTEN CALLED DIGITAL GOLD", "BLOCKCHAIN TECHNOLOGY IS IMMUTABLE", "PROOF OF WORK IS ENERGY INTENSIVE", "PROOF OF STAKE IS ENERGY EFFICIENT", "SMART CONTRACTS ARE SELF-EXECUTING", "THE GENESIS BLOCK IS THE FIRST BLOCK", "NODES VALIDATE TRANSACTIONS", "PUBLIC KEYS ARE FOR RECEIVING", "PRIVATE KEYS ARE FOR SIGNING", "COLD STORAGE IS MORE SECURE", "DEFI STANDS FOR DECENTRALIZED FINANCE", "DAOS ARE DECENTRALIZED ORGANIZATIONS", "NFTS ARE NON-FUNGIBLE TOKENS", "GAS FEES ARE PAID TO MINERS", "SCALABILITY IS A KEY CHALLENGE", "SIDECHAINS IMPROVE SPEED", "SHARDING INCREASES CAPACITY", "LAYER 2 SOLUTIONS REDUCE COSTS", "CROSS-CHAIN BRIDGES CONNECT NETWORKS", "HASHING IS A CRYPTOGRAPHIC PROCESS", "MERKLE TREES ORGANIZE DATA", "51 PERCENT ATTACKS ARE DANGEROUS", "HARD FORKS CREATE NEW COINS", "SOFT FORKS ARE COMPATIBLE", "CRYPTO IS VOLATILE", "THE SEC REGULATES SECURITIES", "EXCHANGES ARE CENTRALIZED OR DECENTRALIZED", "STAKING YIELDS REWARDS", "FARMING PROVIDES LIQUIDITY", "DEXS USE AUTOMATED MARKET MAKERS", "TOKENOMICS DRIVE VALUE", "AIRDROPS DISTRIBUTE TOKENS", "ICO STANDS FOR INITIAL COIN OFFERING", "IEO STANDS FOR INITIAL EXCHANGE OFFERING", "IDO STANDS FOR INITIAL DEX OFFERING", "WHALES ARE LARGE HOLDERS", "BULL MARKETS HAVE RISING PRICES", "BEAR MARKETS HAVE FALLING PRICES", "CORRECTIONS ARE PRICE DROPS", "ALL TIME HIGH IS A PEAK", "FOMO LEADS TO BAD DECISIONS", "HODL MEANS HOLDING LONG TERM", "FUD SPREADS FEAR AND DOUBT", "DYOR STANDS FOR DO YOUR OWN RESEARCH", "REKT MEANS FINANCIAL LOSS", "BITCOIN IS PSEUDONYMOUS", "ETHEREUM 2.0 SWITCHED TO STAKE", "BLOCKS CONTAIN TRANSACTIONS", "DIFFICULTY ADJUSTS EVERY 2016 BLOCKS", "MEMPOOL HOLDS PENDING TRANSACTIONS", "NONCES ARE USED IN MINING", "SEGWIT IMPROVED EFFICIENCY", "LIGHTNING NETWORK ENABLES INSTANT PAYMENTS", "TAPROOT UPGRADED PRIVACY", "ORACLES BRIDGE REAL WORLD DATA", "TOKENS LIVE ON EXISTING CHAINS", "COINS HAVE THEIR OWN BLOCKCHAIN", "STABLECOINS ARE PEGGED TO FIAT", "ALGORITHMIC STABLECOINS USE CODE", "WRAP TOKENS ALLOW COMPATIBILITY", "CUSTODIAL WALLETS HOLD YOUR KEYS", "NON-CUSTODIAL WALLETS GIVE YOU CONTROL", "LEDGER AND TREZOR ARE HARDWARE WALLETS", "HOT WALLETS ARE CONNECTED TO INTERNET", "SEED PHRASES RECOVER WALLETS", "2FA ADDS SECURITY", "PHISHING IS A COMMON THREAT", "SCAMS ARE PREVALENT IN CRYPTO", "EXCHANGE HACKS HAVE OCCURRED", "SECURITY IS YOUR RESPONSIBILITY", "CRYPTO MARKETS OPERATE 24/7", "BITCOIN IS DEFLATIONARY", "ALTCOINS ARE NON-BITCOIN CRYPTOS", "MEME COINS ARE DRIVEN BY HYPE", "GOVERNANCE TOKENS ALLOW VOTING", "REAL WORLD ASSETS ARE BEING TOKENIZED", "LIQUIDITY POOLS POWER DEXS", "IMPERMANENT LOSS IS A DEFI RISK", "FLASH LOANS DO NOT REQUIRE COLLATERAL", "YIELD AGGREGATORS AUTOMATE STAKING", "STABLECOIN DE-PEGGING IS A RISK", "BITCOIN MINING DIFFICULTY IS SELF-REGULATING", "THE BITCOIN WHITE PAPER WAS PUBLISHED IN 2008", "VITALIK BUTERIN CO-FOUNDED ETHEREUM", "THE DAO HACK LED TO ETHEREUM CLASSIC", "BINANCE IS THE LARGEST EXCHANGE", "COINBASE IS A PUBLICLY TRADED COMPANY", "KRAKEN IS KNOWN FOR SECURITY", "BITSTAMP IS ONE OF THE OLDEST EXCHANGES", "BLOCKCHAIN EXPORERS TRACK TRANSACTIONS", "HASH RATE MEASURES NETWORK SECURITY", "COMPOSABILITY IS A DEFI FEATURE", "WRAPPED BITCOIN EXISTS ON ETHEREUM", "GAS FEES SPIKE DURING CONGESTION", "NFT OWNERSHIP IS VERIFIABLE", "METAMASK IS A POPULAR BROWSER WALLET", "HARDWARE WALLETS ARE OFFLINE", "PAPER WALLETS ARE ANTIQUATED", "PRIVATE KEYS SHOULD NEVER BE SHARED", "SEED PHRASES ARE THE MASTER KEY", "BITCOIN IS THE FIRST CRYPTOCURRENCY", "THE ETHEREUM MERGE OCCURRED IN 2022", "SOLANA IS A LAYER 1 BLOCKCHAIN", "AVALANCHE USES SUB-NETS", "POLYGON IS A LAYER 2 FOR ETHEREUM", "ARBITRUM USES OPTIMISTIC ROLLUPS", "OPTIMISM USES OPTIMISTIC ROLLUPS", "ZK-ROLLUPS USE ZERO-KNOWLEDGE PROOFS", "STARKNET FOCUSES ON SCALABILITY", "CHAINLINK LINKS OFF-CHAIN DATA", "GRAPH PROTOCOL INDEXES BLOCKCHAIN DATA", "UNI IS THE UNISWAP GOVERNANCE TOKEN", "CAKE IS THE PANCAKESWAP TOKEN", "DYDX IS A DECENTRALIZED DERIVATIVES EXCHANGE", "MAKERDAO ISSUES THE DAI STABLECOIN", "DAI IS A DECENTRALIZED STABLECOIN", "USDT IS ISSUED BY TETHER", "USDC IS ISSUED BY CIRCLE", "BITCOIN IS SCARCE", "BLOCKCHAIN IS TRANSPARENT", "BLOCKCHAIN IS PSEUDONYMOUS", "TRANSACTIONS ARE IRREVERSIBLE", "MINERS SECURE THE NETWORK", "STAKERS SECURE PROOF OF STAKE", "BLOCK TIME VARIES BY CHAIN", "BLOCK REWARDS DECREASE OVER TIME", "THE GENESIS BLOCK HAS NO PARENT", "BITCOIN HAS A 10 MINUTE BLOCK TIME", "ETHEREUM HAS A ~12 SECOND BLOCK TIME", "BLOCKCHAIN IS RESISTANT TO CENSORSHIP", "CRYPTO CAN BE SENT GLOBALLY", "FEES ARE INDEPENDENT OF TRANSACTION SIZE", "WALLETS CAN BE MULTI-SIG", "PUBLIC ADDRESSES START WITH DIFFERENT CHARACTERS", "HEXADECIMAL IS USED FOR ADDRESSES", "CRYPTO IS A GLOBAL PHENOMENON", "REGULATION IS INCREASING", "INSTITUTIONS ARE ENTERING THE MARKET", "ETFS ARE A SIGN OF MATURITY", "BITCOIN IS NOT CONTROLLED BY ANY GOVERNMENT", "DEFI REMOVES INTERMEDIARIES", "CRYPTO IS PROGRAMMABLE MONEY", "THE FUTURE OF FINANCE IS DECENTRALIZED", "BLOCKCHAIN IS MORE THAN JUST MONEY", "SMART CONTRACTS CAN RUN DAPS", "CRYPTO IS AN EVOLVING TECHNOLOGY"
-];
 
-const tickerEl = document.getElementById('insights-ticker');
-if(tickerEl) {
-    tickerEl.innerText = cryptoFacts.join(" *** ");
-}
+        const cryptoFacts = ["BITCOIN IS DIGITAL GOLD", "CRYPTO MARKETS OPERATE 24/7", "DYOR STANDS FOR DO YOUR OWN RESEARCH", "HODL MEANS HOLDING LONG TERM"];
+        const tickerEl = document.getElementById('insights-ticker');
+        if(tickerEl) tickerEl.innerText = cryptoFacts.join(" *** ");
 
-
-setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
-updateMarket();
-setInterval(updateMarket, 30000);
-rotateDisclaimer();
-setInterval(rotateDisclaimer, 20000);
-
+        setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
+        
+        applyTranslations();
+        updateMarket();
+        setInterval(updateMarket, 30000);
+        rotateDisclaimer();
+        setInterval(rotateDisclaimer, 20000);
     </script>
 </body>
-</html/
+</html>
