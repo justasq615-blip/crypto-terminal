@@ -281,19 +281,29 @@
         }
 
         function renderPortfolio() {
-            let total = 0; let items = '';
-            symbols.forEach(s => {
-                const isDex = s.startsWith('0x') || s.length >= 15;
-                const qty = parseFloat(localStorage.getItem('p_'+s)) || 0;
-                const price = currentPrices[s] || 0;
-                if (qty > 0 && price > 0) {
-                    total += (qty * price);
-                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/,"")}</span><span>$${(qty*price).toFixed(2)}</span></div>`;
-                }
-            });
-            document.getElementById('portfolio-total').innerText = `$${total.toFixed(2)}`;
-            document.getElementById('portfolio-list').innerHTML = items || `<div style="opacity:0.5; font-size:10px; text-align:center;">No assets</div>`;
+    let total = 0; let items = '';
+    symbols.forEach(s => {
+        const isDex = s.startsWith('0x') || s.length >= 15;
+        const qty = parseFloat(localStorage.getItem('q_'+s)) || 0;
+        const avgPrice = parseFloat(localStorage.getItem('p_'+s)) || 0;
+        const currentPrice = currentPrices[s] || 0;
+        
+        if (qty > 0 && currentPrice > 0) {
+            const val = qty * currentPrice;
+            total += val;
+            const pl = avgPrice > 0 ? ((currentPrice - avgPrice) / avgPrice) * 100 : 0;
+            const color = pl >= 0 ? 'var(--up)' : 'var(--down)';
+            
+            items += `<div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:11px;">
+                <span>${isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/,"")}</span>
+                <span>$${val.toFixed(2)} <span style="color:${color};">(${pl.toFixed(1)}%)</span></span>
+            </div>`;
         }
+    });
+    document.getElementById('portfolio-total').innerText = `$${total.toFixed(2)}`;
+    document.getElementById('portfolio-list').innerHTML = items || `<div style="opacity:0.5; font-size:10px; text-align:center;">Varad puuduvad</div>`;
+}
+
 
         function openDistribution() {
             let total = 0; let holdings = [];
@@ -336,18 +346,38 @@
         }
 
         function openEdit() {
-            const fields = symbols.map(s => {
-                const isDex = s.startsWith('0x') || s.length >= 15;
-                const displayName = isDex ? (caNames[s] || s) : s.replace(/(USDT|USD)$/,"");
-                return `<div style="margin-bottom:12px;"><label style="font-size:10px; font-weight:bold; color:var(--title);">${displayName} QTY</label><br><input type="number" id="e-${s}" value="${localStorage.getItem('p_'+s)||''}" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"></div>`;
-            }).join('');
-            const overlay = document.createElement('div');
-            overlay.className = 'modal-overlay'; overlay.style.display = 'flex';
-            overlay.innerHTML = `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">SAVE</button></div>`;
-            overlay.onclick = () => overlay.remove();
-            document.body.appendChild(overlay);
-        }
-        function saveP(btn) { symbols.forEach(s => { const val = document.getElementById('e-'+s).value; localStorage.setItem('p_'+s, val); }); btn.parentElement.parentElement.remove(); renderPortfolio(); }
+    const fields = symbols.map(s => {
+        const isDex = s.startsWith('0x') || s.length >= 15;
+        const displayName = isDex ? (caNames[s] || s) : s.replace(/(USDT|USD)$/,"");
+        // Lisatud ostuhinna väli:
+        return `<div style="margin-bottom:12px;">
+            <label style="font-size:10px; font-weight:bold; color:var(--title);">${displayName}</label>
+            <div style="display:flex; gap:5px;">
+                <input type="number" id="q-${s}" placeholder="Kogus" value="${localStorage.getItem('q_'+s)||''}" style="flex:1; padding:8px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px;">
+                <input type="number" id="p-${s}" placeholder="Ostuhind" value="${localStorage.getItem('p_'+s)||''}" style="flex:1; padding:8px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px;">
+            </div>
+        </div>`;
+    }).join('');
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay'; overlay.style.display = 'flex';
+    overlay.innerHTML = `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">SALVESTA</button></div>`;
+    overlay.onclick = () => overlay.remove();
+    document.body.appendChild(overlay);
+}
+
+        function saveP(btn) {
+    symbols.forEach(s => {
+        const qty = document.getElementById('q-'+s).value;
+        const price = document.getElementById('p-'+s).value;
+        localStorage.setItem('q_'+s, qty);
+        localStorage.setItem('p_'+s, price);
+    });
+    btn.parentElement.parentElement.remove();
+    renderPortfolio();
+    updateMarket();
+}
+
 
         function openGeneralNews() {
             document.getElementById('info-header').innerText = `GLOBAL CRYPTO NEWS`;
