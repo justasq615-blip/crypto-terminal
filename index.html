@@ -1,1138 +1,1725 @@
 <!DOCTYPE html>
 <html lang="et">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aplo Crypto Terminal</title>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <style>
-        :root { --bg: #000000; --card: rgba(30, 30, 30, 0.4); --header: #161B22; --text: #C9D1D9; --accent: #30363D; --border: #444c56; --title: #58A6FF; --up: #3fb950; --down: #f85149; }
-        [data-theme="black-white"] { --bg: #000000; --card: #000000; --header: #000000; --text: #ffffff; --accent: #1a1a1a; --border: #ffffff; --title: #ffffff; --up: #00ff00; --down: #ff0000; }
-        [data-theme="black-white"] .theme-btn { color: #000000 !important; background: #ffffff !important; border: 1px solid #ffffff; }
-        [data-theme="white-black"] { --bg: #ffffff; --card: #f6f8fa; --header: #ffffff; --text: #000000; --accent: #e1e4e8; --border: #000000; --title: #000000; --up: #1a7f37; --down: #cf222e; }
-        [data-theme="white-black"] .theme-btn { color: #000000 !important; }
-        [data-theme="white-black"] .modal input, [data-theme="white-black"] .modal button { color: #000000 !important; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Aplo Crypto Terminal</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-        [data-theme="terminal"] { --bg: #050505; --card: rgba(0, 20, 0, 0.2); --header: #000000; --text: #00ff00; --accent: #003300; --border: #00ff00; --title: #00ff00; --up: #00ff00; --down: #ff0000; }
-        [data-theme="terminal"] .theme-btn { color: #00ff00 !important; background: #000000 !important; border: 1px solid #00ff00 !important; }
+<style>
+:root{
+--bg:#000000;--card:rgba(30,30,30,.4);--header:#161B22;--text:#C9D1D9;
+--accent:#30363D;--border:#444c56;--title:#58A6FF;--up:#3fb950;--down:#f85149
+}
+[data-theme="black-white"]{--bg:#000;--card:#000;--header:#000;--text:#fff;--accent:#1a1a1a;--border:#fff;--title:#fff;--up:#0f0;--down:red}
+[data-theme="white-black"]{--bg:#fff;--card:#f6f8fa;--header:#fff;--text:#000;--accent:#e1e4e8;--border:#000;--title:#000;--up:#1a7f37;--down:#cf222e}
+[data-theme="terminal"]{--bg:#050505;--card:rgba(0,20,0,.2);--header:#000;--text:#0f0;--accent:#030;--border:#0f0;--title:#0f0;--up:#0f0;--down:red}
+[data-theme="gold"]{--bg:#1a140a;--card:rgba(45,35,15,.4);--header:#261e0f;--text:#f0d78c;--accent:#3d3016;--border:#d4af37;--title:#d4af37;--up:#ffd700;--down:#ff4500}
+[data-theme="nando-gray"]{--bg:#1c1c1c;--card:#2d2d2d;--header:#141414;--text:#e0e0e0;--accent:#404040;--border:#505050;--title:#fff;--up:#4ade80;--down:#f87171}
+[data-theme="forest"]{--bg:#06120B;--card:rgba(10,45,25,.4);--header:#0E3A21;--text:#A7DFB1;--accent:#1B4D31;--border:#2ECC71;--title:#2ECC71;--up:#2ecc71;--down:#e74c3c}
+[data-theme="retro"]{--bg:#281800;--card:rgba(60,30,0,.3);--header:#3d2400;--text:#ffb000;--accent:#4d2d00;--border:#ffb000;--title:#ffb000;--up:#ffb000;--down:red}
+[data-theme="midnight"]{--bg:#020617;--card:#1e293b;--header:#0f172a;--text:#f1f5f9;--accent:#334155;--border:#38bdf8;--title:#38bdf8;--up:#22c55e;--down:#ef4444}
 
-        [data-theme="gold"] { --bg: #1a140a; --card: rgba(45, 35, 15, 0.4); --header: #261e0f; --text: #f0d78c; --accent: #3d3016; --border: #d4af37; --title: #d4af37; --up: #ffd700; --down: #ff4500; }
-        [data-theme="nando-gray"] { --bg: #1c1c1c; --card: #2d2d2d; --header: #141414; --text: #e0e0e0; --accent: #404040; --border: #505050; --title: #ffffff; --up: #4ade80; --down: #f87171; }
-        [data-theme="forest"] { --bg: #06120B; --card: rgba(10, 45, 25, 0.4); --header: #0E3A21; --text: #A7DFB1; --accent: #1B4D31; --border: #2ECC71; --title: #2ECC71; --up: #2ecc71; --down: #e74c3c; }
-        [data-theme="retro"] { --bg: #281800; --card: rgba(60, 30, 0, 0.3); --header: #3d2400; --text: #ffb000; --accent: #4d2d00; --border: #ffb000; --title: #ffb000; --up: #ffb000; --down: #ff0000; }
-        [data-theme="midnight"] { --bg: #020617; --card: #1e293b; --header: #0f172a; --text: #f1f5f9; --accent: #334155; --border: #38bdf8; --title: #38bdf8; --up: #22c55e; --down: #ef4444; }
+*{
+box-sizing:border-box;
+transition:background-color .2s,border-color .2s,transform .5s ease;
+-webkit-user-select:none;
+font-family:'SF Mono','Roboto Mono',monospace;
+-webkit-tap-highlight-color:transparent
+}
+body{
+height:100dvh;margin:0;padding:6px;overflow:hidden;background:var(--bg);
+color:var(--text);display:flex;flex-direction:column;
+touch-action:pan-y;overscroll-behavior-y:contain
+}
+.header{
+height:36px;display:flex;justify-content:space-between;align-items:center;
+padding:0 12px;border:1px solid var(--border);background:var(--header);
+border-radius:6px;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.3)
+}
+.header h2{font-size:13px;margin:0;color:var(--title);text-transform:uppercase;letter-spacing:1px}
+#status{font-size:8px;display:flex;align-items:center;gap:5px;font-weight:bold}
+.status-refreshing{color:var(--up)!important}
+.live-dot{width:6px;height:6px;background:var(--up);border-radius:50%;display:inline-block;animation:blink 1.5s infinite}
+@keyframes blink{0%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
 
-        .modal-scroll * { color: #ffffff !important; }
+#portfolio-section{
+background:var(--card);border-radius:6px;padding:8px 12px;
+border:1px solid var(--border);margin-top:4px;flex-shrink:0;backdrop-filter:blur(5px)
+}
+.portfolio-total{font-size:20px;font-weight:900;color:var(--text);letter-spacing:-.5px;margin-top:2px}
+.btn-action{
+background:var(--accent);color:var(--text);border:1px solid var(--border);
+padding:4px 8px;border-radius:4px;font-size:9px;font-weight:bold;
+cursor:pointer;text-transform:uppercase
+}
+.btn-action:active{opacity:.7;transform:scale(.95)}
+.btn-icon{
+background:none;border:1px solid var(--border);color:var(--text);
+border-radius:4px;padding:2px 6px;cursor:pointer;font-size:12px;
+display:flex;align-items:center
+}
+#portfolio-details{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
 
-        * { box-sizing: border-box; transition: background-color 0.2s, border-color 0.2s, transform 0.5s ease; -webkit-user-select: none; font-family: 'SF Mono', 'Roboto Mono', monospace; -webkit-tap-highlight-color: transparent; }
-        body { height: 100dvh; margin: 0; padding: 6px; overflow: hidden; background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; touch-action: pan-y; overscroll-behavior-y: contain; }
-        
-        .header { height: 36px; display: flex; justify-content: space-between; align-items: center; padding: 0 12px; border: 1px solid var(--border); background-color: var(--header); border-radius: 6px; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .header h2 { font-size: 13px; margin: 0; color: var(--title); text-transform: uppercase; letter-spacing: 1px; }
-        
-        #status { font-size: 8px; display: flex; align-items: center; gap: 5px; font-weight: bold; }
-        .status-refreshing { color: var(--up) !important; }
-        .live-dot { width: 6px; height: 6px; background: var(--up); border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
-        @keyframes blink { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+.perf-row{
+position:relative;overflow:hidden;height:34px;margin-top:12px;padding:0 4px;
+background:rgba(0,0,0,.2);border-radius:4px;border:1px solid var(--accent);
+display:flex;align-items:center
+}
+.perf-track{
+display:inline-flex;align-items:center;gap:28px;white-space:nowrap;
+position:absolute;left:100%;animation:perfMarquee 22s linear infinite;
+will-change:transform
+}
+.perf-item{
+font-size:9px;font-weight:bold;display:inline-flex;
+align-items:center;gap:5px;flex-shrink:0
+}
+.perf-label{opacity:.5;font-size:8px;text-transform:uppercase}
+@keyframes perfMarquee{
+0%{transform:translateX(0)}
+100%{transform:translateX(-220%)}
+}
 
-        #portfolio-section { background-color: var(--card); border-radius: 6px; padding: 8px 12px; border: 1px solid var(--border); margin-top: 4px; flex-shrink: 0; backdrop-filter: blur(5px); }
-        .portfolio-total { font-size: 20px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; margin-top: 2px; }
-        
-        .btn-action { background-color: var(--accent); color: var(--text); border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-action:active { opacity: 0.7; transform: scale(0.95); }
-        .btn-icon { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 12px; display: flex; align-items: center; }
+#main-wrapper{
+flex:1;display:flex;flex-direction:column;margin:4px 0;gap:2px;
+overflow-y:auto;scrollbar-width:none
+}
+.card{
+background:var(--card);border-radius:6px;padding:0 12px;border:1px solid var(--border);
+display:flex;align-items:center;height:42px;min-height:42px;flex-shrink:0;
+cursor:pointer;box-shadow:2px 2px 5px rgba(0,0,0,.1)
+}
+.card:active{background:var(--accent)}
+.coin-row{display:flex;justify-content:space-between;align-items:center;width:100%}
+.label-text{font-weight:800;font-size:12px;letter-spacing:.5px}
+.value-text{font-weight:900;font-size:13px;text-align:right;min-width:90px;padding:4px;border-radius:4px}
+.value-text:active{background:var(--border)}
+.up{color:var(--up)!important}.down{color:var(--down)!important}
 
-        #portfolio-details { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
-        
-        .perf-row { 
-            position: relative;
-            overflow: hidden;
-            height: 34px;
-            margin-top: 12px;
-            padding: 0 4px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 4px;
-            border: 1px solid var(--accent);
-            display: flex;
-            align-items: center;
-        }
+.mid-row{height:38px;display:flex;gap:4px;flex-shrink:0;margin-bottom:4px}
+.mid-btn{
+flex:1;display:flex;align-items:center;justify-content:center;
+background:var(--card);border:1px solid var(--border);border-radius:6px;
+cursor:pointer;font-size:14px
+}
+.mid-btn:active{background:var(--accent)}
 
-        .perf-track {
-            display: inline-flex;
-            align-items: center;
-            gap: 28px;
-            white-space: nowrap;
-            position: absolute;
-            left: 100%;
-            animation: perfMarquee 22s linear infinite;
-            will-change: transform;
-        }
+.bottom-row{height:38px;display:flex;gap:4px;flex-shrink:0;margin-bottom:4px}
+.small-card{
+flex:.5;display:flex;align-items:center;justify-content:center;
+background:var(--card);border:1px solid var(--border);border-radius:6px;
+overflow:hidden;cursor:pointer
+}
+.half-card{
+flex:1;display:flex;align-items:center;justify-content:center;
+background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden
+}
+.ticker-wrap{
+width:100%;overflow:hidden;white-space:nowrap;position:relative;
+height:100%;display:flex;align-items:center
+}
+.ticker{
+display:inline-flex;white-space:nowrap;font-size:9px;font-weight:bold;
+padding-left:100%;animation:marquee 300s linear infinite
+}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
 
-        .perf-item {
-            font-size: 9px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            flex-shrink: 0;
-        }
+.disclaimer-box{
+height:auto;min-height:50px;background:var(--header);padding:8px 10px;
+border-radius:6px;border:1px solid var(--border);display:flex;
+align-items:center;justify-content:center;opacity:.7
+}
+.disclaimer-text{font-size:7px;text-align:center;text-transform:uppercase;line-height:1.3}
 
-        .perf-label {
-            opacity: 0.5;
-            font-size: 8px;
-            text-transform: uppercase;
-        }
+.modal-overlay{
+display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;
+justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(8px)
+}
+.modal{
+background:var(--bg);border:2px solid var(--border);width:100%;max-width:360px;
+border-radius:12px;display:flex;flex-direction:column;overflow:hidden;
+box-shadow:0 0 30px rgba(0,0,0,.5)
+}
+.modal-scroll{padding:20px;overflow-y:auto;max-height:70vh}
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.theme-btn{
+background:var(--card);color:#fff!important;border:1px solid var(--border);
+padding:8px;border-radius:4px;font-size:9px;cursor:pointer;text-transform:uppercase
+}
+.theme-btn:active{background:var(--accent)}
+.news-btn{
+display:block;background:var(--accent);color:var(--text);padding:12px;
+text-decoration:none;text-align:center;font-weight:bold;border-radius:6px;
+margin-bottom:8px;border:1px solid var(--border);font-size:10px;text-transform:uppercase
+}
+#chart-container{
+width:100%;height:250px;background:#000;border-radius:6px;
+margin-bottom:15px;border:1px solid var(--border);overflow:hidden;position:relative
+}
+.dist-row{margin-bottom:15px}
+.dist-label{
+display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;font-weight:bold
+}
+.dist-bar-bg{height:8px;background:var(--accent);border-radius:4px;overflow:hidden}
+.dist-bar-fill{height:100%;background:var(--title);border-radius:4px;transition:width 1s ease-out}
+.custom-control{
+display:flex;justify-content:space-between;align-items:center;margin:10px 0;
+font-size:10px;color:var(--text)
+}
+.modal-scroll *{color:#fff!important}
+input[type=color]{border:none;width:40px;height:20px;cursor:pointer;background:none;padding:0}
+input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+input[type=color]::-webkit-color-swatch{border:none;border-radius:4px}
+.section-title{text-align:center;font-size:10px;font-weight:bold;color:var(--title);margin:20px 0 10px;text-transform:uppercase}
 
-        @keyframes perfMarquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-220%); }
-        }
-
-        #main-wrapper { flex: 1; display: flex; flex-direction: column; margin: 4px 0; gap: 2px; overflow-y: auto; scrollbar-width: none; }
-        .card { background-color: var(--card); border-radius: 6px; padding: 0 12px; border: 1px solid var(--border); display: flex; align-items: center; height: 42px; min-height: 42px; flex-shrink: 0; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
-        .card:active { background-color: var(--accent); }
-        
-        .coin-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .label-text { font-weight: 800; font-size: 12px; letter-spacing: 0.5px; }
-        .value-text { font-weight: 900; font-size: 13px; text-align: right; min-width: 90px; padding: 4px; border-radius: 4px; }
-        .value-text:active { background-color: var(--border); }
-
-        .up { color: var(--up) !important; }
-        .down { color: var(--down) !important; }
-
-        .mid-row { height: 38px; display: flex; gap: 4px; flex-shrink: 0; margin-bottom: 4px; }
-        .mid-btn { flex: 1; display: flex; align-items: center; justify-content: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 14px; }
-        .mid-btn:active { background-color: var(--accent); }
-
-        .bottom-row { height: 38px; display: flex; gap: 4px; flex-shrink: 0; margin-bottom: 4px; }
-        .small-card { flex: 0.5; display: flex; align-items: center; justify-content: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; }
-        .half-card { flex: 1; display: flex; align-items: center; justify-content: center; background-color: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-        
-        .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; height: 100%; display: flex; align-items: center; }
-        .ticker { display: inline-flex; white-space: nowrap; font-size: 9px; font-weight: bold; padding-left: 100%; animation: marquee 300s linear infinite; }
-
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
-        .disclaimer-box { height: auto; min-height: 50px; background-color: var(--header); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; opacity: 0.7; }
-        .disclaimer-text { font-size: 7px; text-align: center; text-transform: uppercase; line-height: 1.3; }
-
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(8px); }
-        .modal { background: var(--bg); border: 2px solid var(--border); width: 100%; max-width: 360px; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
-        .modal-scroll { padding: 20px; overflow-y: auto; max-height: 70vh; }
-        
-        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        .theme-btn { background: var(--card); color: #ffffff !important; border: 1px solid var(--border); padding: 8px; border-radius: 4px; font-size: 9px; cursor: pointer; text-transform: uppercase; }
-        .theme-btn:active { background: var(--accent); color: #ffffff !important; }
-
-        .news-btn { display: block; background: var(--accent); color: var(--text); padding: 12px; text-decoration: none; text-align: center; font-weight: bold; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
-        
-        #chart-container { width: 100%; height: 250px; background: #000; border-radius: 6px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; position: relative; }
-
-        .dist-row { margin-bottom: 15px; }
-        .dist-label { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; font-weight: bold; }
-        .dist-bar-bg { height: 8px; background: var(--accent); border-radius: 4px; overflow: hidden; }
-        .dist-bar-fill { height: 100%; background: var(--title); border-radius: 4px; transition: width 1s ease-out; }
-        .custom-control { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 10px; color: #fff; }
-        .modal-scroll * { color: #fff !important; }
-        .custom-control { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 10px; color: var(--text); }
-        input[type="color"] { border: none; width: 40px; height: 20px; cursor: pointer; background: none; padding: 0; }
-        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
-        .section-title { text-align: center; font-size: 10px; font-weight: bold; color: var(--title); margin: 20px 0 10px 0; text-transform: uppercase; }
-
-    </style>
+/* PRICE HISTORY */
+.history-list{
+display:flex;flex-direction:column;gap:5px;max-height:160px;overflow-y:auto;
+margin-top:10px
+}
+.history-row{
+display:flex;justify-content:space-between;align-items:center;
+padding:7px 8px;border:1px solid var(--accent);border-radius:4px;
+font-size:8px
+}
+.history-date{opacity:.55}
+.history-price{font-weight:bold}
+.history-buy{
+padding:8px;border:1px dashed var(--title);border-radius:5px;
+font-size:9px;margin-bottom:8px
+}
+.history-pnl{font-size:12px;font-weight:bold;text-align:center;padding:7px}
+.history-chart{
+width:100%;height:180px;border:1px solid var(--accent);
+border-radius:5px;background:#050505;margin-top:8px
+}
+.history-empty{
+font-size:9px;opacity:.6;text-align:center;padding:20px 5px
+}
+</style>
 </head>
+
 <body data-theme="nando-gray">
 <style id="custom-style"></style>
 
-    <div class="header">
-        <div id="status"><span class="live-dot"></span> LIVE • --:--:--</div>
-        <h2 id="ui-title">🚀 APLO CRYPTO TERMINAL</h2>
-        <div style="display:flex; gap:12px; align-items:center;">
-            <span style="cursor:pointer; font-size:18px; font-weight:bold; color:var(--title);" onclick="openManageAssets()">+</span>
-            <span style="cursor:pointer; font-size:14px;" onclick="document.getElementById('settings-overlay').style.display='flex'">⚙️</span>
+<div class="header">
+    <div id="status"><span class="live-dot"></span> LIVE • --:--:--</div>
+    <h2 id="ui-title">🚀 APLO KRÜPTO TERMINAL</h2>
+    <div style="display:flex;gap:12px;align-items:center;">
+        <span style="cursor:pointer;font-size:18px;font-weight:bold;color:var(--title)" onclick="openManageAssets()">+</span>
+        <span style="cursor:pointer;font-size:14px" onclick="document.getElementById('settings-overlay').style.display='flex'">⚙️</span>
+    </div>
+</div>
+
+<div id="portfolio-section">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+            <div id="ui-networth" style="font-size:8px;text-transform:uppercase;opacity:.6;font-weight:bold">Net Worth</div>
+            <div id="portfolio-total" class="portfolio-total">€0.00</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+            <button onclick="openDistribution()" class="btn-icon">📊</button>
+            <button id="ui-btn-assets" onclick="togglePortfolio()" class="btn-action">ASSETS</button>
+            <button id="ui-btn-edit" onclick="openEdit()" class="btn-action">EDIT</button>
         </div>
     </div>
 
-    <div id="portfolio-section">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-                <div id="ui-networth" style="font-size:8px; text-transform:uppercase; opacity:0.6; font-weight:bold;">Net Worth</div>
-                <div id="portfolio-total" class="portfolio-total">€0.00</div>
-            </div>
-            <div style="display:flex; gap:6px; align-items:center;">
-                <button onclick="openDistribution()" class="btn-icon">📊</button>
-                <button id="ui-btn-assets" onclick="togglePortfolio()" class="btn-action">ASSETS</button>
-                <button id="ui-btn-edit" onclick="openEdit()" class="btn-action">EDIT</button>
-            </div>
-        </div>
-
-        <div id="portfolio-details">
-            <div id="portfolio-list" style="margin-bottom: 10px;"></div>
-
-            <div class="perf-row">
-                <div id="perf-track" class="perf-track"></div>
-            </div>
+    <div id="portfolio-details">
+        <div id="portfolio-list" style="margin-bottom:10px"></div>
+        <div class="perf-row">
+            <div id="perf-track" class="perf-track"></div>
         </div>
     </div>
+</div>
 
-    <div id="main-wrapper"></div>
+<div id="main-wrapper"></div>
 
-    <div class="mid-row">
-        <div class="mid-btn" onclick="alert('Action 1')">🚀</div>
-        <div class="mid-btn" onclick="alert('Action 2')">📈</div>
-        <div class="mid-btn" onclick="alert('Action 3')">⚖️</div>
-        <div class="mid-btn" onclick="alert('Action 4')">🔔</div>
-        <div class="mid-btn" onclick="alert('Action 5')">💎</div>
+<div class="mid-row">
+    <!-- ACTION 1 = PRICE HISTORY -->
+    <div class="mid-btn" onclick="openHistoryAssets()">📊</div>
+    <div class="mid-btn" onclick="alert('Action 2')">📈</div>
+    <div class="mid-btn" onclick="alert('Action 3')">⚖️</div>
+    <div class="mid-btn" onclick="alert('Action 4')">🔔</div>
+    <div class="mid-btn" onclick="alert('Action 5')">💎</div>
+</div>
+
+<div class="bottom-row">
+    <div class="small-card" onclick="openGeneralNews()">
+        <span id="ui-news-hub" style="font-size:8px;font-weight:bold">📰 UUDISED</span>
     </div>
-
-    <div class="bottom-row">
-        <div class="small-card" onclick="openGeneralNews()">
-            <span id="ui-news-hub" style="font-size:8px; font-weight:bold;">📰 NEWS</span>
-        </div>
-        <div class="small-card" onclick="openAppInfo()">
-            <span style="font-size:14px;">ℹ️</span>
-        </div>
-        <div class="half-card">
-            <div class="ticker-wrap"><div class="ticker" id="insights-ticker">Initializing terminal data...</div></div>
-        </div>
+    <div class="small-card" onclick="openAppInfo()">
+        <span style="font-size:14px">ℹ️</span>
     </div>
-
-    <div class="disclaimer-box">
-        <div id="ui-disclaimer" class="disclaimer-text"></div>
-    </div>
-
-    <div id="settings-overlay" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-scroll">
-                <div class="section-title">TEEMA</div>
-                <div id="theme-grid" class="theme-grid"></div>
-
-                <div class="section-title">CUSTOM THEME</div>
-                <div class="custom-control">Background <input type="color" id="cp-bg" onchange="updateCustomTheme()"></div>
-                <div class="custom-control">Cards <input type="color" id="cp-card" onchange="updateCustomTheme()"></div>
-                <div class="custom-control">Border <input type="color" id="cp-border" onchange="updateCustomTheme()"></div>
-                <div class="custom-control">Text <input type="color" id="cp-text" onchange="updateCustomTheme()"></div>
-
-                <div class="section-title">KEEL</div>
-                <div class="theme-grid">
-                    <button class="theme-btn" onclick="setLang('en')">ENGLISH</button>
-                    <button class="theme-btn" onclick="setLang('et')">EESTI</button>
-                    <button class="theme-btn" onclick="setLang('es')">ESPAÑOL</button>
-                    <button class="theme-btn" onclick="setLang('ru')">РУССКИЙ</button>
-                </div>
-            </div>
+    <div class="half-card">
+        <div class="ticker-wrap">
+            <div class="ticker" id="insights-ticker">Initializing terminal data...</div>
         </div>
     </div>
+</div>
 
-    <div id="manage-overlay" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div id="ui-manage-title" style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); text-align:center; font-size:11px;">MANAGE ASSETS</div>
-            <div id="asset-list-manage" style="overflow-y:auto; max-height:40vh; padding:5px;"></div>
-            <div style="padding:15px; border-top:1px solid var(--border);">
-                <input type="text" id="new-asset-input" placeholder="TICKER OR CA (0x...)" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; font-size:12px;">
-                <button id="ui-btn-add" onclick="addNewAsset()" style="width:100%; margin-top:8px; padding:12px; background:var(--title); color:#000; border:none; font-weight:bold; border-radius:4px; font-size:11px;">ADD ASSET</button>
+<div class="disclaimer-box">
+    <div id="ui-disclaimer" class="disclaimer-text"></div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settings-overlay" class="modal-overlay" onclick="this.style.display='none'">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-scroll">
+            <div class="section-title">TEEMA</div>
+            <div id="theme-grid" class="theme-grid"></div>
+
+            <div class="section-title">CUSTOM THEME</div>
+            <div class="custom-control">Background <input type="color" id="cp-bg" onchange="updateCustomTheme()"></div>
+            <div class="custom-control">Cards <input type="color" id="cp-card" onchange="updateCustomTheme()"></div>
+            <div class="custom-control">Border <input type="color" id="cp-border" onchange="updateCustomTheme()"></div>
+            <div class="custom-control">Text <input type="color" id="cp-text" onchange="updateCustomTheme()"></div>
+
+            <div class="section-title">KEEL</div>
+            <div class="theme-grid">
+                <button class="theme-btn" onclick="setLang('en')">ENGLISH</button>
+                <button class="theme-btn" onclick="setLang('et')">EESTI</button>
+                <button class="theme-btn" onclick="setLang('es')">ESPAÑOL</button>
+                <button class="theme-btn" onclick="setLang('ru')">РУССКИЙ</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div id="info-header" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px;"></div>
-            <div id="info-content" style="padding: 20px;"></div>
+<!-- MANAGE -->
+<div id="manage-overlay" class="modal-overlay" onclick="this.style.display='none'">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div id="ui-manage-title" style="padding:15px;font-weight:bold;border-bottom:1px solid var(--border);text-align:center;font-size:11px">HALDA VARASID</div>
+        <div id="asset-list-manage" style="overflow-y:auto;max-height:40vh;padding:5px"></div>
+        <div style="padding:15px;border-top:1px solid var(--border)">
+            <input type="text" id="new-asset-input" placeholder="TICKER OR CA (0x...)" style="width:100%;padding:12px;background:#000;border:1px solid var(--border);color:#fff;border-radius:4px;font-size:12px">
+            <button id="ui-btn-add" onclick="addNewAsset()" style="width:100%;margin-top:8px;padding:12px;background:var(--title);color:#000;border:none;font-weight:bold;border-radius:4px;font-size:11px">LISA VARA</button>
         </div>
     </div>
+</div>
 
-    <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div id="ui-dist-title" style="padding:15px; border-bottom:1px solid var(--border); font-weight:bold; text-align:center; text-transform:uppercase; font-size:11px; color:var(--title);">ASSET DISTRIBUTION</div>
-            <div id="dist-content" style="padding: 20px; overflow-y:auto; max-height:60vh;"></div>
-        </div>
+<!-- INFO -->
+<div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div id="info-header" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;text-transform:uppercase;font-size:11px"></div>
+        <div id="info-content" style="padding:20px"></div>
     </div>
+</div>
 
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<!-- DISTRIBUTION -->
+<div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div id="ui-dist-title" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;text-transform:uppercase;font-size:11px;color:var(--title)">VARADE JAOTUS</div>
+        <div id="dist-content" style="padding:20px;overflow-y:auto;max-height:60vh"></div>
+    </div>
+</div>
 
-    <script>
-        const translations = {
-            en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", save: "SAVE", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.", legal_label: "LEGAL NOTICE", btn_add: "ADD ASSET", dist_title: "ASSET DISTRIBUTION", no_assets: "No assets.", no_assets_dist: "No assets to display.", disclaimer_full: "This application is an experimental software project.", remove: "Remove", env: "Select Environment", lang: "Language / Keel" },
-            et: { title: "🚀 APLO KRÜPTO TERMINAL", networth: "Netoväärtus", assets: "VARAD", edit: "MUUDA", save: "SALVESTA", news: "📰 UUDISED", manage: "HALDA VARASID", disclaimer: "Eksperimentaalne projekt. Kasuta omal vastutusel.", legal_label: "ÕIGUSLIK TEADE", btn_add: "LISA VARA", dist_title: "VARADE JAOTUS", no_assets: "Varad puuduvad.", no_assets_dist: "Kuvamiseks pole varasid.", disclaimer_full: "See rakendus on eksperimentaalne tarkvaraprojekt.", remove: "Eemalda", env: "Vali keskkond", lang: "Keel" },
-            es: { title: "🚀 TERMINAL CRIPTO APLO", networth: "Patrimonio Neto", assets: "ACTIVOS", edit: "EDITAR", save: "GUARDAR", news: "📰 NOTICIAS", manage: "GESTIONAR ACTIVOS", disclaimer: "Proyecto experimental.", legal_label: "AVISO LEGAL", btn_add: "AÑADIR ACTIVO", dist_title: "DISTRIBUCIÓN DE ACTIVOS", no_assets: "Sin activos.", no_assets_dist: "No hay activos para mostrar.", disclaimer_full: "Esta aplicación es un proyecto de software experimental.", remove: "Eliminar", env: "Seleccionar entorno", lang: "Idioma" },
-            ru: { title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", save: "СОХРАНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.", legal_label: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ", btn_add: "ДОBAВИТЬ АКТИВ", dist_title: "РАСПРЕДЕЛЕНИЕ АКТИВОВ", no_assets: "Нет активов.", no_assets_dist: "Нет активов для отображения.", disclaimer_full: "Данное приложение является экспериментальным программным проектом.", remove: "Удалить", env: "Выберите среду", lang: "Язык" }
-        };
+<!-- HISTORY ASSET LIST -->
+<div id="history-assets-overlay" class="modal-overlay" onclick="this.style.display='none'">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;font-size:11px;color:var(--title)">
+            📊 PRICE HISTORY
+        </div>
+        <div id="history-assets-list" style="padding:8px;overflow-y:auto;max-height:60vh"></div>
+    </div>
+</div>
 
-        let currentLang = localStorage.getItem('lang') || 'et';
+<!-- HISTORY DETAIL -->
+<div id="history-detail-overlay" class="modal-overlay" onclick="this.style.display='none'">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div id="history-detail-header" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;font-size:11px"></div>
+        <div id="history-detail-content" style="padding:15px;overflow-y:auto;max-height:75vh"></div>
+    </div>
+</div>
 
-        function applyLang() {
-            const t = translations[currentLang];
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
-            document.getElementById('ui-title').innerText = t.title;
-            document.getElementById('ui-networth').innerText = t.networth;
-            document.getElementById('ui-btn-assets').innerText = t.assets;
-            document.getElementById('ui-btn-edit').innerText = t.edit;
-            document.getElementById('ui-news-hub').innerText = t.news;
-            document.getElementById('ui-manage-title').innerText = t.manage;
-            document.getElementById('ui-btn-add').innerText = t.btn_add;
-            document.getElementById('ui-dist-title').innerText = t.dist_title;
+<script>
+const translations={
+en:{title:"🚀 APLO CRYPTO TERMINAL",networth:"Net Worth",assets:"ASSETS",edit:"EDIT",save:"SAVE",news:"📰 NEWS",manage:"MANAGE ASSETS",disclaimer:"Experimental project. Use at your own risk.",legal_label:"LEGAL NOTICE",btn_add:"ADD ASSET",dist_title:"ASSET DISTRIBUTION",no_assets:"No assets.",no_assets_dist:"No assets to display.",disclaimer_full:"This application is an experimental software project.",remove:"Remove"},
+et:{title:"🚀 APLO KRÜPTO TERMINAL",networth:"Netoväärtus",assets:"VARAD",edit:"MUUDA",save:"SALVESTA",news:"📰 UUDISED",manage:"HALDA VARASID",disclaimer:"Eksperimentaalne projekt. Kasuta omal vastutusel.",legal_label:"ÕIGUSLIK TEADE",btn_add:"LISA VARA",dist_title:"VARADE JAOTUS",no_assets:"Varad puuduvad.",no_assets_dist:"Kuvamiseks pole varasid.",disclaimer_full:"See rakendus on eksperimentaalne tarkvaraprojekt.",remove:"Eemalda"},
+es:{title:"🚀 TERMINAL CRIPTO APLO",networth:"Patrimonio Neto",assets:"ACTIVOS",edit:"EDITAR",save:"GUARDAR",news:"📰 NOTICIAS",manage:"GESTIONAR ACTIVOS",disclaimer:"Proyecto experimental.",legal_label:"AVISO LEGAL",btn_add:"AÑADIR ACTIVO",dist_title:"DISTRIBUCIÓN DE ACTIVOS",no_assets:"Sin activos.",no_assets_dist:"No hay activos para mostrar.",disclaimer_full:"Esta aplicación es un proyecto de software experimental.",remove:"Eliminar"},
+ru:{title:"🚀 КРИПТО ТЕРМИНАЛ APLO",networth:"Чистая стоимость",assets:"АКТИВЫ",edit:"ИЗМЕНИТЬ",save:"СОХРАНИТЬ",news:"📰 НОВОСТИ",manage:"УПРАВЛЕНИЕ",disclaimer:"Экспериментальный проект.",legal_label:"ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ",btn_add:"ДОБАВИТЬ АКТИВ",dist_title:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",no_assets:"Нет активов.",no_assets_dist:"Нет активов для отображения.",disclaimer_full:"Данное приложение является экспериментальным программным проектом.",remove:"Удалить"}
+};
 
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                if(t[key]) el.innerText = t[key];
-            });
+let currentLang=localStorage.getItem('lang')||'et';
+let symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"];
+let caNames={};
+let touchStartY=0;
+let currentPrices={};
+let marketData=[];
+let usdToEur=1;
 
-            renderUI();
+/*
+========================================================
+PRICE HISTORY
+========================================================
+
+Iga krüpto kohta säilitatakse hinnapunktid.
+Üks punkt = üks tund.
+
+Struktuur:
+{
+  "BLESS": {
+      started: timestamp,
+      points: [
+          {time: timestamp, price: 0.00951},
+          ...
+      ]
+  }
+}
+*/
+
+let priceHistory={};
+
+try{
+    const savedSymbols=localStorage.getItem('user_symbols');
+    if(savedSymbols){
+        const parsed=JSON.parse(savedSymbols);
+        if(Array.isArray(parsed)&&parsed.length>0)symbols=parsed;
+    }
+
+    const savedNames=localStorage.getItem('ca_names');
+    if(savedNames)caNames=JSON.parse(savedNames);
+
+    const savedHistory=localStorage.getItem('crypto_price_history');
+    if(savedHistory)priceHistory=JSON.parse(savedHistory);
+}catch(e){
+    priceHistory={};
+}
+
+function savePriceHistory(){
+    try{
+        localStorage.setItem(
+            'crypto_price_history',
+            JSON.stringify(priceHistory)
+        );
+    }catch(e){}
+}
+
+function getHistoryKey(s){
+    return s;
+}
+
+function recordHourlyPrices(){
+    const now=Date.now();
+
+    symbols.forEach(s=>{
+        const price=currentPrices[s];
+
+        if(!Number.isFinite(price)||price<=0)return;
+
+        const key=getHistoryKey(s);
+
+        if(!priceHistory[key]){
+            priceHistory[key]={
+                started:now,
+                points:[]
+            };
         }
 
-        let symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
-        let caNames = {};
-        let touchStartY = 0;
+        const history=priceHistory[key];
 
-        const mainWrapper = document.getElementById('main-wrapper');
+        if(!history.started)history.started=now;
 
-        try {
-            const saved = localStorage.getItem('user_symbols');
-
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) symbols = parsed;
-            }
-
-            const savedNames = localStorage.getItem('ca_names');
-
-            if (savedNames) caNames = JSON.parse(savedNames);
-        } catch(e) {}
-
-        let currentPrices = {};
-        let marketData = [];
-        let usdToEur = 1;
+        const last=history.points.length
+            ? history.points[history.points.length-1]
+            : null;
 
         /*
-         * HOURLY PORTFOLIO HISTORY
-         *
-         * Salvesta viimase 6 tunni portfelli väärtused.
-         * Iga tunni järel lisatakse uus punkt.
-         */
-        let hourlyHistory = [];
-
-        try {
-            const savedHistory = localStorage.getItem('portfolio_hourly_history');
-
-            if (savedHistory) {
-                const parsedHistory = JSON.parse(savedHistory);
-
-                if (Array.isArray(parsedHistory)) {
-                    hourlyHistory = parsedHistory.filter(item =>
-                        item &&
-                        Number.isFinite(item.time) &&
-                        Number.isFinite(item.value)
-                    );
-                }
-            }
-        } catch(e) {
-            hourlyHistory = [];
-        }
-
-        function saveHourlyHistory() {
-            try {
-                localStorage.setItem(
-                    'portfolio_hourly_history',
-                    JSON.stringify(hourlyHistory.slice(-6))
-                );
-            } catch(e) {}
-        }
-
-        function getPortfolioTotal() {
-            let total = 0;
-
-            symbols.forEach(s => {
-                const qty = parseFloat(localStorage.getItem('p_' + s)) || 0;
-                const price = currentPrices[s] || 0;
-
-                if (qty > 0 && price > 0) {
-                    total += qty * price;
-                }
+        Ainult üks hinnapunkt tunnis.
+        Kui terminal vahepeal suletud oli, ei mõelda
+        puuduvaid punkte välja.
+        */
+        if(!last||now-last.time>=60*60*1000){
+            history.points.push({
+                time:now,
+                price:price
             });
-
-            return total;
-        }
-
-        function captureHourlySnapshot(force = false) {
-            const total = getPortfolioTotal();
-
-            if (!Number.isFinite(total) || total <= 0) return;
-
-            const now = Date.now();
-
-            if (!force && hourlyHistory.length > 0) {
-                const last = hourlyHistory[hourlyHistory.length - 1];
-
-                if (now - last.time < 60 * 60 * 1000) {
-                    return;
-                }
-            }
-
-            hourlyHistory.push({
-                time: now,
-                value: total
-            });
-
-            hourlyHistory = hourlyHistory.slice(-6);
-
-            saveHourlyHistory();
-            renderHourlyPerformance();
-        }
-
-        function renderHourlyPerformance() {
-            const track = document.getElementById('perf-track');
-
-            if (!track) return;
-
-            const current = getPortfolioTotal();
-
-            if (!current || current <= 0) {
-                track.innerHTML = `
-                    <span class="perf-item">
-                        <span class="perf-label">1H</span>
-                        <span>--</span>
-                    </span>
-                `;
-                return;
-            }
-
-            const items = [];
 
             /*
-             * Vanim salvestatud punkt on kõige pikema perioodi algus.
-             * Näiteks 6 punkti olemasolul:
-             *
-             * 1H = praegune vs 1h tagasi
-             * 2H = praegune vs 2h tagasi
-             * ...
-             * 6H = praegune vs 6h tagasi
-             */
+            Hoia alles kuni 1 aasta tunnipunkte.
+            */
+            const maxPoints=24*365;
 
-            for (let hours = 1; hours <= 6; hours++) {
-                const targetTime = Date.now() - (hours * 60 * 60 * 1000);
+            if(history.points.length>maxPoints){
+                history.points=
+                    history.points.slice(-maxPoints);
+            }
+        }
+    });
 
-                let reference = null;
+    savePriceHistory();
+}
 
-                for (let i = hourlyHistory.length - 1; i >= 0; i--) {
-                    if (hourlyHistory[i].time <= targetTime) {
-                        reference = hourlyHistory[i];
-                        break;
-                    }
-                }
+/*
+Kui Average Buy on olemas ja ajalugu puudub,
+alustame ajalugu esimesest praegusest hinnast.
+*/
+function ensureHistoryForExistingAssets(){
+    const now=Date.now();
 
-                if (!reference && hourlyHistory.length >= hours) {
-                    reference = hourlyHistory[hourlyHistory.length - hours];
-                }
+    symbols.forEach(s=>{
+        if(!priceHistory[s]){
+            priceHistory[s]={
+                started:now,
+                points:[]
+            };
+        }
+    });
 
-                let result = null;
+    savePriceHistory();
+}
 
-                if (reference && reference.value > 0) {
-                    result = ((current - reference.value) / reference.value) * 100;
-                }
+function applyLang(){
+    const t=translations[currentLang];
 
-                items.push({
-                    hours,
-                    value: result
+    document.getElementById('ui-title').innerText=t.title;
+    document.getElementById('ui-networth').innerText=t.networth;
+    document.getElementById('ui-btn-assets').innerText=t.assets;
+    document.getElementById('ui-btn-edit').innerText=t.edit;
+    document.getElementById('ui-news-hub').innerText=t.news;
+    document.getElementById('ui-manage-title').innerText=t.manage;
+    document.getElementById('ui-btn-add').innerText=t.btn_add;
+    document.getElementById('ui-dist-title').innerText=t.dist_title;
+
+    renderUI();
+}
+
+function setLang(l){
+    currentLang=l;
+    localStorage.setItem('lang',l);
+    applyLang();
+    renderUI();
+    openManageAssets();
+}
+
+const mainWrapper=document.getElementById('main-wrapper');
+
+mainWrapper.addEventListener('touchstart',e=>{
+    if(mainWrapper.scrollTop===0)
+        touchStartY=e.touches[0].clientY;
+    else touchStartY=0;
+},{passive:true});
+
+mainWrapper.addEventListener('touchmove',e=>{
+    if(touchStartY>0&&mainWrapper.scrollTop===0){
+        const y=e.touches[0].clientY;
+        if(y>touchStartY)e.preventDefault();
+    }
+},{passive:false});
+
+mainWrapper.addEventListener('touchend',async e=>{
+    if(
+        touchStartY>0 &&
+        e.changedTouches[0].clientY-touchStartY>60
+    ){
+        await updateMarket();
+    }
+
+    touchStartY=0;
+},{passive:true});
+
+const themeNames=[
+"black-white","white-black","terminal","gold",
+"nando-gray","forest","retro","midnight"
+];
+
+document.getElementById('theme-grid').innerHTML=
+themeNames.map(t=>
+`<button class="theme-btn" onclick="setTheme('${t}')">
+${t.toUpperCase().replace('-',' ')}
+</button>`
+).join('');
+
+function setTheme(t){
+    document.body.setAttribute('data-theme',t);
+    localStorage.setItem('theme',t);
+    document.getElementById('custom-style').innerHTML='';
+    localStorage.removeItem('custom_theme');
+}
+
+async function updateMarket(){
+    const statusEl=document.getElementById('status');
+
+    if(statusEl)
+        statusEl.classList.add('status-refreshing');
+
+    try{
+        const fxRes=await fetch(
+            'https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT'
+        );
+
+        if(fxRes.ok){
+            const fxData=await fxRes.json();
+            const eurUsdt=parseFloat(fxData.price);
+
+            if(eurUsdt>0)
+                usdToEur=1/eurUsdt;
+        }
+    }catch(e){}
+
+    const binanceSyms=
+        symbols.filter(s=>!s.startsWith('0x')&&s.length<15);
+
+    const dexAddrs=
+        symbols.filter(s=>s.startsWith('0x')||s.length>=15);
+
+    let combinedData=[];
+
+    if(binanceSyms.length>0){
+        try{
+            const priceRes=await fetch(
+                'https://api.binance.com/api/v3/ticker/24hr?symbols='+
+                JSON.stringify(binanceSyms)
+            );
+
+            if(priceRes.ok)
+                combinedData=await priceRes.json();
+        }catch(e){}
+    }
+
+    for(let addr of dexAddrs){
+        try{
+            const res=await fetch(
+                `https://api.dexscreener.com/latest/dex/tokens/${addr}`
+            );
+
+            const data=await res.json();
+
+            if(data.pairs&&data.pairs[0]){
+                const p=data.pairs[0];
+
+                caNames[addr]=p.baseToken.symbol;
+
+                combinedData.push({
+                    symbol:p.baseToken.symbol,
+                    isDex:true,
+                    address:addr,
+                    lastPrice:
+                        parseFloat(p.priceUsd)*usdToEur,
+                    priceChangePercent:
+                        p.priceChange.h24||0
                 });
             }
+        }catch(e){}
+    }
 
-            track.innerHTML = items.map(item => {
-                if (item.value === null || !Number.isFinite(item.value)) {
-                    return `
-                        <span class="perf-item">
-                            <span class="perf-label">${item.hours}H</span>
-                            <span>--</span>
-                        </span>
-                    `;
-                }
+    localStorage.setItem(
+        'ca_names',
+        JSON.stringify(caNames)
+    );
 
-                const cls = item.value >= 0 ? 'up' : 'down';
-                const sign = item.value >= 0 ? '+' : '';
+    if(combinedData.length>0){
+        marketData=combinedData.sort(
+            (a,b)=>
+                parseFloat(b.priceChangePercent)-
+                parseFloat(a.priceChangePercent)
+        );
+    }
 
-                return `
-                    <span class="perf-item">
-                        <span class="perf-label">${item.hours}H</span>
-                        <span class="${cls}">
-                            ${sign}${item.value.toFixed(1)}%
-                        </span>
-                    </span>
-                `;
-            }).join('');
+    renderUI();
 
-            /*
-             * Käivitame animatsiooni iga kord uuesti,
-             * kui tunnine info muutub.
-             */
-            track.style.animation = 'none';
-            track.offsetHeight;
-            track.style.animation = '';
-        }
+    /*
+    Salvestame hinnad tunniajalisse ajalukku.
+    */
+    recordHourlyPrices();
 
-        mainWrapper.addEventListener('touchstart', (e) => {
-            if (mainWrapper.scrollTop === 0) touchStartY = e.touches[0].clientY;
-            else touchStartY = 0;
-        }, { passive: true });
+    if(statusEl)
+        statusEl.classList.remove('status-refreshing');
+}
 
-        mainWrapper.addEventListener('touchmove', (e) => {
-            if (touchStartY > 0 && mainWrapper.scrollTop === 0) {
-                const currentY = e.touches[0].clientY;
+function renderUI(){
+    const wrapper=document.getElementById('main-wrapper');
 
-                if (currentY > touchStartY) e.preventDefault();
-            }
-        }, { passive: false });
+    if(!wrapper)return;
 
-        mainWrapper.addEventListener('touchend', async (e) => {
-            if (touchStartY > 0 && e.changedTouches[0].clientY - touchStartY > 60) {
-                await updateMarket();
-            }
+    wrapper.innerHTML='';
 
-            touchStartY = 0;
-        }, { passive: true });
+    marketData.forEach(c=>{
+        const sym=c.isDex
+            ?(caNames[c.address]||"DEX")
+            :c.symbol.replace(/(USDT|USD)$/,"");
 
+        const p=parseFloat(c.lastPrice)*
+            (c.isDex?1:usdToEur);
 
-        const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
+        const priceKey=
+            c.isDex?c.address:c.symbol;
 
-        document.getElementById('theme-grid').innerHTML =
-            themeNames.map(t =>
-                `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`
-            ).join('');
+        currentPrices[priceKey]=p;
 
-        function setTheme(t) {
-            document.body.setAttribute('data-theme', t);
-            localStorage.setItem('theme', t);
+        const avgBuy=parseFloat(
+            localStorage.getItem('avg_'+priceKey)
+        );
 
-            document.getElementById('custom-style').innerHTML = '';
-            localStorage.removeItem('custom_theme');
-        }
+        const pnl=
+            Number.isFinite(avgBuy)&&avgBuy>0
+            ?((p-avgBuy)/avgBuy)*100
+            :null;
 
+        const pnlText=
+            pnl!==null
+            ?`<span class="${pnl>=0?'up':'down'}"
+                style="font-size:10px;margin-left:8px">
+                ${pnl>=0?'+':''}${pnl.toFixed(1)}%
+              </span>`
+            :`<span style="font-size:10px;margin-left:8px;opacity:.45">—</span>`;
 
-        function setLang(l) {
-            currentLang = l;
-            localStorage.setItem('lang', l);
-            applyLang();
-            renderUI();
-            openManageAssets();
-        }
+        const card=document.createElement('div');
 
-        function rotateDisclaimer() {
-            const el = document.getElementById('ui-disclaimer');
+        card.className='card';
 
-            if(!el) return;
-
-            el.innerText = translations[currentLang].disclaimer_full;
-        }
-
-
-        async function updateMarket() {
-            const statusEl = document.getElementById('status');
-
-            if(statusEl) statusEl.classList.add('status-refreshing');
-
-            try {
-                const fxRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
-
-                if(fxRes.ok) {
-                    const fxData = await fxRes.json();
-                    const eurUsdt = parseFloat(fxData.price);
-
-                    if(eurUsdt > 0) usdToEur = 1 / eurUsdt;
-                }
-            } catch(e) {}
-
-            const binanceSyms = symbols.filter(
-                s => !s.startsWith('0x') && s.length < 15
+        card.onclick=()=>
+            openInfoModal(
+                sym,
+                c.isDex?c.address:c.symbol,
+                c.isDex
             );
 
-            const dexAddrs = symbols.filter(
-                s => s.startsWith('0x') || s.length >= 15
-            );
-
-            let combinedData = [];
-
-            if(binanceSyms.length > 0) {
-                try {
-                    const priceRes = await fetch(
-                        'https://api.binance.com/api/v3/ticker/24hr?symbols=' +
-                        JSON.stringify(binanceSyms)
-                    );
-
-                    if(priceRes.ok) {
-                        combinedData = await priceRes.json();
-                    }
-                } catch(e) {}
-            }
-
-            for(let addr of dexAddrs) {
-                try {
-                    const res = await fetch(
-                        `https://api.dexscreener.com/latest/dex/tokens/${addr}`
-                    );
-
-                    const data = await res.json();
-
-                    if(data.pairs && data.pairs[0]) {
-                        const p = data.pairs[0];
-
-                        caNames[addr] = p.baseToken.symbol;
-
-                        combinedData.push({
-                            symbol: p.baseToken.symbol,
-                            isDex: true,
-                            address: addr,
-                            lastPrice: parseFloat(p.priceUsd) * usdToEur,
-                            priceChangePercent: p.priceChange.h24 || 0
-                        });
-                    }
-                } catch(e) {}
-            }
-
-            localStorage.setItem(
-                'ca_names',
-                JSON.stringify(caNames)
-            );
-
-            if (combinedData.length > 0) {
-                marketData = combinedData.sort(
-                    (a, b) =>
-                        parseFloat(b.priceChangePercent) -
-                        parseFloat(a.priceChangePercent)
-                );
-            }
-
-            renderUI();
-
-            /*
-             * Võta tunnine snapshot pärast värskete hindade
-             * saamist. Snapshot võetakse maksimaalselt kord tunnis.
-             */
-            captureHourlySnapshot(false);
-
-            if(statusEl) statusEl.classList.remove('status-refreshing');
-        }
-
-
-        function renderUI() {
-            const wrapper = document.getElementById('main-wrapper');
-
-            if (!wrapper) return;
-
-            wrapper.innerHTML = '';
-
-            marketData.forEach(c => {
-                const sym = c.isDex
-                    ? (caNames[c.address] || "DEX")
-                    : c.symbol.replace(/(USDT|USD)$/, "");
-
-                const p = parseFloat(c.lastPrice) * (c.isDex ? 1 : usdToEur);
-
-                const priceKey = c.isDex
-                    ? c.address
-                    : c.symbol;
-
-                currentPrices[priceKey] = p;
-
-                /*
-                 * Average Buy P/L
-                 *
-                 * See % on ainult sinu ostuhinna suhtes.
-                 */
-                const avgBuy = parseFloat(
-                    localStorage.getItem('avg_' + priceKey)
-                );
-
-                const pnl =
-                    Number.isFinite(avgBuy) && avgBuy > 0
-                        ? ((p - avgBuy) / avgBuy) * 100
-                        : null;
-
-                const pnlText =
-                    pnl !== null
-                        ? `<span class="${pnl >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${pnl >= 0 ? '+' : ''}${pnl.toFixed(1)}%</span>`
-                        : `<span style="font-size:10px; margin-left:8px; opacity:0.45;">—</span>`;
-
-                const card = document.createElement('div');
-
-                card.className = 'card';
-
-                card.onclick = () =>
-                    openInfoModal(
-                        sym,
-                        c.isDex ? c.address : c.symbol,
-                        c.isDex
-                    );
-
-                card.innerHTML =
-                    `<div class="coin-row">
-                        <div>
-                            <span class="label-text">${sym}</span>
-                            ${pnlText}
-                        </div>
-                        <div class="value-text">€${p.toFixed(2)}</div>
-                    </div>`;
-
-                wrapper.appendChild(card);
-            });
-
-            renderPortfolio();
-            renderHourlyPerformance();
-        }
-
-
-        function renderPortfolio() {
-            let total = 0;
-            let items = '';
-
-            symbols.forEach(s => {
-                const isDex =
-                    s.startsWith('0x') || s.length >= 15;
-
-                const qty =
-                    parseFloat(localStorage.getItem('p_'+s)) || 0;
-
-                const price =
-                    currentPrices[s] || 0;
-
-                if (qty > 0 && price > 0) {
-                    total += (qty * price);
-
-                    items += `
-                        <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;">
-                            <span>${isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/,"")}</span>
-                            <span>€${(qty*price).toFixed(2)}</span>
-                        </div>`;
-                }
-            });
-
-            document.getElementById('portfolio-total').innerText =
-                `€${total.toFixed(2)}`;
-
-            document.getElementById('portfolio-list').innerHTML =
-                items ||
-                `<div style="opacity:0.5; font-size:10px; text-align:center;">
-                    ${translations[currentLang].no_assets}
-                </div>`;
-
-            renderHourlyPerformance();
-        }
-
-
-        function openDistribution() {
-            let total = 0;
-            let holdings = [];
-
-            symbols.forEach(s => {
-                const isDex =
-                    s.startsWith('0x') || s.length >= 15;
-
-                const qty =
-                    parseFloat(localStorage.getItem('p_' + s)) || 0;
-
-                const price =
-                    currentPrices[s] || 0;
-
-                if (qty > 0 && price > 0) {
-                    total += (qty * price);
-
-                    holdings.push({
-                        name: isDex
-                            ? (caNames[s] || "DEX")
-                            : s.replace(/(USDT|USD)$/, ""),
-                        val: (qty * price)
-                    });
-                }
-            });
-
-            const container =
-                document.getElementById('dist-content');
-
-            container.innerHTML =
-                holdings.length > 0
-                    ? holdings.map(h =>
-                        `<div class="dist-row">
-                            <div class="dist-label">
-                                <span>${h.name}</span>
-                                <span>€${h.val.toFixed(2)}</span>
-                            </div>
-                            <div class="dist-bar-bg">
-                                <div class="dist-bar-fill"
-                                     style="width: ${total > 0 ? ((h.val/total)*100).toFixed(0) : 0}%">
-                                </div>
-                            </div>
-                        </div>`
-                    ).join('')
-                    : `<div style="opacity:0.5; text-align:center;">
-                        ${translations[currentLang].no_assets_dist}
-                    </div>`;
-
-            document.getElementById('dist-overlay').style.display = 'flex';
-        }
-
-
-        function togglePortfolio() {
-            const d =
-                document.getElementById('portfolio-details');
-
-            d.style.display =
-                d.style.display === 'block'
-                    ? 'none'
-                    : 'block';
-
-            renderHourlyPerformance();
-        }
-
-
-        function openManageAssets() {
-            const list =
-                document.getElementById('asset-list-manage');
-
-            list.innerHTML =
-                symbols.map(s =>
-                    `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;">
-                        <span>${caNames[s] || s.replace(/(USDT|USD)$/, "")}</span>
-                        <span style="cursor:pointer;" onclick="removeAsset('${s}')">
-                            🗑️ ${translations[currentLang].remove}
-                        </span>
-                    </div>`
-                ).join('');
-
-            document.getElementById('manage-overlay').style.display = 'flex';
-        }
-
-
-        function removeAsset(s) {
-            symbols =
-                symbols.filter(item => item !== s);
-
-            localStorage.setItem(
-                'user_symbols',
-                JSON.stringify(symbols)
-            );
-
-            openManageAssets();
-            updateMarket();
-        }
-
-
-        async function addNewAsset() {
-            const val =
-                document.getElementById('new-asset-input').value.trim();
-
-            if(!val) return;
-
-            if(val.startsWith('0x')) {
-                const res =
-                    await fetch(
-                        `https://api.dexscreener.com/latest/dex/search?q=${val}`
-                    );
-
-                const data = await res.json();
-
-                if(data.pairs && data.pairs.length > 0) {
-                    caNames[val] =
-                        data.pairs[0].baseToken.symbol;
-                }
-
-                symbols.push(val);
-            } else {
-                symbols.push(val.toUpperCase());
-            }
-
-            localStorage.setItem(
-                'user_symbols',
-                JSON.stringify(symbols)
-            );
-
-            document.getElementById('new-asset-input').value = '';
-
-            openManageAssets();
-            updateMarket();
-        }
-
-
-        function openEdit() {
-            const fields =
-                symbols.map(s => {
-                    const isDex =
-                        s.startsWith('0x') || s.length >= 15;
-
-                    const displayName =
-                        isDex
-                            ? (caNames[s] || s)
-                            : s.replace(/(USDT|USD)$/,"");
-
-                    return `
-                        <div style="margin-bottom:12px;">
-                            <label style="font-size:10px; font-weight:bold; color:var(--title);">
-                                ${displayName} QTY
-                            </label>
-                            <br>
-                            <input
-                                type="number"
-                                id="e-${s}"
-                                value="${localStorage.getItem('p_'+s)||''}"
-                                style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"
-                            >
-
-                            <label style="font-size:10px; font-weight:bold; color:var(--title); display:block; margin-top:8px;">
-                                ${displayName} AVERAGE BUY (€)
-                            </label>
-                            <br>
-
-                            <input
-                                type="number"
-                                step="any"
-                                id="a-${s}"
-                                value="${localStorage.getItem('avg_'+s)||''}"
-                                placeholder="0.00"
-                                style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"
-                            >
-                        </div>`;
-                }).join('');
-
-            const overlay =
-                document.createElement('div');
-
-            overlay.className =
-                'modal-overlay';
-
-            overlay.style.display =
-                'flex';
-
-            overlay.innerHTML =
-                `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;">
-                    <div style="overflow-y:auto; max-height:60vh;">
-                        ${fields}
-                    </div>
-
-                    <button
-                        onclick="saveP(this)"
-                        style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">
-                        ${translations[currentLang].save}
-                    </button>
-                </div>`;
-
-            overlay.onclick =
-                () => overlay.remove();
-
-            document.body.appendChild(overlay);
-        }
-
-
-        function saveP(btn) {
-            symbols.forEach(s => {
-                const val =
-                    document.getElementById('e-'+s).value;
-
-                const avgBuy =
-                    document.getElementById('a-'+s).value;
-
-                localStorage.setItem(
-                    'p_'+s,
-                    val
-                );
-
-                localStorage.setItem(
-                    'avg_'+s,
-                    avgBuy
-                );
-            });
-
-            btn.parentElement.parentElement.remove();
-
-            renderUI();
-        }
-
-
-        function openGeneralNews() {
-            document.getElementById('info-header').innerText =
-                `GLOBAL CRYPTO NEWS`;
-
-            document.getElementById('info-content').innerHTML =
-                `<a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC</a>
-                 <a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a>
-                 <a href="https://cointelegraph.com" target="_blank" class="news-btn">COINTELEGRAPH</a>
-                 <a href="https://decrypt.co" target="_blank" class="news-btn">DECRYPT</a>`;
-
-            document.getElementById('info-overlay').style.display =
-                'flex';
-        }
-
-
-        function openAppInfo() {
-            document.getElementById('info-header').innerText =
-                translations[currentLang].legal_label;
-
-            document.getElementById('info-content').innerHTML =
-                `<div style="font-size:10px; line-height:1.5; color:var(--text);">
-                    ${translations[currentLang].disclaimer_full}
-                </div>`;
-
-            document.getElementById('info-overlay').style.display =
-                'flex';
-        }
-
-
-        function openInfoModal(sym, fullSym, isDex) {
-            document.getElementById('info-header').innerText =
-                `${sym} ANALYSIS`;
-
-            const theme =
-                document.body.getAttribute('data-theme') === 'white-black'
-                    ? 'light'
-                    : 'dark';
-
-            document.getElementById('info-content').innerHTML =
-                isDex
-                    ? `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center;">
-                            CA: ${fullSym}
-                       </div>
-                       <a href="https://dexscreener.com/bsc/${fullSym}"
-                          target="_blank"
-                          class="news-btn"
-                          style="background:var(--title); color:#000; border:none; margin-top:10px;">
-                          📊 AVAGE DEXSCREENERIS
-                       </a>`
-                    : `<div id="chart-container">
-                            <div id="tv-medium-widget"></div>
-                       </div>
-                       <a href="https://www.binance.com/en/trade/${fullSym}"
-                          target="_blank"
-                          class="news-btn"
-                          style="background:#F3BA2F; color:#000; border:none;">
-                          TRADE ON BINANCE
-                       </a>`;
-
-            if(!isDex) {
-                setTimeout(() => {
-                    new TradingView.MediumWidget({
-                        "container_id": "tv-medium-widget",
-                        "symbols": [["BINANCE:" + fullSym + "|1H"]],
-                        "chartOnly": true,
-                        "width": "100%",
-                        "height": "100%",
-                        "locale": "en",
-                        "colorTheme": theme,
-                        "gridLineColor": "transparent",
-                        "fontColor": "var(--text)",
-                        "trendLineColor": "var(--title)"
-                    });
-                }, 100);
-            }
-
-            document.getElementById('info-overlay').style.display =
-                'flex';
-        }
-
-
-        const tickerEl =
-            document.getElementById('insights-ticker');
-
-        if(tickerEl) {
-            tickerEl.innerText =
-                "CRYPTO TERMINAL READY *** TRACKING LIVE ASSETS *** MARKET DATA UPDATING ***";
-        }
-
-
-        setInterval(() => {
-            document.getElementById('status').innerHTML =
-                '<span class="live-dot"></span> LIVE - ' +
-                new Date().toLocaleTimeString();
-        }, 1000);
-
-
-        function updateCustomTheme() {
-            const bg =
-                document.getElementById('cp-bg').value;
-
-            const card =
-                document.getElementById('cp-card').value;
-
-            const border =
-                document.getElementById('cp-border').value;
-
-            const text =
-                document.getElementById('cp-text').value;
-
-            const css =
-                `:root {
-                    --bg: ${bg};
-                    --card: ${card};
-                    --border: ${border};
-                    --text: ${text};
-                    --title: ${text};
-                }`;
-
-            document.getElementById('custom-style').innerHTML =
-                css;
-
-            localStorage.setItem(
-                'custom_theme',
-                JSON.stringify({
-                    bg,
-                    card,
-                    border,
-                    text
-                })
-            );
-        }
-
-
-        window.addEventListener('load', () => {
-            const saved =
-                localStorage.getItem('custom_theme');
-
-            if(saved) {
-                const {
-                    bg,
-                    card,
-                    border,
-                    text
-                } = JSON.parse(saved);
-
-                document.getElementById('cp-bg').value =
-                    bg;
-
-                document.getElementById('cp-card').value =
-                    card;
-
-                document.getElementById('cp-border').value =
-                    border;
-
-                document.getElementById('cp-text').value =
-                    text;
-
-                updateCustomTheme();
-            }
-
-            renderHourlyPerformance();
+        card.innerHTML=
+        `<div class="coin-row">
+            <div>
+                <span class="label-text">${sym}</span>
+                ${pnlText}
+            </div>
+            <div class="value-text">
+                €${p.toFixed(2)}
+            </div>
+        </div>`;
+
+        wrapper.appendChild(card);
+    });
+
+    renderPortfolio();
+    renderHourlyPerformance();
+}
+
+function getPortfolioTotal(){
+    let total=0;
+
+    symbols.forEach(s=>{
+        const qty=
+            parseFloat(localStorage.getItem('p_'+s))||0;
+
+        const price=
+            currentPrices[s]||0;
+
+        if(qty>0&&price>0)
+            total+=qty*price;
+    });
+
+    return total;
+}
+
+/*
+========================================================
+1H–6H PORTFOLIO TICKER
+========================================================
+*/
+
+let hourlyHistory=[];
+
+try{
+    const saved=localStorage.getItem(
+        'portfolio_hourly_history'
+    );
+
+    if(saved){
+        const parsed=JSON.parse(saved);
+
+        if(Array.isArray(parsed))
+            hourlyHistory=parsed;
+    }
+}catch(e){
+    hourlyHistory=[];
+}
+
+function saveHourlyHistory(){
+    try{
+        localStorage.setItem(
+            'portfolio_hourly_history',
+            JSON.stringify(hourlyHistory.slice(-6))
+        );
+    }catch(e){}
+}
+
+function captureHourlySnapshot(){
+    const total=getPortfolioTotal();
+
+    if(!total||total<=0)return;
+
+    const now=Date.now();
+
+    const last=
+        hourlyHistory.length
+        ?hourlyHistory[hourlyHistory.length-1]
+        :null;
+
+    if(!last||now-last.time>=60*60*1000){
+        hourlyHistory.push({
+            time:now,
+            value:total
         });
 
+        hourlyHistory=
+            hourlyHistory.slice(-6);
 
-        applyLang();
+        saveHourlyHistory();
+        renderHourlyPerformance();
+    }
+}
 
-        updateMarket();
+function renderHourlyPerformance(){
+    const track=
+        document.getElementById('perf-track');
+
+    if(!track)return;
+
+    const current=getPortfolioTotal();
+
+    if(!current){
+        track.innerHTML=
+        `<span class="perf-item">
+            <span class="perf-label">1H</span>
+            <span>--</span>
+         </span>`;
+        return;
+    }
+
+    let html='';
+
+    for(let hours=1;hours<=6;hours++){
+        const target=
+            Date.now()-hours*60*60*1000;
+
+        let reference=null;
+
+        for(let i=hourlyHistory.length-1;i>=0;i--){
+            if(hourlyHistory[i].time<=target){
+                reference=hourlyHistory[i];
+                break;
+            }
+        }
+
+        if(!reference&&hourlyHistory.length>=hours){
+            reference=
+                hourlyHistory[
+                    hourlyHistory.length-hours
+                ];
+        }
+
+        let result=null;
+
+        if(reference&&reference.value>0){
+            result=
+                ((current-reference.value)/
+                reference.value)*100;
+        }
+
+        if(result===null){
+            html+=
+            `<span class="perf-item">
+                <span class="perf-label">${hours}H</span>
+                <span>--</span>
+             </span>`;
+        }else{
+            html+=
+            `<span class="perf-item">
+                <span class="perf-label">${hours}H</span>
+                <span class="${result>=0?'up':'down'}">
+                    ${result>=0?'+':''}${result.toFixed(1)}%
+                </span>
+             </span>`;
+        }
+    }
+
+    track.innerHTML=html;
+
+    track.style.animation='none';
+    track.offsetHeight;
+    track.style.animation='';
+}
+
+function renderPortfolio(){
+    let total=0;
+    let items='';
+
+    symbols.forEach(s=>{
+        const isDex=
+            s.startsWith('0x')||s.length>=15;
+
+        const qty=
+            parseFloat(localStorage.getItem('p_'+s))||0;
+
+        const price=
+            currentPrices[s]||0;
+
+        if(qty>0&&price>0){
+            total+=qty*price;
+
+            items+=
+            `<div style="display:flex;justify-content:space-between;
+            margin-bottom:6px;font-size:11px">
+                <span>
+                    ${isDex
+                    ?(caNames[s]||"DEX")
+                    :s.replace(/(USDT|USD)$/,"")}
+                </span>
+                <span>€${(qty*price).toFixed(2)}</span>
+            </div>`;
+        }
+    });
+
+    document.getElementById('portfolio-total').innerText=
+        `€${total.toFixed(2)}`;
+
+    document.getElementById('portfolio-list').innerHTML=
+        items||
+        `<div style="opacity:.5;font-size:10px;text-align:center">
+            ${translations[currentLang].no_assets}
+        </div>`;
+
+    renderHourlyPerformance();
+}
+
+function togglePortfolio(){
+    const d=
+        document.getElementById('portfolio-details');
+
+    d.style.display=
+        d.style.display==='block'
+        ?'none'
+        :'block';
+
+    renderHourlyPerformance();
+}
+
+function openDistribution(){
+    let total=0;
+    let holdings=[];
+
+    symbols.forEach(s=>{
+        const isDex=
+            s.startsWith('0x')||s.length>=15;
+
+        const qty=
+            parseFloat(localStorage.getItem('p_'+s))||0;
+
+        const price=
+            currentPrices[s]||0;
+
+        if(qty>0&&price>0){
+            total+=qty*price;
+
+            holdings.push({
+                name:isDex
+                    ?(caNames[s]||"DEX")
+                    :s.replace(/(USDT|USD)$/,""),
+                val:qty*price
+            });
+        }
+    });
+
+    const container=
+        document.getElementById('dist-content');
+
+    container.innerHTML=
+        holdings.length>0
+        ?holdings.map(h=>
+        `<div class="dist-row">
+            <div class="dist-label">
+                <span>${h.name}</span>
+                <span>€${h.val.toFixed(2)}</span>
+            </div>
+            <div class="dist-bar-bg">
+                <div class="dist-bar-fill"
+                    style="width:${total>0?((h.val/total)*100).toFixed(0):0}%">
+                </div>
+            </div>
+        </div>`
+        ).join('')
+        :`<div style="opacity:.5;text-align:center">
+            ${translations[currentLang].no_assets_dist}
+          </div>`;
+
+    document.getElementById('dist-overlay').style.display='flex';
+}
+
+/*
+========================================================
+PRICE HISTORY ACTION
+========================================================
+*/
+
+function openHistoryAssets(){
+    const list=
+        document.getElementById('history-assets-list');
+
+    list.innerHTML='';
+
+    symbols.forEach(s=>{
+        const isDex=
+            s.startsWith('0x')||s.length>=15;
+
+        const name=
+            isDex
+            ?(caNames[s]||"DEX")
+            :s.replace(/(USDT|USD)$/,"");
+
+        const avgBuy=
+            parseFloat(localStorage.getItem('avg_'+s));
+
+        const points=
+            priceHistory[s]&&priceHistory[s].points
+            ?priceHistory[s].points.length
+            :0;
+
+        const row=document.createElement('div');
+
+        row.className='card';
+
+        row.style.marginBottom='5px';
+
+        row.innerHTML=
+        `<div class="coin-row">
+            <div>
+                <span class="label-text">${name}</span>
+                <div style="font-size:8px;opacity:.5;margin-top:3px">
+                    ${points} price points
+                </div>
+            </div>
+            <div style="text-align:right">
+                <div style="font-size:10px">
+                    ${Number.isFinite(avgBuy)
+                    ?'BUY €'+avgBuy
+                    :'NO BUY'}
+                </div>
+                <div style="font-size:8px;opacity:.5">
+                    HISTORY →
+                </div>
+            </div>
+        </div>`;
+
+        row.onclick=()=>{
+            openHistoryDetail(s,name);
+        };
+
+        list.appendChild(row);
+    });
+
+    document.getElementById(
+        'history-assets-overlay'
+    ).style.display='flex';
+}
+
+function openHistoryDetail(symbol,name){
+    document.getElementById(
+        'history-assets-overlay'
+    ).style.display='none';
+
+    const avgBuy=
+        parseFloat(
+            localStorage.getItem('avg_'+symbol)
+        );
+
+    const history=
+        priceHistory[symbol]||{
+            started:Date.now(),
+            points:[]
+        };
+
+    const points=
+        Array.isArray(history.points)
+        ?history.points
+        :[];
+
+    const current=
+        currentPrices[symbol]||0;
+
+    let pnl=null;
+
+    if(
+        Number.isFinite(avgBuy)&&
+        avgBuy>0&&
+        current>0
+    ){
+        pnl=
+            ((current-avgBuy)/avgBuy)*100;
+    }
+
+    document.getElementById(
+        'history-detail-header'
+    ).innerText=
+        `${name} PRICE HISTORY`;
+
+    const content=
+        document.getElementById(
+            'history-detail-content'
+        );
+
+    let html='';
+
+    if(Number.isFinite(avgBuy)&&avgBuy>0){
+        html+=
+        `<div class="history-buy">
+            AVERAGE BUY:
+            <strong>€${formatPrice(avgBuy)}</strong>
+         </div>`;
+    }
+
+    if(current>0){
+        html+=
+        `<div class="history-pnl ${pnl!==null?(pnl>=0?'up':'down'):''}">
+            CURRENT:
+            €${formatPrice(current)}
+            ${pnl!==null
+            ?` • ${pnl>=0?'+':''}${pnl.toFixed(1)}%`
+            :''}
+         </div>`;
+    }
+
+    if(points.length<2){
+        html+=
+        `<div class="history-empty">
+            Ajalugu koguneb iga tunni järel.<br><br>
+            Praegu on salvestatud ${points.length} hinnapunkti.
+            Vähemalt 2 punkti on vaja hinnaliikumise näitamiseks.
+         </div>`;
+    }else{
+        html+=
+        `<svg class="history-chart"
+            id="history-svg"
+            viewBox="0 0 320 180"
+            preserveAspectRatio="none">
+         </svg>`;
+
+        html+=
+        `<div class="history-list">`;
+
+        points.slice().reverse().forEach(point=>{
+            const date=
+                new Date(point.time).toLocaleString(
+                    'et-EE',
+                    {
+                        day:'2-digit',
+                        month:'2-digit',
+                        hour:'2-digit',
+                        minute:'2-digit'
+                    }
+                );
+
+            let change='';
+
+            if(Number.isFinite(avgBuy)&&avgBuy>0){
+                const cp=
+                    ((point.price-avgBuy)/avgBuy)*100;
+
+                change=
+                    `<span class="${cp>=0?'up':'down'}">
+                        ${cp>=0?'+':''}${cp.toFixed(1)}%
+                     </span>`;
+            }
+
+            html+=
+            `<div class="history-row">
+                <span class="history-date">${date}</span>
+                <span class="history-price">
+                    €${formatPrice(point.price)}
+                </span>
+                ${change}
+             </div>`;
+        });
+
+        html+='</div>';
+    }
+
+    content.innerHTML=html;
+
+    document.getElementById(
+        'history-detail-overlay'
+    ).style.display='flex';
+
+    if(points.length>=2){
+        setTimeout(()=>{
+            drawHistoryChart(
+                points,
+                avgBuy,
+                current
+            );
+        },50);
+    }
+}
+
+function formatPrice(price){
+    if(price>=1)
+        return price.toFixed(2);
+
+    if(price>=.1)
+        return price.toFixed(4);
+
+    if(price>=.01)
+        return price.toFixed(5);
+
+    if(price>=.001)
+        return price.toFixed(6);
+
+    return price.toFixed(8);
+}
+
+function drawHistoryChart(points,avgBuy,current){
+    const svg=
+        document.getElementById('history-svg');
+
+    if(!svg)return;
+
+    const W=320;
+    const H=180;
+    const pad=18;
+
+    let values=
+        points.map(p=>p.price);
+
+    if(Number.isFinite(avgBuy)&&avgBuy>0)
+        values.push(avgBuy);
+
+    if(current>0)
+        values.push(current);
+
+    let min=Math.min(...values);
+    let max=Math.max(...values);
+
+    if(min===max){
+        min*=.99;
+        max*=1.01;
+    }
+
+    const range=max-min;
+
+    min-=range*.08;
+    max+=range*.08;
+
+    function x(i){
+        return pad+
+            (i/(points.length-1))*
+            (W-pad*2);
+    }
+
+    function y(v){
+        return H-pad-
+            ((v-min)/(max-min))*
+            (H-pad*2);
+    }
+
+    let markup='';
+
+    /*
+    Grid
+    */
+    for(let i=0;i<4;i++){
+        const yy=
+            pad+
+            i*((H-pad*2)/3);
+
+        markup+=
+        `<line x1="${pad}" y1="${yy}"
+               x2="${W-pad}" y2="${yy}"
+               stroke="currentColor"
+               opacity=".12"
+               stroke-width="1"/>`;
+    }
+
+    /*
+    Average Buy line
+    */
+    if(Number.isFinite(avgBuy)&&avgBuy>0){
+        const buyY=y(avgBuy);
+
+        markup+=
+        `<line x1="${pad}" y1="${buyY}"
+               x2="${W-pad}" y2="${buyY}"
+               stroke="var(--title)"
+               stroke-width="1.5"
+               stroke-dasharray="5 4"
+               opacity=".9"/>`;
+
+        markup+=
+        `<text x="${W-pad-3}" y="${buyY-4}"
+               fill="var(--title)"
+               font-size="8"
+               text-anchor="end">
+            BUY
+         </text>`;
+    }
+
+    /*
+    Price line
+    */
+    const path=
+        points.map((p,i)=>
+            `${i===0?'M':'L'} ${x(i)} ${y(p.price)}`
+        ).join(' ');
+
+    markup+=
+    `<path d="${path}"
+           fill="none"
+           stroke="var(--title)"
+           stroke-width="2"/>`;
+
+    /*
+    First and last points
+    */
+    const first=points[0];
+    const last=points[points.length-1];
+
+    markup+=
+    `<circle cx="${x(0)}"
+             cy="${y(first.price)}"
+             r="3"
+             fill="var(--title)"/>`;
+
+    markup+=
+    `<circle cx="${x(points.length-1)}"
+             cy="${y(last.price)}"
+             r="4"
+             fill="var(--title)"/>`;
+
+    markup+=
+    `<text x="${pad}" y="12"
+           fill="currentColor"
+           opacity=".55"
+           font-size="8">
+        €${formatPrice(max)}
+     </text>`;
+
+    markup+=
+    `<text x="${pad}" y="${H-4}"
+           fill="currentColor"
+           opacity=".55"
+           font-size="8">
+        €${formatPrice(min)}
+     </text>`;
+
+    svg.innerHTML=markup;
+}
+
+/*
+========================================================
+ASSET MANAGEMENT
+========================================================
+*/
+
+function openManageAssets(){
+    const list=
+        document.getElementById('asset-list-manage');
+
+    list.innerHTML=
+        symbols.map(s=>
+        `<div style="display:flex;justify-content:space-between;
+        align-items:center;padding:12px;
+        border-bottom:1px solid var(--accent);font-size:10px">
+            <span>
+                ${caNames[s]||s.replace(/(USDT|USD)$/,"")}
+            </span>
+            <span style="cursor:pointer"
+                onclick="removeAsset('${s}')">
+                🗑️ ${translations[currentLang].remove}
+            </span>
+        </div>`
+        ).join('');
+
+    document.getElementById(
+        'manage-overlay'
+    ).style.display='flex';
+}
+
+function removeAsset(s){
+    symbols=
+        symbols.filter(item=>item!==s);
+
+    localStorage.setItem(
+        'user_symbols',
+        JSON.stringify(symbols)
+    );
+
+    openManageAssets();
+    updateMarket();
+}
+
+async function addNewAsset(){
+    const val=
+        document.getElementById(
+            'new-asset-input'
+        ).value.trim();
+
+    if(!val)return;
+
+    if(val.startsWith('0x')){
+        try{
+            const res=await fetch(
+                `https://api.dexscreener.com/latest/dex/search?q=${val}`
+            );
+
+            const data=await res.json();
+
+            if(data.pairs&&data.pairs.length>0)
+                caNames[val]=
+                    data.pairs[0].baseToken.symbol;
+        }catch(e){}
+
+        symbols.push(val);
+    }else{
+        symbols.push(val.toUpperCase());
+    }
+
+    localStorage.setItem(
+        'user_symbols',
+        JSON.stringify(symbols)
+    );
+
+    document.getElementById(
+        'new-asset-input'
+    ).value='';
+
+    openManageAssets();
+    updateMarket();
+}
+
+/*
+========================================================
+EDIT / AVERAGE BUY
+========================================================
+*/
+
+function openEdit(){
+    const fields=
+        symbols.map(s=>{
+            const isDex=
+                s.startsWith('0x')||s.length>=15;
+
+            const displayName=
+                isDex
+                ?(caNames[s]||s)
+                :s.replace(/(USDT|USD)$/,"");
+
+            return `
+            <div style="margin-bottom:12px">
+
+                <label style="font-size:10px;font-weight:bold;color:var(--title)">
+                    ${displayName} QTY
+                </label>
+
+                <br>
+
+                <input
+                    type="number"
+                    id="e-${s}"
+                    value="${localStorage.getItem('p_'+s)||''}"
+                    style="width:100%;padding:12px;background:#000;
+                    border:1px solid var(--border);color:#fff;
+                    border-radius:4px;margin-top:4px"
+                >
+
+                <label style="font-size:10px;font-weight:bold;
+                color:var(--title);display:block;margin-top:8px">
+                    ${displayName} AVERAGE BUY (€)
+                </label>
+
+                <br>
+
+                <input
+                    type="number"
+                    step="any"
+                    id="a-${s}"
+                    value="${localStorage.getItem('avg_'+s)||''}"
+                    placeholder="0.00"
+                    style="width:100%;padding:12px;background:#000;
+                    border:1px solid var(--border);color:#fff;
+                    border-radius:4px;margin-top:4px"
+                >
+
+            </div>`;
+        }).join('');
+
+    const overlay=
+        document.createElement('div');
+
+    overlay.className='modal-overlay';
+    overlay.style.display='flex';
+
+    overlay.innerHTML=
+    `<div class="modal"
+        onclick="event.stopPropagation()"
+        style="padding:20px">
+
+        <div style="overflow-y:auto;max-height:60vh">
+            ${fields}
+        </div>
+
+        <button
+            onclick="saveP(this)"
+            style="padding:15px;margin-top:10px;
+            background:var(--title);color:#000;
+            font-weight:bold;border:none;border-radius:4px;
+            font-size:11px">
+            ${translations[currentLang].save}
+        </button>
+
+    </div>`;
+
+    overlay.onclick=
+        ()=>overlay.remove();
+
+    document.body.appendChild(overlay);
+}
+
+function saveP(btn){
+    symbols.forEach(s=>{
+        const val=
+            document.getElementById('e-'+s).value;
+
+        const avgBuy=
+            document.getElementById('a-'+s).value;
+
+        const oldAvg=
+            localStorage.getItem('avg_'+s);
+
+        localStorage.setItem(
+            'p_'+s,
+            val
+        );
+
+        localStorage.setItem(
+            'avg_'+s,
+            avgBuy
+        );
 
         /*
-         * Turuinfo värskendamine iga 30 sekundi järel
-         * jääb samaks.
-         */
-        setInterval(updateMarket, 30000);
+        Kui Average Buy sisestatakse esimest korda,
+        märgime selle hetke ajaloo algusajaks.
+        */
+        if(
+            avgBuy &&
+            avgBuy!==oldAvg &&
+            (!priceHistory[s]||
+             !priceHistory[s].started)
+        ){
+            priceHistory[s]={
+                started:Date.now(),
+                points:[]
+            };
+        }
+    });
 
-        /*
-         * Kontrollime iga minuti järel, kas uus tund
-         * on täis saanud. Kui jah, salvestame uue
-         * portfelli väärtuse.
-         */
-        setInterval(() => {
-            captureHourlySnapshot(false);
-            renderHourlyPerformance();
-        }, 60 * 1000);
+    savePriceHistory();
 
-    </script>
+    btn.parentElement.parentElement.remove();
+
+    renderUI();
+}
+
+/*
+========================================================
+NEWS / INFO
+========================================================
+*/
+
+function openGeneralNews(){
+    document.getElementById('info-header').innerText=
+        'GLOBAL CRYPTO NEWS';
+
+    document.getElementById('info-content').innerHTML=
+    `<a href="https://cryptopanic.com"
+        target="_blank"
+        class="news-btn">CRYPTOPANIC</a>
+
+     <a href="https://www.coindesk.com"
+        target="_blank"
+        class="news-btn">COINDESK</a>
+
+     <a href="https://cointelegraph.com"
+        target="_blank"
+        class="news-btn">COINTELEGRAPH</a>
+
+     <a href="https://decrypt.co"
+        target="_blank"
+        class="news-btn">DECRYPT</a>`;
+
+    document.getElementById(
+        'info-overlay'
+    ).style.display='flex';
+}
+
+function openAppInfo(){
+    document.getElementById('info-header').innerText=
+        translations[currentLang].legal_label;
+
+    document.getElementById('info-content').innerHTML=
+    `<div style="font-size:10px;line-height:1.5;color:var(--text)">
+        ${translations[currentLang].disclaimer_full}
+     </div>`;
+
+    document.getElementById(
+        'info-overlay'
+    ).style.display='flex';
+}
+
+function openInfoModal(sym,fullSym,isDex){
+    document.getElementById('info-header').innerText=
+        `${sym} ANALYSIS`;
+
+    const theme=
+        document.body.getAttribute('data-theme')===
+        'white-black'
+        ?'light'
+        :'dark';
+
+    document.getElementById('info-content').innerHTML=
+        isDex
+        ?`<div style="margin-top:10px;padding:10px;
+        background:var(--accent);font-size:9px;text-align:center">
+            CA: ${fullSym}
+         </div>
+
+         <a href="https://dexscreener.com/bsc/${fullSym}"
+            target="_blank"
+            class="news-btn"
+            style="background:var(--title);color:#000;border:none;margin-top:10px">
+            📊 AVA DEXSCREENERIS
+         </a>`
+        :`<div id="chart-container">
+            <div id="tv-medium-widget"></div>
+          </div>
+
+          <a href="https://www.binance.com/en/trade/${fullSym}"
+             target="_blank"
+             class="news-btn"
+             style="background:#F3BA2F;color:#000;border:none">
+             TRADE ON BINANCE
+          </a>`;
+
+    if(!isDex){
+        setTimeout(()=>{
+            new TradingView.MediumWidget({
+                container_id:"tv-medium-widget",
+                symbols:[["BINANCE:"+fullSym+"|1H"]],
+                chartOnly:true,
+                width:"100%",
+                height:"100%",
+                locale:"en",
+                colorTheme:theme,
+                gridLineColor:"transparent",
+                fontColor:"var(--text)",
+                trendLineColor:"var(--title)"
+            });
+        },100);
+    }
+
+    document.getElementById(
+        'info-overlay'
+    ).style.display='flex';
+}
+
+/*
+========================================================
+CUSTOM THEME
+========================================================
+*/
+
+function updateCustomTheme(){
+    const bg=
+        document.getElementById('cp-bg').value;
+
+    const card=
+        document.getElementById('cp-card').value;
+
+    const border=
+        document.getElementById('cp-border').value;
+
+    const text=
+        document.getElementById('cp-text').value;
+
+    const css=
+    `:root{
+        --bg:${bg};
+        --card:${card};
+        --border:${border};
+        --text:${text};
+        --title:${text}
+    }`;
+
+    document.getElementById(
+        'custom-style'
+    ).innerHTML=css;
+
+    localStorage.setItem(
+        'custom_theme',
+        JSON.stringify({
+            bg,card,border,text
+        })
+    );
+}
+
+/*
+========================================================
+INITIALIZATION
+========================================================
+*/
+
+window.addEventListener('load',()=>{
+    const saved=
+        localStorage.getItem('custom_theme');
+
+    if(saved){
+        const {
+            bg,card,border,text
+        }=JSON.parse(saved);
+
+        document.getElementById('cp-bg').value=bg;
+        document.getElementById('cp-card').value=card;
+        document.getElementById('cp-border').value=border;
+        document.getElementById('cp-text').value=text;
+
+        updateCustomTheme();
+    }
+
+    ensureHistoryForExistingAssets();
+    renderHourlyPerformance();
+});
+
+const tickerEl=
+    document.getElementById('insights-ticker');
+
+if(tickerEl){
+    tickerEl.innerText=
+    "CRYPTO TERMINAL READY *** TRACKING LIVE ASSETS *** MARKET DATA UPDATING ***";
+}
+
+setInterval(()=>{
+    document.getElementById('status').innerHTML=
+        '<span class="live-dot"></span> LIVE - '+
+        new Date().toLocaleTimeString();
+},1000);
+
+/*
+Iga 30 sekundi järel turuinfo.
+*/
+setInterval(updateMarket,30000);
+
+/*
+Iga minuti järel kontrollime, kas uus tund
+on täis saanud.
+*/
+setInterval(()=>{
+    captureHourlySnapshot();
+    renderHourlyPerformance();
+},60000);
+
+applyLang();
+updateMarket();
+</script>
+
 </body>
-</html>
+    </html>
