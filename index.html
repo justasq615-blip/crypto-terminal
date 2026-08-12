@@ -259,10 +259,27 @@
             if (savedNames) caNames = JSON.parse(savedNames);
         } catch(e) {}
 
-        let currentPrices = {}; let marketData = []; let usdToEur = 1;
+        let currentPrices = {}; let marketData = []; let usdToEur = 1; 
 
-        mainWrapper.addEventListener('touchstart', (e) => { if (mainWrapper.scrollTop === 0) touchStartY = e.touches[0].clientY; });
-        mainWrapper.addEventListener('touchend', async (e) => { if (touchStartY > 0 && e.changedTouches[0].clientY - touchStartY > 60) { await updateMarket(); } touchStartY = 0; });
+        mainWrapper.addEventListener('touchstart', (e) => {
+            if (mainWrapper.scrollTop === 0) touchStartY = e.touches[0].clientY;
+            else touchStartY = 0;
+        }, { passive: true });
+
+        mainWrapper.addEventListener('touchmove', (e) => {
+            if (touchStartY > 0 && mainWrapper.scrollTop === 0) {
+                const currentY = e.touches[0].clientY;
+                if (currentY > touchStartY) e.preventDefault();
+            }
+        }, { passive: false });
+
+        mainWrapper.addEventListener('touchend', async (e) => {
+            if (touchStartY > 0 && e.changedTouches[0].clientY - touchStartY > 60) {
+                await updateMarket();
+            }
+            touchStartY = 0;
+        }, { passive: true });
+
 
         const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
         document.getElementById('theme-grid').innerHTML = themeNames.map(t => `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`).join('');
@@ -289,7 +306,6 @@
         async function updateMarket() {
             const statusEl = document.getElementById('status');
             if(statusEl) statusEl.classList.add('status-refreshing');
-
             try {
                 const fxRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
                 if(fxRes.ok) {
@@ -298,18 +314,15 @@
                     if(eurUsdt > 0) usdToEur = 1 / eurUsdt;
                 }
             } catch(e) {}
-
             const binanceSyms = symbols.filter(s => !s.startsWith('0x') && s.length < 15);
             const dexAddrs = symbols.filter(s => s.startsWith('0x') || s.length >= 15);
             let combinedData = [];
-
             if(binanceSyms.length > 0) {
                 try {
                     const priceRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=' + JSON.stringify(binanceSyms));
                     if(priceRes.ok) combinedData = await priceRes.json();
                 } catch(e) {}
             }
-
             for(let addr of dexAddrs) {
                 try {
                     const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${addr}`);
@@ -321,7 +334,6 @@
                     }
                 } catch(e) {}
             }
-
             localStorage.setItem('ca_names', JSON.stringify(caNames));
             if (combinedData.length > 0) marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
             renderUI();
@@ -332,64 +344,53 @@
             const wrapper = document.getElementById('main-wrapper');
             if (!wrapper) return;
             wrapper.innerHTML = '';
-
             marketData.forEach(c => {
                 const sym = c.isDex ? (caNames[c.address] || "DEX") : c.symbol.replace(/(USDT|USD)$/, "");
                 const p = parseFloat(c.lastPrice) * (c.isDex ? 1 : usdToEur);
                 const ch = parseFloat(c.priceChangePercent);
-
                 currentPrices[c.isDex ? c.address : c.symbol] = p;
+
+                const avgBuy = parseFloat(localStorage.getItem('avg_' + (c.isDex ? c.address : c.symbol))) || 0;
+                const pnl = avgBuy > 0 ? ((p - avgBuy) / avgBuy) * 100 : null;
+                const pnlText = pnl !== null ? `<span class="${pnl >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${pnl >= 0 ? '+' : ''}${pnl.toFixed(1)}%</span>` : '';
 
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => openInfoModal(sym, c.isDex ? c.address : c.symbol, c.isDex);
-                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}</span><span class="${ch >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${ch.toFixed(1)}%</span></div><div class="value-text">€${p.toFixed(2)}</div></div>`;
+                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}</span>${pnlText}</div><div class="value-text">€${p.toFixed(2)}</div></div>`;
                 wrapper.appendChild(card);
             });
-
             renderPortfolio();
         }
 
         function renderPortfolio() {
             let total = 0; let items = '';
-
             symbols.forEach(s => {
                 const isDex = s.startsWith('0x') || s.length >= 15;
                 const qty = parseFloat(localStorage.getItem('p_'+s)) || 0;
                 const price = currentPrices[s] || 0;
-
                 if (qty > 0 && price > 0) {
                     total += (qty * price);
-
-                    const avgBuy = parseFloat(localStorage.getItem('avg_' + s)) || 0;
-                    const pnl = avgBuy > 0 ? ((price - avgBuy) / avgBuy) * 100 : null;
-                    const pnlText = pnl !== null ? ` <span class="${pnl >= 0 ? 'up' : 'down'}" style="font-size:9px;">${pnl >= 0 ? '+' : ''}${pnl.toFixed(1)}%</span>` : '';
-
-                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/,"")}${pnlText}</span><span>€${(qty*price).toFixed(2)}</span></div>`;
+                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/,"")}</span><span>€${(qty*price).toFixed(2)}</span></div>`;
                 }
             });
-
             document.getElementById('portfolio-total').innerText = `€${total.toFixed(2)}`;
             document.getElementById('portfolio-list').innerHTML = items || `<div style="opacity:0.5; font-size:10px; text-align:center;">${translations[currentLang].no_assets}</div>`;
         }
 
         function openDistribution() {
             let total = 0; let holdings = [];
-
             symbols.forEach(s => {
                 const isDex = s.startsWith('0x') || s.length >= 15;
                 const qty = parseFloat(localStorage.getItem('p_' + s)) || 0;
                 const price = currentPrices[s] || 0;
-
                 if (qty > 0 && price > 0) {
                     total += (qty * price);
                     holdings.push({ name: isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/, ""), val: (qty * price) });
                 }
             });
-
             const container = document.getElementById('dist-content');
             container.innerHTML = holdings.length > 0 ? holdings.map(h => `<div class="dist-row"><div class="dist-label"><span>${h.name}</span><span>€${h.val.toFixed(2)}</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${total > 0 ? ((h.val/total)*100).toFixed(0) : 0}%"></div></div></div>`).join('') : `<div style="opacity:0.5; text-align:center;">${translations[currentLang].no_assets_dist}</div>`;
-
             document.getElementById('dist-overlay').style.display = 'flex';
         }
 
@@ -406,36 +407,26 @@
         async function addNewAsset() {
             const val = document.getElementById('new-asset-input').value.trim();
             if(!val) return;
-
             if(val.startsWith('0x')) {
                 const res = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${val}`);
                 const data = await res.json();
                 if(data.pairs && data.pairs.length > 0) caNames[val] = data.pairs[0].baseToken.symbol;
                 symbols.push(val);
-            } else {
-                symbols.push(val.toUpperCase());
-            }
-
+            } else { symbols.push(val.toUpperCase()); }
             localStorage.setItem('user_symbols', JSON.stringify(symbols));
             document.getElementById('new-asset-input').value = '';
-            openManageAssets();
-            updateMarket();
+            openManageAssets(); updateMarket();
         }
 
         function openEdit() {
             const fields = symbols.map(s => {
                 const isDex = s.startsWith('0x') || s.length >= 15;
                 const displayName = isDex ? (caNames[s] || s) : s.replace(/(USDT|USD)$/,"");
-
                 return `<div style="margin-bottom:12px;"><label style="font-size:10px; font-weight:bold; color:var(--title);">${displayName} QTY</label><br><input type="number" id="e-${s}" value="${localStorage.getItem('p_'+s)||''}" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"><label style="font-size:10px; font-weight:bold; color:var(--title); display:block; margin-top:8px;">${displayName} AVERAGE BUY (€)</label><br><input type="number" step="any" id="a-${s}" value="${localStorage.getItem('avg_'+s)||''}" placeholder="0.00" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"></div>`;
             }).join('');
-
             const overlay = document.createElement('div');
-            overlay.className = 'modal-overlay';
-            overlay.style.display = 'flex';
-
+            overlay.className = 'modal-overlay'; overlay.style.display = 'flex';
             overlay.innerHTML = `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">${translations[currentLang].save}</button></div>`;
-
             overlay.onclick = () => overlay.remove();
             document.body.appendChild(overlay);
         }
@@ -444,11 +435,9 @@
             symbols.forEach(s => {
                 const val = document.getElementById('e-'+s).value;
                 const avgBuy = document.getElementById('a-'+s).value;
-
                 localStorage.setItem('p_'+s, val);
                 localStorage.setItem('avg_'+s, avgBuy);
             });
-
             btn.parentElement.parentElement.remove();
             renderPortfolio();
         }
@@ -468,33 +457,15 @@
         function openInfoModal(sym, fullSym, isDex) {
             document.getElementById('info-header').innerText = `${sym} ANALYSIS`;
             const theme = document.body.getAttribute('data-theme') === 'white-black' ? 'light' : 'dark';
-
             document.getElementById('info-content').innerHTML = isDex ? `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center;">CA: ${fullSym}</div><a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 AVAGE DEXSCREENERIS</a>` : `<div id="chart-container"><div id="tv-medium-widget"></div></div><a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>`;
-
-            if(!isDex) setTimeout(() => {
-                new TradingView.MediumWidget({
-                    "container_id": "tv-medium-widget",
-                    "symbols": [["BINANCE:" + fullSym + "|1H"]],
-                    "chartOnly": true,
-                    "width": "100%",
-                    "height": "100%",
-                    "locale": "en",
-                    "colorTheme": theme,
-                    "gridLineColor": "transparent",
-                    "fontColor": "var(--text)",
-                    "trendLineColor": "var(--title)"
-                });
-            }, 100);
-
+            if(!isDex) setTimeout(() => { new TradingView.MediumWidget({ "container_id": "tv-medium-widget", "symbols": [["BINANCE:" + fullSym + "|1H"]], "chartOnly": true, "width": "100%", "height": "100%", "locale": "en", "colorTheme": theme, "gridLineColor": "transparent", "fontColor": "var(--text)", "trendLineColor": "var(--title)" }); }, 100);
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
         const tickerEl = document.getElementById('insights-ticker');
         if(tickerEl) tickerEl.innerText = "CRYPTO TERMINAL READY *** TRACKING LIVE ASSETS *** MARKET DATA UPDATING ***";
 
-        setInterval(() => {
-            document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString();
-        }, 1000);
+        setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
 
         function updateCustomTheme() {
             const bg = document.getElementById('cp-bg').value;
@@ -502,14 +473,12 @@
             const border = document.getElementById('cp-border').value;
             const text = document.getElementById('cp-text').value;
             const css = `:root { --bg: ${bg}; --card: ${card}; --border: ${border}; --text: ${text}; --title: ${text}; }`;
-
             document.getElementById('custom-style').innerHTML = css;
             localStorage.setItem('custom_theme', JSON.stringify({bg, card, border, text}));
         }
 
         window.addEventListener('load', () => {
             const saved = localStorage.getItem('custom_theme');
-
             if(saved) {
                 const {bg, card, border, text} = JSON.parse(saved);
                 document.getElementById('cp-bg').value = bg;
