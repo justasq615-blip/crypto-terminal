@@ -25,7 +25,6 @@
         [data-theme="retro"] { --bg: #281800; --card: rgba(60, 30, 0, 0.3); --header: #3d2400; --text: #ffb000; --accent: #4d2d00; --border: #ffb000; --title: #ffb000; --up: #ffb000; --down: #ff0000; }
         [data-theme="midnight"] { --bg: #020617; --card: #1e293b; --header: #0f172a; --text: #f1f5f9; --accent: #334155; --border: #38bdf8; --title: #38bdf8; --up: #22c55e; --down: #ef4444; }
 
-        /* Täiendus: Seadete akna teksti lugemiskindlus */
         .modal-scroll * { color: #ffffff !important; }
 
         * { box-sizing: border-box; transition: background-color 0.2s, border-color 0.2s, transform 0.5s ease; -webkit-user-select: none; font-family: 'SF Mono', 'Roboto Mono', monospace; -webkit-tap-highlight-color: transparent; }
@@ -48,9 +47,49 @@
 
         #portfolio-details { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
         
-        .perf-row { display: flex; justify-content: space-between; margin-top: 12px; padding: 8px 4px; background: rgba(0,0,0,0.2); border-radius: 4px; border: 1px solid var(--accent); }
-        .perf-item { font-size: 9px; font-weight: bold; display: flex; flex-direction: column; align-items: center; }
-        .perf-label { opacity: 0.5; font-size: 7px; margin-bottom: 2px; text-transform: uppercase; }
+        .perf-row { 
+            position: relative;
+            overflow: hidden;
+            height: 34px;
+            margin-top: 12px;
+            padding: 0 4px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+            border: 1px solid var(--accent);
+            display: flex;
+            align-items: center;
+        }
+
+        .perf-track {
+            display: inline-flex;
+            align-items: center;
+            gap: 28px;
+            white-space: nowrap;
+            position: absolute;
+            left: 100%;
+            animation: perfMarquee 22s linear infinite;
+            will-change: transform;
+        }
+
+        .perf-item {
+            font-size: 9px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .perf-label {
+            opacity: 0.5;
+            font-size: 8px;
+            text-transform: uppercase;
+        }
+
+        @keyframes perfMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-220%); }
+        }
 
         #main-wrapper { flex: 1; display: flex; flex-direction: column; margin: 4px 0; gap: 2px; overflow-y: auto; scrollbar-width: none; }
         .card { background-color: var(--card); border-radius: 6px; padding: 0 12px; border: 1px solid var(--border); display: flex; align-items: center; height: 42px; min-height: 42px; flex-shrink: 0; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
@@ -130,15 +169,12 @@
                 <button id="ui-btn-edit" onclick="openEdit()" class="btn-action">EDIT</button>
             </div>
         </div>
+
         <div id="portfolio-details">
             <div id="portfolio-list" style="margin-bottom: 10px;"></div>
+
             <div class="perf-row">
-                <div class="perf-item"><span class="perf-label">24h</span><span id="perf-24h">--</span></div>
-                <div class="perf-item"><span class="perf-label">72h</span><span id="perf-72h">--</span></div>
-                <div class="perf-item"><span class="perf-label">1w</span><span id="perf-1w">--</span></div>
-                <div class="perf-item"><span class="perf-label">1m</span><span id="perf-m3">--</span></div>
-                <div class="perf-item"><span class="perf-label">3m</span><span id="perf-m6">--</span></div>
-                <div class="perf-item"><span class="perf-label">6m</span><span id="perf-m6">--</span></div>
+                <div id="perf-track" class="perf-track"></div>
             </div>
         </div>
     </div>
@@ -172,24 +208,23 @@
     <div id="settings-overlay" class="modal-overlay" onclick="this.style.display='none'">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-scroll">
-    <div class="section-title">TEEMA</div>
-    <div id="theme-grid" class="theme-grid"></div>
+                <div class="section-title">TEEMA</div>
+                <div id="theme-grid" class="theme-grid"></div>
 
-    <div class="section-title">CUSTOM THEME</div>
-    <div class="custom-control">Background <input type="color" id="cp-bg" onchange="updateCustomTheme()"></div>
-    <div class="custom-control">Cards <input type="color" id="cp-card" onchange="updateCustomTheme()"></div>
-    <div class="custom-control">Border <input type="color" id="cp-border" onchange="updateCustomTheme()"></div>
-    <div class="custom-control">Text <input type="color" id="cp-text" onchange="updateCustomTheme()"></div>
+                <div class="section-title">CUSTOM THEME</div>
+                <div class="custom-control">Background <input type="color" id="cp-bg" onchange="updateCustomTheme()"></div>
+                <div class="custom-control">Cards <input type="color" id="cp-card" onchange="updateCustomTheme()"></div>
+                <div class="custom-control">Border <input type="color" id="cp-border" onchange="updateCustomTheme()"></div>
+                <div class="custom-control">Text <input type="color" id="cp-text" onchange="updateCustomTheme()"></div>
 
-    <div class="section-title">KEEL</div>
-    <div class="theme-grid">
-        <button class="theme-btn" onclick="setLang('en')">ENGLISH</button>
-        <button class="theme-btn" onclick="setLang('et')">EESTI</button>
-        <button class="theme-btn" onclick="setLang('es')">ESPAÑOL</button>
-        <button class="theme-btn" onclick="setLang('ru')">РУССКИЙ</button>
-    </div>
-</div>
-
+                <div class="section-title">KEEL</div>
+                <div class="theme-grid">
+                    <button class="theme-btn" onclick="setLang('en')">ENGLISH</button>
+                    <button class="theme-btn" onclick="setLang('et')">EESTI</button>
+                    <button class="theme-btn" onclick="setLang('es')">ESPAÑOL</button>
+                    <button class="theme-btn" onclick="setLang('ru')">РУССКИЙ</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -219,6 +254,7 @@
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
     <script>
         const translations = {
             en: { title: "🚀 APLO CRYPTO TERMINAL", networth: "Net Worth", assets: "ASSETS", edit: "EDIT", save: "SAVE", news: "📰 NEWS", manage: "MANAGE ASSETS", disclaimer: "Experimental project. Use at your own risk.", legal_label: "LEGAL NOTICE", btn_add: "ADD ASSET", dist_title: "ASSET DISTRIBUTION", no_assets: "No assets.", no_assets_dist: "No assets to display.", disclaimer_full: "This application is an experimental software project.", remove: "Remove", env: "Select Environment", lang: "Language / Keel" },
@@ -227,39 +263,215 @@
             ru: { title: "🚀 КРИПТО ТЕРМИНАЛ APLO", networth: "Чистая стоимость", assets: "АКТИВЫ", edit: "ИЗМЕНИТЬ", save: "СОХРАНИТЬ", news: "📰 НОВОСТИ", manage: "УПРАВЛЕНИЕ", disclaimer: "Экспериментальный проект.", legal_label: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ", btn_add: "ДОBAВИТЬ АКТИВ", dist_title: "РАСПРЕДЕЛЕНИЕ АКТИВОВ", no_assets: "Нет активов.", no_assets_dist: "Нет активов для отображения.", disclaimer_full: "Данное приложение является экспериментальным программным проектом.", remove: "Удалить", env: "Выберите среду", lang: "Язык" }
         };
 
-        let currentLang = localStorage.getItem('lang') || 'en';
-        
+        let currentLang = localStorage.getItem('lang') || 'et';
+
         function applyLang() {
-    const t = translations[currentLang];
-    document.getElementById('ui-title').innerText = t.title;
-    document.getElementById('ui-networth').innerText = t.networth;
-    document.getElementById('ui-btn-assets').innerText = t.assets;
-    document.getElementById('ui-btn-edit').innerText = t.edit;
-    document.getElementById('ui-news-hub').innerText = t.news;
-    document.getElementById('ui-manage-title').innerText = t.manage;
-    document.getElementById('ui-btn-add').innerText = t.btn_add;
-    document.getElementById('ui-dist-title').innerText = t.dist_title;
-    
-    document.querySelectorAll('[data-lang-key]').forEach(el => {
-        const key = el.getAttribute('data-lang-key');
-        if(t[key]) el.innerText = t[key];
-    });
-    
-    renderUI();
-}
+            const t = translations[currentLang];
+
+            document.getElementById('ui-title').innerText = t.title;
+            document.getElementById('ui-networth').innerText = t.networth;
+            document.getElementById('ui-btn-assets').innerText = t.assets;
+            document.getElementById('ui-btn-edit').innerText = t.edit;
+            document.getElementById('ui-news-hub').innerText = t.news;
+            document.getElementById('ui-manage-title').innerText = t.manage;
+            document.getElementById('ui-btn-add').innerText = t.btn_add;
+            document.getElementById('ui-dist-title').innerText = t.dist_title;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if(t[key]) el.innerText = t[key];
+            });
+
+            renderUI();
+        }
 
         let symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
-        let caNames = {}; let touchStartY = 0;
+        let caNames = {};
+        let touchStartY = 0;
+
         const mainWrapper = document.getElementById('main-wrapper');
-        
+
         try {
             const saved = localStorage.getItem('user_symbols');
-            if (saved) { const parsed = JSON.parse(saved); if (Array.isArray(parsed) && parsed.length > 0) symbols = parsed; }
+
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) symbols = parsed;
+            }
+
             const savedNames = localStorage.getItem('ca_names');
+
             if (savedNames) caNames = JSON.parse(savedNames);
         } catch(e) {}
 
-        let currentPrices = {}; let marketData = []; let usdToEur = 1; 
+        let currentPrices = {};
+        let marketData = [];
+        let usdToEur = 1;
+
+        /*
+         * HOURLY PORTFOLIO HISTORY
+         *
+         * Salvesta viimase 6 tunni portfelli väärtused.
+         * Iga tunni järel lisatakse uus punkt.
+         */
+        let hourlyHistory = [];
+
+        try {
+            const savedHistory = localStorage.getItem('portfolio_hourly_history');
+
+            if (savedHistory) {
+                const parsedHistory = JSON.parse(savedHistory);
+
+                if (Array.isArray(parsedHistory)) {
+                    hourlyHistory = parsedHistory.filter(item =>
+                        item &&
+                        Number.isFinite(item.time) &&
+                        Number.isFinite(item.value)
+                    );
+                }
+            }
+        } catch(e) {
+            hourlyHistory = [];
+        }
+
+        function saveHourlyHistory() {
+            try {
+                localStorage.setItem(
+                    'portfolio_hourly_history',
+                    JSON.stringify(hourlyHistory.slice(-6))
+                );
+            } catch(e) {}
+        }
+
+        function getPortfolioTotal() {
+            let total = 0;
+
+            symbols.forEach(s => {
+                const qty = parseFloat(localStorage.getItem('p_' + s)) || 0;
+                const price = currentPrices[s] || 0;
+
+                if (qty > 0 && price > 0) {
+                    total += qty * price;
+                }
+            });
+
+            return total;
+        }
+
+        function captureHourlySnapshot(force = false) {
+            const total = getPortfolioTotal();
+
+            if (!Number.isFinite(total) || total <= 0) return;
+
+            const now = Date.now();
+
+            if (!force && hourlyHistory.length > 0) {
+                const last = hourlyHistory[hourlyHistory.length - 1];
+
+                if (now - last.time < 60 * 60 * 1000) {
+                    return;
+                }
+            }
+
+            hourlyHistory.push({
+                time: now,
+                value: total
+            });
+
+            hourlyHistory = hourlyHistory.slice(-6);
+
+            saveHourlyHistory();
+            renderHourlyPerformance();
+        }
+
+        function renderHourlyPerformance() {
+            const track = document.getElementById('perf-track');
+
+            if (!track) return;
+
+            const current = getPortfolioTotal();
+
+            if (!current || current <= 0) {
+                track.innerHTML = `
+                    <span class="perf-item">
+                        <span class="perf-label">1H</span>
+                        <span>--</span>
+                    </span>
+                `;
+                return;
+            }
+
+            const items = [];
+
+            /*
+             * Vanim salvestatud punkt on kõige pikema perioodi algus.
+             * Näiteks 6 punkti olemasolul:
+             *
+             * 1H = praegune vs 1h tagasi
+             * 2H = praegune vs 2h tagasi
+             * ...
+             * 6H = praegune vs 6h tagasi
+             */
+
+            for (let hours = 1; hours <= 6; hours++) {
+                const targetTime = Date.now() - (hours * 60 * 60 * 1000);
+
+                let reference = null;
+
+                for (let i = hourlyHistory.length - 1; i >= 0; i--) {
+                    if (hourlyHistory[i].time <= targetTime) {
+                        reference = hourlyHistory[i];
+                        break;
+                    }
+                }
+
+                if (!reference && hourlyHistory.length >= hours) {
+                    reference = hourlyHistory[hourlyHistory.length - hours];
+                }
+
+                let result = null;
+
+                if (reference && reference.value > 0) {
+                    result = ((current - reference.value) / reference.value) * 100;
+                }
+
+                items.push({
+                    hours,
+                    value: result
+                });
+            }
+
+            track.innerHTML = items.map(item => {
+                if (item.value === null || !Number.isFinite(item.value)) {
+                    return `
+                        <span class="perf-item">
+                            <span class="perf-label">${item.hours}H</span>
+                            <span>--</span>
+                        </span>
+                    `;
+                }
+
+                const cls = item.value >= 0 ? 'up' : 'down';
+                const sign = item.value >= 0 ? '+' : '';
+
+                return `
+                    <span class="perf-item">
+                        <span class="perf-label">${item.hours}H</span>
+                        <span class="${cls}">
+                            ${sign}${item.value.toFixed(1)}%
+                        </span>
+                    </span>
+                `;
+            }).join('');
+
+            /*
+             * Käivitame animatsiooni iga kord uuesti,
+             * kui tunnine info muutub.
+             */
+            track.style.animation = 'none';
+            track.offsetHeight;
+            track.style.animation = '';
+        }
 
         mainWrapper.addEventListener('touchstart', (e) => {
             if (mainWrapper.scrollTop === 0) touchStartY = e.touches[0].clientY;
@@ -269,6 +481,7 @@
         mainWrapper.addEventListener('touchmove', (e) => {
             if (touchStartY > 0 && mainWrapper.scrollTop === 0) {
                 const currentY = e.touches[0].clientY;
+
                 if (currentY > touchStartY) e.preventDefault();
             }
         }, { passive: false });
@@ -277,259 +490,524 @@
             if (touchStartY > 0 && e.changedTouches[0].clientY - touchStartY > 60) {
                 await updateMarket();
             }
+
             touchStartY = 0;
         }, { passive: true });
 
 
         const themeNames = ["black-white", "white-black", "terminal", "gold", "nando-gray", "forest", "retro", "midnight"];
-        document.getElementById('theme-grid').innerHTML = themeNames.map(t => `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`).join('');
 
-        function setTheme(t) { 
-    // Rakenda teema
-    document.body.setAttribute('data-theme', t); 
-    localStorage.setItem('theme', t); 
-    
-    // Tühjenda custom stiilid, et vaikimisi teema üle võtaks
-    document.getElementById('custom-style').innerHTML = ''; 
-    localStorage.removeItem('custom_theme');
-}
+        document.getElementById('theme-grid').innerHTML =
+            themeNames.map(t =>
+                `<button class="theme-btn" onclick="setTheme('${t}')">${t.toUpperCase().replace('-', ' ')}</button>`
+            ).join('');
+
+        function setTheme(t) {
+            document.body.setAttribute('data-theme', t);
+            localStorage.setItem('theme', t);
+
+            document.getElementById('custom-style').innerHTML = '';
+            localStorage.removeItem('custom_theme');
+        }
 
 
-        function setLang(l) { currentLang = l; localStorage.setItem('lang', l); applyLang(); renderUI(); openManageAssets(); }
+        function setLang(l) {
+            currentLang = l;
+            localStorage.setItem('lang', l);
+            applyLang();
+            renderUI();
+            openManageAssets();
+        }
 
         function rotateDisclaimer() {
             const el = document.getElementById('ui-disclaimer');
+
             if(!el) return;
+
             el.innerText = translations[currentLang].disclaimer_full;
         }
 
+
         async function updateMarket() {
             const statusEl = document.getElementById('status');
+
             if(statusEl) statusEl.classList.add('status-refreshing');
 
             try {
                 const fxRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
+
                 if(fxRes.ok) {
                     const fxData = await fxRes.json();
                     const eurUsdt = parseFloat(fxData.price);
+
                     if(eurUsdt > 0) usdToEur = 1 / eurUsdt;
                 }
             } catch(e) {}
 
-            const binanceSyms = symbols.filter(s => !s.startsWith('0x') && s.length < 15);
-            const dexAddrs = symbols.filter(s => s.startsWith('0x') || s.length >= 15);
+            const binanceSyms = symbols.filter(
+                s => !s.startsWith('0x') && s.length < 15
+            );
+
+            const dexAddrs = symbols.filter(
+                s => s.startsWith('0x') || s.length >= 15
+            );
+
             let combinedData = [];
 
             if(binanceSyms.length > 0) {
                 try {
-                    const priceRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=' + JSON.stringify(binanceSyms));
-                    if(priceRes.ok) combinedData = await priceRes.json();
+                    const priceRes = await fetch(
+                        'https://api.binance.com/api/v3/ticker/24hr?symbols=' +
+                        JSON.stringify(binanceSyms)
+                    );
+
+                    if(priceRes.ok) {
+                        combinedData = await priceRes.json();
+                    }
                 } catch(e) {}
             }
 
             for(let addr of dexAddrs) {
                 try {
-                    const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${addr}`);
+                    const res = await fetch(
+                        `https://api.dexscreener.com/latest/dex/tokens/${addr}`
+                    );
+
                     const data = await res.json();
+
                     if(data.pairs && data.pairs[0]) {
                         const p = data.pairs[0];
+
                         caNames[addr] = p.baseToken.symbol;
-                        combinedData.push({ symbol: p.baseToken.symbol, isDex: true, address: addr, lastPrice: parseFloat(p.priceUsd) * usdToEur, priceChangePercent: p.priceChange.h24 || 0 });
+
+                        combinedData.push({
+                            symbol: p.baseToken.symbol,
+                            isDex: true,
+                            address: addr,
+                            lastPrice: parseFloat(p.priceUsd) * usdToEur,
+                            priceChangePercent: p.priceChange.h24 || 0
+                        });
                     }
                 } catch(e) {}
             }
 
-            localStorage.setItem('ca_names', JSON.stringify(caNames));
-            if (combinedData.length > 0) marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
+            localStorage.setItem(
+                'ca_names',
+                JSON.stringify(caNames)
+            );
+
+            if (combinedData.length > 0) {
+                marketData = combinedData.sort(
+                    (a, b) =>
+                        parseFloat(b.priceChangePercent) -
+                        parseFloat(a.priceChangePercent)
+                );
+            }
+
             renderUI();
+
+            /*
+             * Võta tunnine snapshot pärast värskete hindade
+             * saamist. Snapshot võetakse maksimaalselt kord tunnis.
+             */
+            captureHourlySnapshot(false);
+
             if(statusEl) statusEl.classList.remove('status-refreshing');
         }
 
+
         function renderUI() {
             const wrapper = document.getElementById('main-wrapper');
+
             if (!wrapper) return;
+
             wrapper.innerHTML = '';
 
             marketData.forEach(c => {
-                const sym = c.isDex ? (caNames[c.address] || "DEX") : c.symbol.replace(/(USDT|USD)$/, "");
+                const sym = c.isDex
+                    ? (caNames[c.address] || "DEX")
+                    : c.symbol.replace(/(USDT|USD)$/, "");
+
                 const p = parseFloat(c.lastPrice) * (c.isDex ? 1 : usdToEur);
-                const ch = parseFloat(c.priceChangePercent);
-                const priceKey = c.isDex ? c.address : c.symbol;
+
+                const priceKey = c.isDex
+                    ? c.address
+                    : c.symbol;
 
                 currentPrices[priceKey] = p;
 
-                const avgBuy = parseFloat(localStorage.getItem('avg_' + priceKey));
-                const pnl = Number.isFinite(avgBuy) && avgBuy > 0 ? ((p - avgBuy) / avgBuy) * 100 : null;
+                /*
+                 * Average Buy P/L
+                 *
+                 * See % on ainult sinu ostuhinna suhtes.
+                 */
+                const avgBuy = parseFloat(
+                    localStorage.getItem('avg_' + priceKey)
+                );
 
-                const pnlText = pnl !== null
-                    ? `<span class="${pnl >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${pnl >= 0 ? '+' : ''}${pnl.toFixed(1)}%</span>`
-                    : `<span style="font-size:10px; margin-left:8px; opacity:0.45;">—</span>`;
+                const pnl =
+                    Number.isFinite(avgBuy) && avgBuy > 0
+                        ? ((p - avgBuy) / avgBuy) * 100
+                        : null;
+
+                const pnlText =
+                    pnl !== null
+                        ? `<span class="${pnl >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${pnl >= 0 ? '+' : ''}${pnl.toFixed(1)}%</span>`
+                        : `<span style="font-size:10px; margin-left:8px; opacity:0.45;">—</span>`;
 
                 const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => openInfoModal(sym, c.isDex ? c.address : c.symbol, c.isDex);
 
-                card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}</span>${pnlText}</div><div class="value-text">€${p.toFixed(2)}</div></div>`;
+                card.className = 'card';
+
+                card.onclick = () =>
+                    openInfoModal(
+                        sym,
+                        c.isDex ? c.address : c.symbol,
+                        c.isDex
+                    );
+
+                card.innerHTML =
+                    `<div class="coin-row">
+                        <div>
+                            <span class="label-text">${sym}</span>
+                            ${pnlText}
+                        </div>
+                        <div class="value-text">€${p.toFixed(2)}</div>
+                    </div>`;
 
                 wrapper.appendChild(card);
             });
 
             renderPortfolio();
+            renderHourlyPerformance();
         }
 
+
         function renderPortfolio() {
-            let total = 0; let items = '';
+            let total = 0;
+            let items = '';
 
             symbols.forEach(s => {
-                const isDex = s.startsWith('0x') || s.length >= 15;
-                const qty = parseFloat(localStorage.getItem('p_'+s)) || 0;
-                const price = currentPrices[s] || 0;
+                const isDex =
+                    s.startsWith('0x') || s.length >= 15;
+
+                const qty =
+                    parseFloat(localStorage.getItem('p_'+s)) || 0;
+
+                const price =
+                    currentPrices[s] || 0;
 
                 if (qty > 0 && price > 0) {
                     total += (qty * price);
 
-                    items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/,"")}</span><span>€${(qty*price).toFixed(2)}</span></div>`;
+                    items += `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;">
+                            <span>${isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/,"")}</span>
+                            <span>€${(qty*price).toFixed(2)}</span>
+                        </div>`;
                 }
             });
 
-            document.getElementById('portfolio-total').innerText = `€${total.toFixed(2)}`;
+            document.getElementById('portfolio-total').innerText =
+                `€${total.toFixed(2)}`;
 
             document.getElementById('portfolio-list').innerHTML =
-                items || `<div style="opacity:0.5; font-size:10px; text-align:center;">${translations[currentLang].no_assets}</div>`;
+                items ||
+                `<div style="opacity:0.5; font-size:10px; text-align:center;">
+                    ${translations[currentLang].no_assets}
+                </div>`;
+
+            renderHourlyPerformance();
         }
 
+
         function openDistribution() {
-            let total = 0; let holdings = [];
+            let total = 0;
+            let holdings = [];
 
             symbols.forEach(s => {
-                const isDex = s.startsWith('0x') || s.length >= 15;
-                const qty = parseFloat(localStorage.getItem('p_' + s)) || 0;
-                const price = currentPrices[s] || 0;
+                const isDex =
+                    s.startsWith('0x') || s.length >= 15;
+
+                const qty =
+                    parseFloat(localStorage.getItem('p_' + s)) || 0;
+
+                const price =
+                    currentPrices[s] || 0;
 
                 if (qty > 0 && price > 0) {
                     total += (qty * price);
 
                     holdings.push({
-                        name: isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/, ""),
+                        name: isDex
+                            ? (caNames[s] || "DEX")
+                            : s.replace(/(USDT|USD)$/, ""),
                         val: (qty * price)
                     });
                 }
             });
 
-            const container = document.getElementById('dist-content');
+            const container =
+                document.getElementById('dist-content');
 
-            container.innerHTML = holdings.length > 0
-                ? holdings.map(h => `<div class="dist-row"><div class="dist-label"><span>${h.name}</span><span>€${h.val.toFixed(2)}</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${total > 0 ? ((h.val/total)*100).toFixed(0) : 0}%"></div></div></div>`).join('')
-                : `<div style="opacity:0.5; text-align:center;">${translations[currentLang].no_assets_dist}</div>`;
+            container.innerHTML =
+                holdings.length > 0
+                    ? holdings.map(h =>
+                        `<div class="dist-row">
+                            <div class="dist-label">
+                                <span>${h.name}</span>
+                                <span>€${h.val.toFixed(2)}</span>
+                            </div>
+                            <div class="dist-bar-bg">
+                                <div class="dist-bar-fill"
+                                     style="width: ${total > 0 ? ((h.val/total)*100).toFixed(0) : 0}%">
+                                </div>
+                            </div>
+                        </div>`
+                    ).join('')
+                    : `<div style="opacity:0.5; text-align:center;">
+                        ${translations[currentLang].no_assets_dist}
+                    </div>`;
 
             document.getElementById('dist-overlay').style.display = 'flex';
         }
 
-        function togglePortfolio() {
-            const d = document.getElementById('portfolio-details');
-            d.style.display = d.style.display === 'block' ? 'none' : 'block';
-        }
-        
-        function openManageAssets() {
-            const list = document.getElementById('asset-list-manage');
 
-            list.innerHTML = symbols.map(s =>
-                `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;"><span>${caNames[s] || s.replace(/(USDT|USD)$/, "")}</span><span style="cursor:pointer;" onclick="removeAsset('${s}')">🗑️ ${translations[currentLang].remove}</span></div>`
-            ).join('');
+        function togglePortfolio() {
+            const d =
+                document.getElementById('portfolio-details');
+
+            d.style.display =
+                d.style.display === 'block'
+                    ? 'none'
+                    : 'block';
+
+            renderHourlyPerformance();
+        }
+
+
+        function openManageAssets() {
+            const list =
+                document.getElementById('asset-list-manage');
+
+            list.innerHTML =
+                symbols.map(s =>
+                    `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;">
+                        <span>${caNames[s] || s.replace(/(USDT|USD)$/, "")}</span>
+                        <span style="cursor:pointer;" onclick="removeAsset('${s}')">
+                            🗑️ ${translations[currentLang].remove}
+                        </span>
+                    </div>`
+                ).join('');
 
             document.getElementById('manage-overlay').style.display = 'flex';
         }
-        
+
+
         function removeAsset(s) {
-            symbols = symbols.filter(item => item !== s);
-            localStorage.setItem('user_symbols', JSON.stringify(symbols));
+            symbols =
+                symbols.filter(item => item !== s);
+
+            localStorage.setItem(
+                'user_symbols',
+                JSON.stringify(symbols)
+            );
+
             openManageAssets();
             updateMarket();
         }
 
+
         async function addNewAsset() {
-            const val = document.getElementById('new-asset-input').value.trim();
+            const val =
+                document.getElementById('new-asset-input').value.trim();
+
             if(!val) return;
 
             if(val.startsWith('0x')) {
-                const res = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${val}`);
+                const res =
+                    await fetch(
+                        `https://api.dexscreener.com/latest/dex/search?q=${val}`
+                    );
+
                 const data = await res.json();
 
-                if(data.pairs && data.pairs.length > 0)
-                    caNames[val] = data.pairs[0].baseToken.symbol;
+                if(data.pairs && data.pairs.length > 0) {
+                    caNames[val] =
+                        data.pairs[0].baseToken.symbol;
+                }
 
                 symbols.push(val);
             } else {
                 symbols.push(val.toUpperCase());
             }
 
-            localStorage.setItem('user_symbols', JSON.stringify(symbols));
+            localStorage.setItem(
+                'user_symbols',
+                JSON.stringify(symbols)
+            );
+
             document.getElementById('new-asset-input').value = '';
 
             openManageAssets();
             updateMarket();
         }
 
+
         function openEdit() {
-            const fields = symbols.map(s => {
-                const isDex = s.startsWith('0x') || s.length >= 15;
-                const displayName = isDex ? (caNames[s] || s) : s.replace(/(USDT|USD)$/,"");
+            const fields =
+                symbols.map(s => {
+                    const isDex =
+                        s.startsWith('0x') || s.length >= 15;
 
-                return `<div style="margin-bottom:12px;"><label style="font-size:10px; font-weight:bold; color:var(--title);">${displayName} QTY</label><br><input type="number" id="e-${s}" value="${localStorage.getItem('p_'+s)||''}" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"><label style="font-size:10px; font-weight:bold; color:var(--title); display:block; margin-top:8px;">${displayName} AVERAGE BUY (€)</label><br><input type="number" step="any" id="a-${s}" value="${localStorage.getItem('avg_'+s)||''}" placeholder="0.00" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"></div>`;
-            }).join('');
+                    const displayName =
+                        isDex
+                            ? (caNames[s] || s)
+                            : s.replace(/(USDT|USD)$/,"");
 
-            const overlay = document.createElement('div');
-            overlay.className = 'modal-overlay';
-            overlay.style.display = 'flex';
+                    return `
+                        <div style="margin-bottom:12px;">
+                            <label style="font-size:10px; font-weight:bold; color:var(--title);">
+                                ${displayName} QTY
+                            </label>
+                            <br>
+                            <input
+                                type="number"
+                                id="e-${s}"
+                                value="${localStorage.getItem('p_'+s)||''}"
+                                style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"
+                            >
 
-            overlay.innerHTML = `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">${translations[currentLang].save}</button></div>`;
+                            <label style="font-size:10px; font-weight:bold; color:var(--title); display:block; margin-top:8px;">
+                                ${displayName} AVERAGE BUY (€)
+                            </label>
+                            <br>
 
-            overlay.onclick = () => overlay.remove();
+                            <input
+                                type="number"
+                                step="any"
+                                id="a-${s}"
+                                value="${localStorage.getItem('avg_'+s)||''}"
+                                placeholder="0.00"
+                                style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"
+                            >
+                        </div>`;
+                }).join('');
+
+            const overlay =
+                document.createElement('div');
+
+            overlay.className =
+                'modal-overlay';
+
+            overlay.style.display =
+                'flex';
+
+            overlay.innerHTML =
+                `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;">
+                    <div style="overflow-y:auto; max-height:60vh;">
+                        ${fields}
+                    </div>
+
+                    <button
+                        onclick="saveP(this)"
+                        style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">
+                        ${translations[currentLang].save}
+                    </button>
+                </div>`;
+
+            overlay.onclick =
+                () => overlay.remove();
+
             document.body.appendChild(overlay);
         }
 
+
         function saveP(btn) {
             symbols.forEach(s => {
-                const val = document.getElementById('e-'+s).value;
-                const avgBuy = document.getElementById('a-'+s).value;
+                const val =
+                    document.getElementById('e-'+s).value;
 
-                localStorage.setItem('p_'+s, val);
-                localStorage.setItem('avg_'+s, avgBuy);
+                const avgBuy =
+                    document.getElementById('a-'+s).value;
+
+                localStorage.setItem(
+                    'p_'+s,
+                    val
+                );
+
+                localStorage.setItem(
+                    'avg_'+s,
+                    avgBuy
+                );
             });
 
             btn.parentElement.parentElement.remove();
+
             renderUI();
         }
 
+
         function openGeneralNews() {
-            document.getElementById('info-header').innerText = `GLOBAL CRYPTO NEWS`;
+            document.getElementById('info-header').innerText =
+                `GLOBAL CRYPTO NEWS`;
 
             document.getElementById('info-content').innerHTML =
-                `<a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC</a><a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a><a href="https://cointelegraph.com" target="_blank" class="news-btn">COINTELEGRAPH</a><a href="https://decrypt.co" target="_blank" class="news-btn">DECRYPT</a>`;
+                `<a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC</a>
+                 <a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a>
+                 <a href="https://cointelegraph.com" target="_blank" class="news-btn">COINTELEGRAPH</a>
+                 <a href="https://decrypt.co" target="_blank" class="news-btn">DECRYPT</a>`;
 
-            document.getElementById('info-overlay').style.display = 'flex';
+            document.getElementById('info-overlay').style.display =
+                'flex';
         }
+
 
         function openAppInfo() {
-            document.getElementById('info-header').innerText = translations[currentLang].legal_label;
+            document.getElementById('info-header').innerText =
+                translations[currentLang].legal_label;
 
             document.getElementById('info-content').innerHTML =
-                `<div style="font-size: 10px; line-height: 1.5; color: var(--text);">${translations[currentLang].disclaimer_full}</div>`;
+                `<div style="font-size:10px; line-height:1.5; color:var(--text);">
+                    ${translations[currentLang].disclaimer_full}
+                </div>`;
 
-            document.getElementById('info-overlay').style.display = 'flex';
+            document.getElementById('info-overlay').style.display =
+                'flex';
         }
 
-        function openInfoModal(sym, fullSym, isDex) {
-            document.getElementById('info-header').innerText = `${sym} ANALYSIS`;
 
-            const theme = document.body.getAttribute('data-theme') === 'white-black' ? 'light' : 'dark';
+        function openInfoModal(sym, fullSym, isDex) {
+            document.getElementById('info-header').innerText =
+                `${sym} ANALYSIS`;
+
+            const theme =
+                document.body.getAttribute('data-theme') === 'white-black'
+                    ? 'light'
+                    : 'dark';
 
             document.getElementById('info-content').innerHTML =
                 isDex
-                ? `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center;">CA: ${fullSym}</div><a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 AVAGE DEXSCREENERIS</a>`
-                : `<div id="chart-container"><div id="tv-medium-widget"></div></div><a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>`;
+                    ? `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center;">
+                            CA: ${fullSym}
+                       </div>
+                       <a href="https://dexscreener.com/bsc/${fullSym}"
+                          target="_blank"
+                          class="news-btn"
+                          style="background:var(--title); color:#000; border:none; margin-top:10px;">
+                          📊 AVAGE DEXSCREENERIS
+                       </a>`
+                    : `<div id="chart-container">
+                            <div id="tv-medium-widget"></div>
+                       </div>
+                       <a href="https://www.binance.com/en/trade/${fullSym}"
+                          target="_blank"
+                          class="news-btn"
+                          style="background:#F3BA2F; color:#000; border:none;">
+                          TRADE ON BINANCE
+                       </a>`;
 
-            if(!isDex)
+            if(!isDex) {
                 setTimeout(() => {
                     new TradingView.MediumWidget({
                         "container_id": "tv-medium-widget",
@@ -544,50 +1022,117 @@
                         "trendLineColor": "var(--title)"
                     });
                 }, 100);
+            }
 
-            document.getElementById('info-overlay').style.display = 'flex';
+            document.getElementById('info-overlay').style.display =
+                'flex';
         }
 
-        const tickerEl = document.getElementById('insights-ticker');
 
-        if(tickerEl)
-            tickerEl.innerText = "CRYPTO TERMINAL READY *** TRACKING LIVE ASSETS *** MARKET DATA UPDATING ***";
+        const tickerEl =
+            document.getElementById('insights-ticker');
+
+        if(tickerEl) {
+            tickerEl.innerText =
+                "CRYPTO TERMINAL READY *** TRACKING LIVE ASSETS *** MARKET DATA UPDATING ***";
+        }
+
 
         setInterval(() => {
             document.getElementById('status').innerHTML =
-                '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString();
+                '<span class="live-dot"></span> LIVE - ' +
+                new Date().toLocaleTimeString();
         }, 1000);
 
+
         function updateCustomTheme() {
-            const bg = document.getElementById('cp-bg').value;
-            const card = document.getElementById('cp-card').value;
-            const border = document.getElementById('cp-border').value;
-            const text = document.getElementById('cp-text').value;
+            const bg =
+                document.getElementById('cp-bg').value;
 
-            const css = `:root { --bg: ${bg}; --card: ${card}; --border: ${border}; --text: ${text}; --title: ${text}; }`;
+            const card =
+                document.getElementById('cp-card').value;
 
-            document.getElementById('custom-style').innerHTML = css;
-            localStorage.setItem('custom_theme', JSON.stringify({bg, card, border, text}));
+            const border =
+                document.getElementById('cp-border').value;
+
+            const text =
+                document.getElementById('cp-text').value;
+
+            const css =
+                `:root {
+                    --bg: ${bg};
+                    --card: ${card};
+                    --border: ${border};
+                    --text: ${text};
+                    --title: ${text};
+                }`;
+
+            document.getElementById('custom-style').innerHTML =
+                css;
+
+            localStorage.setItem(
+                'custom_theme',
+                JSON.stringify({
+                    bg,
+                    card,
+                    border,
+                    text
+                })
+            );
         }
 
+
         window.addEventListener('load', () => {
-            const saved = localStorage.getItem('custom_theme');
+            const saved =
+                localStorage.getItem('custom_theme');
 
             if(saved) {
-                const {bg, card, border, text} = JSON.parse(saved);
+                const {
+                    bg,
+                    card,
+                    border,
+                    text
+                } = JSON.parse(saved);
 
-                document.getElementById('cp-bg').value = bg;
-                document.getElementById('cp-card').value = card;
-                document.getElementById('cp-border').value = border;
-                document.getElementById('cp-text').value = text;
+                document.getElementById('cp-bg').value =
+                    bg;
+
+                document.getElementById('cp-card').value =
+                    card;
+
+                document.getElementById('cp-border').value =
+                    border;
+
+                document.getElementById('cp-text').value =
+                    text;
 
                 updateCustomTheme();
             }
+
+            renderHourlyPerformance();
         });
 
+
         applyLang();
+
         updateMarket();
+
+        /*
+         * Turuinfo värskendamine iga 30 sekundi järel
+         * jääb samaks.
+         */
         setInterval(updateMarket, 30000);
+
+        /*
+         * Kontrollime iga minuti järel, kas uus tund
+         * on täis saanud. Kui jah, salvestame uue
+         * portfelli väärtuse.
+         */
+        setInterval(() => {
+            captureHourlySnapshot(false);
+            renderHourlyPerformance();
+        }, 60 * 1000);
+
     </script>
 </body>
 </html>
