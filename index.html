@@ -306,6 +306,7 @@
         async function updateMarket() {
             const statusEl = document.getElementById('status');
             if(statusEl) statusEl.classList.add('status-refreshing');
+
             try {
                 const fxRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
                 if(fxRes.ok) {
@@ -314,15 +315,18 @@
                     if(eurUsdt > 0) usdToEur = 1 / eurUsdt;
                 }
             } catch(e) {}
+
             const binanceSyms = symbols.filter(s => !s.startsWith('0x') && s.length < 15);
             const dexAddrs = symbols.filter(s => s.startsWith('0x') || s.length >= 15);
             let combinedData = [];
+
             if(binanceSyms.length > 0) {
                 try {
                     const priceRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=' + JSON.stringify(binanceSyms));
                     if(priceRes.ok) combinedData = await priceRes.json();
                 } catch(e) {}
             }
+
             for(let addr of dexAddrs) {
                 try {
                     const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${addr}`);
@@ -334,6 +338,7 @@
                     }
                 } catch(e) {}
             }
+
             localStorage.setItem('ca_names', JSON.stringify(caNames));
             if (combinedData.length > 0) marketData = combinedData.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
             renderUI();
@@ -344,89 +349,141 @@
             const wrapper = document.getElementById('main-wrapper');
             if (!wrapper) return;
             wrapper.innerHTML = '';
+
             marketData.forEach(c => {
                 const sym = c.isDex ? (caNames[c.address] || "DEX") : c.symbol.replace(/(USDT|USD)$/, "");
                 const p = parseFloat(c.lastPrice) * (c.isDex ? 1 : usdToEur);
                 const ch = parseFloat(c.priceChangePercent);
-                currentPrices[c.isDex ? c.address : c.symbol] = p;
+                const priceKey = c.isDex ? c.address : c.symbol;
 
-                const avgBuy = parseFloat(localStorage.getItem('avg_' + (c.isDex ? c.address : c.symbol))) || 0;
-                const pnl = avgBuy > 0 ? ((p - avgBuy) / avgBuy) * 100 : null;
-                const pnlText = pnl !== null ? `<span class="${pnl >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${pnl >= 0 ? '+' : ''}${pnl.toFixed(1)}%</span>` : '';
+                currentPrices[priceKey] = p;
+
+                const avgBuy = parseFloat(localStorage.getItem('avg_' + priceKey));
+                const pnl = Number.isFinite(avgBuy) && avgBuy > 0 ? ((p - avgBuy) / avgBuy) * 100 : null;
+
+                const pnlText = pnl !== null
+                    ? `<span class="${pnl >= 0 ? 'up' : 'down'}" style="font-size:10px; margin-left:8px;">${pnl >= 0 ? '+' : ''}${pnl.toFixed(1)}%</span>`
+                    : `<span style="font-size:10px; margin-left:8px; opacity:0.45;">—</span>`;
 
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => openInfoModal(sym, c.isDex ? c.address : c.symbol, c.isDex);
+
                 card.innerHTML = `<div class="coin-row"><div><span class="label-text">${sym}</span>${pnlText}</div><div class="value-text">€${p.toFixed(2)}</div></div>`;
+
                 wrapper.appendChild(card);
             });
+
             renderPortfolio();
         }
 
         function renderPortfolio() {
             let total = 0; let items = '';
+
             symbols.forEach(s => {
                 const isDex = s.startsWith('0x') || s.length >= 15;
                 const qty = parseFloat(localStorage.getItem('p_'+s)) || 0;
                 const price = currentPrices[s] || 0;
+
                 if (qty > 0 && price > 0) {
                     total += (qty * price);
+
                     items += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;"><span>${isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/,"")}</span><span>€${(qty*price).toFixed(2)}</span></div>`;
                 }
             });
+
             document.getElementById('portfolio-total').innerText = `€${total.toFixed(2)}`;
-            document.getElementById('portfolio-list').innerHTML = items || `<div style="opacity:0.5; font-size:10px; text-align:center;">${translations[currentLang].no_assets}</div>`;
+
+            document.getElementById('portfolio-list').innerHTML =
+                items || `<div style="opacity:0.5; font-size:10px; text-align:center;">${translations[currentLang].no_assets}</div>`;
         }
 
         function openDistribution() {
             let total = 0; let holdings = [];
+
             symbols.forEach(s => {
                 const isDex = s.startsWith('0x') || s.length >= 15;
                 const qty = parseFloat(localStorage.getItem('p_' + s)) || 0;
                 const price = currentPrices[s] || 0;
+
                 if (qty > 0 && price > 0) {
                     total += (qty * price);
-                    holdings.push({ name: isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/, ""), val: (qty * price) });
+
+                    holdings.push({
+                        name: isDex ? (caNames[s] || "DEX") : s.replace(/(USDT|USD)$/, ""),
+                        val: (qty * price)
+                    });
                 }
             });
+
             const container = document.getElementById('dist-content');
-            container.innerHTML = holdings.length > 0 ? holdings.map(h => `<div class="dist-row"><div class="dist-label"><span>${h.name}</span><span>€${h.val.toFixed(2)}</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${total > 0 ? ((h.val/total)*100).toFixed(0) : 0}%"></div></div></div>`).join('') : `<div style="opacity:0.5; text-align:center;">${translations[currentLang].no_assets_dist}</div>`;
+
+            container.innerHTML = holdings.length > 0
+                ? holdings.map(h => `<div class="dist-row"><div class="dist-label"><span>${h.name}</span><span>€${h.val.toFixed(2)}</span></div><div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${total > 0 ? ((h.val/total)*100).toFixed(0) : 0}%"></div></div></div>`).join('')
+                : `<div style="opacity:0.5; text-align:center;">${translations[currentLang].no_assets_dist}</div>`;
+
             document.getElementById('dist-overlay').style.display = 'flex';
         }
 
-        function togglePortfolio() { const d = document.getElementById('portfolio-details'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
+        function togglePortfolio() {
+            const d = document.getElementById('portfolio-details');
+            d.style.display = d.style.display === 'block' ? 'none' : 'block';
+        }
         
         function openManageAssets() {
             const list = document.getElementById('asset-list-manage');
-            list.innerHTML = symbols.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;"><span>${caNames[s] || s.replace(/(USDT|USD)$/, "")}</span><span style="cursor:pointer;" onclick="removeAsset('${s}')">🗑️ ${translations[currentLang].remove}</span></div>`).join('');
+
+            list.innerHTML = symbols.map(s =>
+                `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--accent); font-size:10px;"><span>${caNames[s] || s.replace(/(USDT|USD)$/, "")}</span><span style="cursor:pointer;" onclick="removeAsset('${s}')">🗑️ ${translations[currentLang].remove}</span></div>`
+            ).join('');
+
             document.getElementById('manage-overlay').style.display = 'flex';
         }
         
-        function removeAsset(s) { symbols = symbols.filter(item => item !== s); localStorage.setItem('user_symbols', JSON.stringify(symbols)); openManageAssets(); updateMarket(); }
+        function removeAsset(s) {
+            symbols = symbols.filter(item => item !== s);
+            localStorage.setItem('user_symbols', JSON.stringify(symbols));
+            openManageAssets();
+            updateMarket();
+        }
 
         async function addNewAsset() {
             const val = document.getElementById('new-asset-input').value.trim();
             if(!val) return;
+
             if(val.startsWith('0x')) {
                 const res = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${val}`);
                 const data = await res.json();
-                if(data.pairs && data.pairs.length > 0) caNames[val] = data.pairs[0].baseToken.symbol;
+
+                if(data.pairs && data.pairs.length > 0)
+                    caNames[val] = data.pairs[0].baseToken.symbol;
+
                 symbols.push(val);
-            } else { symbols.push(val.toUpperCase()); }
+            } else {
+                symbols.push(val.toUpperCase());
+            }
+
             localStorage.setItem('user_symbols', JSON.stringify(symbols));
             document.getElementById('new-asset-input').value = '';
-            openManageAssets(); updateMarket();
+
+            openManageAssets();
+            updateMarket();
         }
 
         function openEdit() {
             const fields = symbols.map(s => {
                 const isDex = s.startsWith('0x') || s.length >= 15;
                 const displayName = isDex ? (caNames[s] || s) : s.replace(/(USDT|USD)$/,"");
+
                 return `<div style="margin-bottom:12px;"><label style="font-size:10px; font-weight:bold; color:var(--title);">${displayName} QTY</label><br><input type="number" id="e-${s}" value="${localStorage.getItem('p_'+s)||''}" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"><label style="font-size:10px; font-weight:bold; color:var(--title); display:block; margin-top:8px;">${displayName} AVERAGE BUY (€)</label><br><input type="number" step="any" id="a-${s}" value="${localStorage.getItem('avg_'+s)||''}" placeholder="0.00" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:4px; margin-top:4px;"></div>`;
             }).join('');
+
             const overlay = document.createElement('div');
-            overlay.className = 'modal-overlay'; overlay.style.display = 'flex';
+            overlay.className = 'modal-overlay';
+            overlay.style.display = 'flex';
+
             overlay.innerHTML = `<div class="modal" onclick="event.stopPropagation()" style="padding:20px;"><div style="overflow-y:auto; max-height: 60vh;">${fields}</div><button onclick="saveP(this)" style="padding:15px; margin-top:10px; background:var(--title); color:#000; font-weight:bold; border:none; border-radius:4px; font-size:11px;">${translations[currentLang].save}</button></div>`;
+
             overlay.onclick = () => overlay.remove();
             document.body.appendChild(overlay);
         }
@@ -435,56 +492,95 @@
             symbols.forEach(s => {
                 const val = document.getElementById('e-'+s).value;
                 const avgBuy = document.getElementById('a-'+s).value;
+
                 localStorage.setItem('p_'+s, val);
                 localStorage.setItem('avg_'+s, avgBuy);
             });
+
             btn.parentElement.parentElement.remove();
-            renderPortfolio();
+            renderUI();
         }
 
         function openGeneralNews() {
             document.getElementById('info-header').innerText = `GLOBAL CRYPTO NEWS`;
-            document.getElementById('info-content').innerHTML = `<a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC</a><a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a><a href="https://cointelegraph.com" target="_blank" class="news-btn">COINTELEGRAPH</a><a href="https://decrypt.co" target="_blank" class="news-btn">DECRYPT</a>`;
+
+            document.getElementById('info-content').innerHTML =
+                `<a href="https://cryptopanic.com" target="_blank" class="news-btn">CRYPTOPANIC</a><a href="https://www.coindesk.com" target="_blank" class="news-btn">COINDESK</a><a href="https://cointelegraph.com" target="_blank" class="news-btn">COINTELEGRAPH</a><a href="https://decrypt.co" target="_blank" class="news-btn">DECRYPT</a>`;
+
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
         function openAppInfo() {
             document.getElementById('info-header').innerText = translations[currentLang].legal_label;
-            document.getElementById('info-content').innerHTML = `<div style="font-size: 10px; line-height: 1.5; color: var(--text);">${translations[currentLang].disclaimer_full}</div>`;
+
+            document.getElementById('info-content').innerHTML =
+                `<div style="font-size: 10px; line-height: 1.5; color: var(--text);">${translations[currentLang].disclaimer_full}</div>`;
+
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
         function openInfoModal(sym, fullSym, isDex) {
             document.getElementById('info-header').innerText = `${sym} ANALYSIS`;
+
             const theme = document.body.getAttribute('data-theme') === 'white-black' ? 'light' : 'dark';
-            document.getElementById('info-content').innerHTML = isDex ? `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center;">CA: ${fullSym}</div><a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 AVAGE DEXSCREENERIS</a>` : `<div id="chart-container"><div id="tv-medium-widget"></div></div><a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>`;
-            if(!isDex) setTimeout(() => { new TradingView.MediumWidget({ "container_id": "tv-medium-widget", "symbols": [["BINANCE:" + fullSym + "|1H"]], "chartOnly": true, "width": "100%", "height": "100%", "locale": "en", "colorTheme": theme, "gridLineColor": "transparent", "fontColor": "var(--text)", "trendLineColor": "var(--title)" }); }, 100);
+
+            document.getElementById('info-content').innerHTML =
+                isDex
+                ? `<div style="margin-top:10px; padding:10px; background:var(--accent); font-size:9px; text-align:center;">CA: ${fullSym}</div><a href="https://dexscreener.com/bsc/${fullSym}" target="_blank" class="news-btn" style="background:var(--title); color:#000; border:none; margin-top:10px;">📊 AVAGE DEXSCREENERIS</a>`
+                : `<div id="chart-container"><div id="tv-medium-widget"></div></div><a href="https://www.binance.com/en/trade/${fullSym}" target="_blank" class="news-btn" style="background:#F3BA2F; color:#000; border:none;">TRADE ON BINANCE</a>`;
+
+            if(!isDex)
+                setTimeout(() => {
+                    new TradingView.MediumWidget({
+                        "container_id": "tv-medium-widget",
+                        "symbols": [["BINANCE:" + fullSym + "|1H"]],
+                        "chartOnly": true,
+                        "width": "100%",
+                        "height": "100%",
+                        "locale": "en",
+                        "colorTheme": theme,
+                        "gridLineColor": "transparent",
+                        "fontColor": "var(--text)",
+                        "trendLineColor": "var(--title)"
+                    });
+                }, 100);
+
             document.getElementById('info-overlay').style.display = 'flex';
         }
 
         const tickerEl = document.getElementById('insights-ticker');
-        if(tickerEl) tickerEl.innerText = "CRYPTO TERMINAL READY *** TRACKING LIVE ASSETS *** MARKET DATA UPDATING ***";
 
-        setInterval(() => { document.getElementById('status').innerHTML = '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString(); }, 1000);
+        if(tickerEl)
+            tickerEl.innerText = "CRYPTO TERMINAL READY *** TRACKING LIVE ASSETS *** MARKET DATA UPDATING ***";
+
+        setInterval(() => {
+            document.getElementById('status').innerHTML =
+                '<span class="live-dot"></span> LIVE - ' + new Date().toLocaleTimeString();
+        }, 1000);
 
         function updateCustomTheme() {
             const bg = document.getElementById('cp-bg').value;
             const card = document.getElementById('cp-card').value;
             const border = document.getElementById('cp-border').value;
             const text = document.getElementById('cp-text').value;
+
             const css = `:root { --bg: ${bg}; --card: ${card}; --border: ${border}; --text: ${text}; --title: ${text}; }`;
+
             document.getElementById('custom-style').innerHTML = css;
             localStorage.setItem('custom_theme', JSON.stringify({bg, card, border, text}));
         }
 
         window.addEventListener('load', () => {
             const saved = localStorage.getItem('custom_theme');
+
             if(saved) {
                 const {bg, card, border, text} = JSON.parse(saved);
+
                 document.getElementById('cp-bg').value = bg;
                 document.getElementById('cp-card').value = card;
                 document.getElementById('cp-border').value = border;
                 document.getElementById('cp-text').value = text;
+
                 updateCustomTheme();
             }
         });
