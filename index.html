@@ -471,6 +471,30 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 [data-theme="white-black"] .action-header,
 [data-theme="white-black"] #ui-dist-title { color:#000 !important; -webkit-text-fill-color:#000 !important; }
 
+
+/* WHITE-BLACK ONLY — EDIT MODAL */
+[data-theme="white-black"] .edit-overlay .modal {
+    background:#fff !important;
+    color:#000 !important;
+}
+[data-theme="white-black"] .edit-overlay input,
+[data-theme="white-black"] .edit-overlay input[type="number"] {
+    background:#fff !important;
+    color:#000 !important;
+    -webkit-text-fill-color:#000 !important;
+    border-color:#000 !important;
+}
+[data-theme="white-black"] .edit-overlay button {
+    background:#fff !important;
+    color:#000 !important;
+    -webkit-text-fill-color:#000 !important;
+    border:1px solid #000 !important;
+}
+[data-theme="white-black"] .edit-overlay label {
+    color:#000 !important;
+    -webkit-text-fill-color:#000 !important;
+}
+
 </style>
 </head>
 <body data-theme="nando-gray">
@@ -1444,7 +1468,7 @@ function openEdit(){
         }).join('');
     const overlay=
         document.createElement('div');
-    overlay.className='modal-overlay';
+    overlay.className='modal-overlay edit-overlay';
     overlay.style.display='flex';
     overlay.innerHTML=
     `<div class="modal"
