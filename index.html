@@ -240,6 +240,93 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     -webkit-text-fill-color:var(--theme-button-text)!important;
     opacity:1!important;
 }
+
+
+/* =========================================================
+   WHITE-BLACK THEME ONLY — requested surface/graph contrast
+   ========================================================= */
+
+/* Portfolio Distribution modal/card: white surface + black text */
+[data-theme="white-black"] #dist-overlay .modal,
+[data-theme="white-black"] #dist-content,
+[data-theme="white-black"] #dist-content .dist-dashboard,
+[data-theme="white-black"] #dist-content .dist-stat,
+[data-theme="white-black"] #dist-content .dist-holding,
+[data-theme="white-black"] #dist-content .dist-heat-item {
+    background:#fff !important;
+    color:#000 !important;
+}
+
+[data-theme="white-black"] #dist-overlay .modal *,
+[data-theme="white-black"] #dist-content * {
+    color:#000 !important;
+    -webkit-text-fill-color:#000 !important;
+}
+
+/* The "LISA VARA" / ADD ASSET surface in the manage-assets modal */
+[data-theme="white-black"] #manage-overlay .modal,
+[data-theme="white-black"] #manage-overlay #asset-list-manage,
+[data-theme="white-black"] #manage-overlay #new-asset-input,
+[data-theme="white-black"] #manage-overlay #ui-btn-add {
+    background:#fff !important;
+    color:#000 !important;
+}
+
+[data-theme="white-black"] #manage-overlay #new-asset-input {
+    border-color:#000 !important;
+}
+
+[data-theme="white-black"] #manage-overlay #ui-btn-add {
+    border:1px solid #000 !important;
+    -webkit-text-fill-color:#000 !important;
+}
+
+/* Price-history/chart surface: white background, black graph/labels */
+[data-theme="white-black"] #chart-container,
+[data-theme="white-black"] .history-chart {
+    background:#fff !important;
+    border-color:#000 !important;
+    color:#000 !important;
+}
+
+/* SVG/canvas chart content where applicable */
+[data-theme="white-black"] #chart-container svg,
+[data-theme="white-black"] .history-chart svg {
+    background:#fff !important;
+}
+
+[data-theme="white-black"] #chart-container svg path,
+[data-theme="white-black"] #chart-container svg line,
+[data-theme="white-black"] #chart-container svg polyline,
+[data-theme="white-black"] .history-chart svg path,
+[data-theme="white-black"] .history-chart svg line,
+[data-theme="white-black"] .history-chart svg polyline {
+    stroke:#000 !important;
+}
+
+[data-theme="white-black"] #chart-container svg text,
+[data-theme="white-black"] .history-chart svg text {
+    fill:#000 !important;
+}
+
+/* If the chart uses CSS variables for plotted/average lines, make both black. */
+[data-theme="white-black"] #chart-container .avg-line,
+[data-theme="white-black"] .history-chart .avg-line {
+    border-color:#000 !important;
+    background:#fff !important;
+    color:#000 !important;
+}
+
+/* Keep generic White-Black card text readable only inside the requested areas. */
+[data-theme="white-black"] #dist-overlay .modal,
+[data-theme="white-black"] #manage-overlay .modal {
+    --text:#000;
+    --title:#000;
+    --accent:#e1e4e8;
+    --border:#000;
+    --card:#fff;
+}
+
 </style>
 </head>
 <body data-theme="nando-gray">
