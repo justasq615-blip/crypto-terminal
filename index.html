@@ -327,6 +327,150 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     --card:#fff;
 }
 
+
+
+/* =========================================================
+   WHITE-BLACK ONLY — ALL UI BOXES
+   Every terminal surface inside this theme is white and
+   its text is black. The chart rules are intentionally
+   left compatible with the already-correct chart.
+   ========================================================= */
+
+[data-theme="white-black"] .header,
+[data-theme="white-black"] #portfolio-section,
+[data-theme="white-black"] #main-wrapper .card,
+[data-theme="white-black"] .mid-btn,
+[data-theme="white-black"] .small-card,
+[data-theme="white-black"] .half-card,
+[data-theme="white-black"] .disclaimer-box,
+[data-theme="white-black"] .modal,
+[data-theme="white-black"] .modal-scroll,
+[data-theme="white-black"] .action-modal-scroll,
+[data-theme="white-black"] .theme-btn,
+[data-theme="white-black"] .news-btn,
+[data-theme="white-black"] .history-row,
+[data-theme="white-black"] .history-buy,
+[data-theme="white-black"] .history-chart,
+[data-theme="white-black"] .whatif-box,
+[data-theme="white-black"] .watch-box,
+[data-theme="white-black"] .alert-box,
+[data-theme="white-black"] .alert-row,
+[data-theme="white-black"] .watch-row,
+[data-theme="white-black"] .dist-stat,
+[data-theme="white-black"] .dist-holding,
+[data-theme="white-black"] .dist-heat-item,
+[data-theme="white-black"] .dist-tab,
+[data-theme="white-black"] .action-select,
+[data-theme="white-black"] .action-input,
+[data-theme="white-black"] .action-btn,
+[data-theme="white-black"] .mini-btn,
+[data-theme="white-black"] #manage-overlay #asset-list-manage,
+[data-theme="white-black"] #manage-overlay #new-asset-input,
+[data-theme="white-black"] #manage-overlay #ui-btn-add,
+[data-theme="white-black"] #info-content,
+[data-theme="white-black"] #info-header,
+[data-theme="white-black"] #dist-content,
+[data-theme="white-black"] #history-assets-list,
+[data-theme="white-black"] #history-detail-content,
+[data-theme="white-black"] #alerts-content,
+[data-theme="white-black"] #watchlist-content,
+[data-theme="white-black"] #ants-content,
+[data-theme="white-black"] #whatif-content {
+    background:#fff !important;
+    color:#000 !important;
+}
+
+/* Make descendants inherit black text in all white-black surfaces,
+   without changing the chart's already-correct drawing rules. */
+[data-theme="white-black"] .header *,
+[data-theme="white-black"] #portfolio-section *,
+[data-theme="white-black"] #main-wrapper .card *,
+[data-theme="white-black"] .mid-btn *,
+[data-theme="white-black"] .small-card *,
+[data-theme="white-black"] .half-card *,
+[data-theme="white-black"] .disclaimer-box *,
+[data-theme="white-black"] .modal *,
+[data-theme="white-black"] .action-modal-scroll *,
+[data-theme="white-black"] .theme-btn *,
+[data-theme="white-black"] .news-btn *,
+[data-theme="white-black"] .history-row *,
+[data-theme="white-black"] .history-buy *,
+[data-theme="white-black"] .whatif-box *,
+[data-theme="white-black"] .watch-box *,
+[data-theme="white-black"] .alert-box *,
+[data-theme="white-black"] .alert-row *,
+[data-theme="white-black"] .watch-row *,
+[data-theme="white-black"] .dist-stat *,
+[data-theme="white-black"] .dist-holding *,
+[data-theme="white-black"] .dist-heat-item *,
+[data-theme="white-black"] .dist-tab *,
+[data-theme="white-black"] .action-select *,
+[data-theme="white-black"] .action-input *,
+[data-theme="white-black"] .action-btn *,
+[data-theme="white-black"] .mini-btn *,
+[data-theme="white-black"] #manage-overlay #asset-list-manage *,
+[data-theme="white-black"] #manage-overlay #new-asset-input *,
+[data-theme="white-black"] #manage-overlay #ui-btn-add *,
+[data-theme="white-black"] #info-content *,
+[data-theme="white-black"] #info-header *,
+[data-theme="white-black"] #dist-content *,
+[data-theme="white-black"] #history-assets-list *,
+[data-theme="white-black"] #history-detail-content *,
+[data-theme="white-black"] #alerts-content *,
+[data-theme="white-black"] #watchlist-content *,
+[data-theme="white-black"] #ants-content *,
+[data-theme="white-black"] #whatif-content * {
+    color:#000 !important;
+    -webkit-text-fill-color:#000 !important;
+}
+
+/* White-black inputs/selects */
+[data-theme="white-black"] input,
+[data-theme="white-black"] select,
+[data-theme="white-black"] textarea {
+    background:#fff !important;
+    color:#000 !important;
+    -webkit-text-fill-color:#000 !important;
+    border-color:#000 !important;
+}
+
+/* White-black borders remain black for clear separation. */
+[data-theme="white-black"] .header,
+[data-theme="white-black"] #portfolio-section,
+[data-theme="white-black"] .card,
+[data-theme="white-black"] .mid-btn,
+[data-theme="white-black"] .small-card,
+[data-theme="white-black"] .half-card,
+[data-theme="white-black"] .modal,
+[data-theme="white-black"] .theme-btn,
+[data-theme="white-black"] .news-btn,
+[data-theme="white-black"] .action-btn,
+[data-theme="white-black"] .action-select,
+[data-theme="white-black"] .action-input,
+[data-theme="white-black"] .history-row,
+[data-theme="white-black"] .history-buy,
+[data-theme="white-black"] .history-chart,
+[data-theme="white-black"] .whatif-box,
+[data-theme="white-black"] .watch-box,
+[data-theme="white-black"] .alert-box,
+[data-theme="white-black"] .alert-row,
+[data-theme="white-black"] .watch-row,
+[data-theme="white-black"] .dist-stat,
+[data-theme="white-black"] .dist-holding,
+[data-theme="white-black"] .dist-heat-item,
+[data-theme="white-black"] .dist-tab {
+    border-color:#000 !important;
+}
+
+/* Keep status/up/down semantics visible on white. */
+[data-theme="white-black"] .up,
+[data-theme="white-black"] .positive { color:#1a7f37 !important; -webkit-text-fill-color:#1a7f37 !important; }
+[data-theme="white-black"] .down,
+[data-theme="white-black"] .negative { color:#cf222e !important; -webkit-text-fill-color:#cf222e !important; }
+[data-theme="white-black"] .section-title,
+[data-theme="white-black"] .action-header,
+[data-theme="white-black"] #ui-dist-title { color:#000 !important; -webkit-text-fill-color:#000 !important; }
+
 </style>
 </head>
 <body data-theme="nando-gray">
