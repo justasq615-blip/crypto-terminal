@@ -809,7 +809,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <select id="test-symbol" class="action-select"></select>
         <input id="test-investment" class="action-input" type="number" step="any" value="100" data-i18n-placeholder="investment_amount" placeholder="100 EUR">
       </div>
-      <input id="test-ca" class="action-input" type="text" data-i18n-placeholder="watch_ca" placeholder="CA / CONTRACT ADDRESS (optional)" style="width:100%;margin-top:7px">
+      <input id="test-ca" class="action-input" type="text" data-i18n-placeholder="watch_ca" placeholder="CA / CONTRACT ADDRESS (optional)" style="width:100%;margin-top:0;margin-bottom:10px;display:block">
       <div class="action-grid">
         <input id="test-price" class="action-input" type="number" step="any" placeholder="Baseline price (EUR)" data-i18n-placeholder="baseline">
         <input id="test-date" class="action-input" type="date">
@@ -2065,7 +2065,7 @@ function addAlert(){
 function deleteAlert(id){priceAlerts=priceAlerts.filter(a=>a.id!==id);saveAlerts();renderAlerts();}
 function renderAlerts(){
     const box=document.getElementById('alerts-content');
-    if(!priceAlerts.length){box.innerHTML='<div class="history-empty">'+T('no_alerts')+'</div>';return;}
+    if(!priceAlerts.length){box.innerHTML='';return;}
     box.innerHTML=priceAlerts.map(a=>{
         const price=currentPrices[a.symbol]||0;
         const hit=a.direction==='above'?price>=a.target:price<=a.target;
@@ -2152,7 +2152,7 @@ async function addTestCase(){
 function deleteTestCase(id){testCases=testCases.filter(t=>t.id!==id);saveTests();renderWatchlist();}
 async function renderWatchlist(){
     const box=document.getElementById('watchlist-content');
-    if(!testCases.length){box.innerHTML='<div class="history-empty">'+T('no_test')+'</div>';return;}
+    if(!testCases.length){box.innerHTML='';return;}
     const rows=[];
     for(const t of testCases.slice().reverse()){
         let current=currentPrices[t.symbol]||0;
