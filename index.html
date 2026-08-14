@@ -2046,302 +2046,49 @@ function renderWhatIf(){
     </div>`;
 }
 let priceAlerts=[];
-try{
-    priceAlerts=JSON.parse(
-        localStorage.getItem('aplo_price_alerts')||'[]'
-    );
-    if(!Array.isArray(priceAlerts))priceAlerts=[];
-}catch(e){
-    priceAlerts=[];
-}
-
-/* =========================================================
-   LOCALSTORAGE ALERT ENGINE
-   Keeps alerts entirely local while making the client-side
-   alert system more resilient when the tab is backgrounded.
-   ========================================================= */
-function saveAlerts(){
-    localStorage.setItem(
-        'aplo_price_alerts',
-        JSON.stringify(priceAlerts)
-    );
-}
-
-function requestAlertNotificationPermission(){
-    try{
-        if(
-            'Notification' in window &&
-            Notification.permission==='default'
-        ){
-            Notification.requestPermission().catch(()=>{});
-        }
-    }catch(e){}
-}
-
-function showPriceAlertNotification(a,price){
-    const name=getDisplayName(a.symbol);
-    const message=
-        `${formatMoney(price)} `+
-        `${a.direction==='above'?'>=':'<='} `+
-        `${formatMoney(a.target)}`;
-
-    /* Browser notification when permission is available. */
-    try{
-        if(
-            'Notification' in window &&
-            Notification.permission==='granted'
-        ){
-            new Notification(
-                `🔔 ${name} — ${T('priceAlert')||'Price Alert'}`,
-                {
-                    body:message,
-                    tag:`aplo-alert-${a.id}`,
-                    renotify:false
-                }
-            );
-        }
-    }catch(e){}
-
-    /* Keep the existing terminal alert as a fallback. */
-    try{
-        navigator.vibrate&&
-        navigator.vibrate([150,80,150]);
-    }catch(e){}
-
-    setTimeout(()=>{
-        try{
-            alert(
-                `🔔 ${name} alert\n`+
-                `${message}`
-            );
-        }catch(e){}
-    },50);
-}
-
+try{priceAlerts=JSON.parse(localStorage.getItem('aplo_price_alerts')||'[]');if(!Array.isArray(priceAlerts))priceAlerts=[];}catch(e){priceAlerts=[];}
+function saveAlerts(){localStorage.setItem('aplo_price_alerts',JSON.stringify(priceAlerts));}
 function openAlerts(){
     populateActionSelect('alert-symbol');
-    requestAlertNotificationPermission();
-    document.getElementById(
-        'alerts-overlay'
-    ).style.display='flex';
+    document.getElementById('alerts-overlay').style.display='flex';
     renderAlerts();
 }
-
 function addAlert(){
-    const symbol=
-        document.getElementById('alert-symbol').value;
-    const direction=
-        document.getElementById('alert-direction').value;
-    const target=
-        parseFloat(
-            document.getElementById('alert-target').value
-        );
-
-    if(
-        !symbol||
-        !Number.isFinite(target)||
-        target<=0
-    ){
-        alert(T('validTarget'));
-        return;
-    }
-
-    requestAlertNotificationPermission();
-
-    priceAlerts.push({
-        id:Date.now(),
-        symbol,
-        direction,
-        target,
-        active:true,
-        triggered:false,
-        createdAt:Date.now(),
-        lastCheckedPrice:null,
-        lastCheckedAt:null,
-        triggeredPrice:null,
-        triggeredAt:null
-    });
-
-    document.getElementById(
-        'alert-target'
-    ).value='';
-
-    saveAlerts();
-    renderAlerts();
-
-    /* If market data is already available, evaluate immediately. */
-    checkAlerts();
+    const symbol=document.getElementById('alert-symbol').value;
+    const direction=document.getElementById('alert-direction').value;
+    const target=parseFloat(document.getElementById('alert-target').value);
+    if(!symbol||!Number.isFinite(target)||target<=0){alert(T('validTarget'));return;}
+    priceAlerts.push({id:Date.now(),symbol,direction,target,active:true,triggered:false});
+    document.getElementById('alert-target').value='';
+    saveAlerts();renderAlerts();
 }
-
-function deleteAlert(id){
-    priceAlerts=
-        priceAlerts.filter(a=>a.id!==id);
-    saveAlerts();
-    renderAlerts();
-}
-
+function deleteAlert(id){priceAlerts=priceAlerts.filter(a=>a.id!==id);saveAlerts();renderAlerts();}
 function renderAlerts(){
-    const box=
-        document.getElementById('alerts-content');
-
-    if(!priceAlerts.length){
-        box.innerHTML='';
-        return;
-    }
-
-    box.innerHTML=
-        priceAlerts.map(a=>{
-            const price=
-                currentPrices[a.symbol]||0;
-            const hit=
-                a.direction==='above'
-                ?price>=a.target
-                :price<=a.target;
-
-            return `
-            <div class="alert-row ${a.triggered?'':' '}">
-                <div class="alert-row-head">
-                    <span>
-                        ${getDisplayName(a.symbol)}
-                    </span>
-                    <button
-                        class="mini-btn"
-                        onclick="deleteAlert(${a.id})"
-                    >
-                        ${T('delete')}
-                    </button>
-                </div>
-
-                <div>
-                    ${a.direction==='above'
-                        ?T('above')
-                        :T('below')}
-                    ${formatMoney(a.target)}
-                    • ${T('now')}
-                    ${price?formatMoney(price):'—'}
-                </div>
-
-                <div
-                    style="margin-top:4px;opacity:.6"
-                >
-                    ${
-                        a.triggered
-                        ?T('triggered')
-                        :hit
-                            ?T('ready')
-                            :T('waiting')
-                    }
-                </div>
-            </div>`;
-        }).join('');
+    const box=document.getElementById('alerts-content');
+    if(!priceAlerts.length){box.innerHTML='';return;}
+    box.innerHTML=priceAlerts.map(a=>{
+        const price=currentPrices[a.symbol]||0;
+        const hit=a.direction==='above'?price>=a.target:price<=a.target;
+        return `<div class="alert-row ${a.triggered?'':' '}"><div class="alert-row-head"><span>${getDisplayName(a.symbol)}</span><button class="mini-btn" onclick="deleteAlert(${a.id})">${T('delete')}</button></div><div>${a.direction==='above'?T('above'):T('below')} ${formatMoney(a.target)} • ${T('now')} ${price?formatMoney(price):'—'}</div><div style="margin-top:4px;opacity:.6">${a.triggered?T('triggered'):hit?T('ready'):T('waiting')}</div></div>`;
+    }).join('');
 }
-
 function checkAlerts(){
     let changed=false;
-
     priceAlerts.forEach(a=>{
         if(!a.active||a.triggered)return;
-
-        const price=
-            currentPrices[a.symbol]||0;
-
-        if(!Number.isFinite(price)||price<=0)return;
-
-        const now=Date.now();
-
-        a.lastCheckedPrice=price;
-        a.lastCheckedAt=now;
-        changed=true;
-
-        const hit=
-            a.direction==='above'
-            ?price>=a.target
-            :price<=a.target;
-
+        const price=currentPrices[a.symbol]||0;
+        if(!price)return;
+        const hit=a.direction==='above'?price>=a.target:price<=a.target;
         if(hit){
-            a.triggered=true;
-            a.triggeredPrice=price;
-            a.triggeredAt=now;
-
-            showPriceAlertNotification(
-                a,
-                price
-            );
+            a.triggered=true;changed=true;
+            try{navigator.vibrate&&navigator.vibrate([150,80,150]);}catch(e){}
+            setTimeout(()=>alert(`🔔 ${getDisplayName(a.symbol)} alert\n${formatMoney(price)} ${a.direction==='above'?'>=':'<='} ${formatMoney(a.target)}`),50);
         }
     });
-
     if(changed)saveAlerts();
-
-    const box=
-        document.getElementById(
-            'alerts-content'
-        );
-
-    if(
-        box&&
-        document.getElementById(
-            'alerts-overlay'
-        ).style.display==='flex'
-    ){
-        renderAlerts();
-    }
+    const box=document.getElementById('alerts-content');
+    if(box&&document.getElementById('alerts-overlay').style.display==='flex')renderAlerts();
 }
-
-/*
- * When the browser brings the terminal back to the foreground,
- * immediately request fresh market data instead of waiting
- * for the next 30-second interval.
- */
-let alertRefreshInProgress=false;
-
-async function refreshAlertsOnReturn(){
-    if(alertRefreshInProgress)return;
-    if(document.visibilityState==='hidden')return;
-
-    alertRefreshInProgress=true;
-
-    try{
-        await updateMarket();
-        checkAlerts();
-    }catch(e){
-        try{checkAlerts();}catch(err){}
-    }finally{
-        alertRefreshInProgress=false;
-    }
-}
-
-document.addEventListener(
-    'visibilitychange',
-    ()=>{
-        if(
-            document.visibilityState==='visible'
-        ){
-            refreshAlertsOnReturn();
-        }
-    }
-);
-
-window.addEventListener(
-    'focus',
-    ()=>{
-        refreshAlertsOnReturn();
-    }
-);
-
-window.addEventListener(
-    'pageshow',
-    ()=>{
-        refreshAlertsOnReturn();
-    }
-);
-
-window.addEventListener(
-    'online',
-    ()=>{
-        refreshAlertsOnReturn();
-    }
-);
-
 let testCases=[];
 let watchCustomPrices={};
 let watchCustomNames={};
