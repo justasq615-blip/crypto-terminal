@@ -594,6 +594,57 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     background:#404040 !important;
     color:#fff !important;
 }
+
+/* =========================================================
+   PORTFOLIO / CURRENCY / COMPACT EDIT UPGRADE
+   ========================================================= */
+.currency-clickable{cursor:pointer;user-select:none}
+.currency-badge{font-size:7px;opacity:.55;margin-left:5px;letter-spacing:.5px}
+.assets-modal{max-width:720px;width:100%}
+.assets-scroll{padding:10px 12px;overflow:auto;max-height:78vh}
+.assets-table{width:100%;border-collapse:collapse;font-size:8px}
+.assets-table th{padding:8px 5px;text-align:right;color:var(--title);font-size:7px;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--border)}
+.assets-table th:first-child,.assets-table td:first-child{text-align:left}
+.assets-table td{padding:9px 5px;text-align:right;border-bottom:1px solid var(--accent);white-space:nowrap}
+.assets-table tr:last-child td{border-bottom:none}
+.assets-coin{font-weight:900;font-size:9px}
+.assets-sub{display:block;font-size:6px;opacity:.5;margin-top:2px}
+.assets-total{display:flex;justify-content:space-between;align-items:center;padding:11px 5px 4px;font-weight:900;font-size:10px;border-top:1px solid var(--border);margin-top:2px}
+.assets-total-value{font-size:13px}
+.assets-positive{color:var(--up)!important}.assets-negative{color:var(--down)!important}
+.currency-hint{text-align:center;font-size:7px;opacity:.5;padding:4px 0 0}
+.edit-compact-scroll{padding:12px;overflow-y:auto;max-height:72vh}
+.edit-asset-block{padding:9px 0 11px;border-bottom:1px solid var(--accent)}
+.edit-asset-block:last-child{border-bottom:none}
+.edit-asset-name{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:900;color:var(--title);margin-bottom:7px}
+.edit-asset-line{height:2px;background:var(--title);opacity:.35;flex:1}
+.edit-asset-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.edit-field label{display:block;font-size:7px;font-weight:bold;opacity:.65;margin-bottom:4px;text-transform:uppercase}
+.edit-field input{width:100%;padding:9px 8px;border:1px solid var(--border);border-radius:5px;background:var(--card);color:var(--text);font-size:10px;outline:none}
+.edit-save{width:100%;padding:11px;margin-top:10px;background:var(--title);color:#000;border:1px solid var(--title);border-radius:5px;font-weight:900;font-size:9px;text-transform:uppercase;cursor:pointer}
+@media(max-width:520px){.assets-table{font-size:7px}.assets-table th{font-size:6px}.assets-table td{padding:8px 3px}.edit-asset-grid{grid-template-columns:1fr 1fr;gap:5px}.edit-field input{padding:8px 6px}}
+[data-theme="white-black"] .assets-modal,
+[data-theme="white-black"] .assets-scroll,
+[data-theme="white-black"] .edit-compact-scroll,
+[data-theme="white-black"] .edit-asset-block,
+[data-theme="white-black"] .edit-field input{background:#fff!important;color:#000!important}
+[data-theme="white-black"] .assets-table th,
+[data-theme="white-black"] .assets-table td,
+[data-theme="white-black"] .assets-total,
+[data-theme="white-black"] .edit-asset-block{border-color:#000!important}
+[data-theme="white-black"] .edit-asset-name,
+[data-theme="white-black"] .assets-table th{color:#000!important}
+[data-theme="white-black"] .edit-asset-line{background:#000!important}
+[data-theme="white-black"] .edit-field input{border-color:#000!important;color:#000!important;-webkit-text-fill-color:#000!important}
+[data-theme="white-black"] .edit-save{background:#fff!important;color:#000!important;border-color:#000!important}
+[data-theme="nando-gray"] .assets-modal,
+[data-theme="nando-gray"] .assets-scroll,
+[data-theme="nando-gray"] .edit-compact-scroll,
+[data-theme="nando-gray"] .edit-asset-block,
+[data-theme="nando-gray"] .edit-field input{background:#2d2d2d!important;color:#e0e0e0!important}
+[data-theme="nando-gray"] .edit-field input{border-color:#505050!important}
+[data-theme="nando-gray"] .edit-save{background:#404040!important;color:#fff!important;border-color:#505050!important}
+
 </style>
 </head>
 <body data-theme="nando-gray">
@@ -609,11 +660,11 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
             <div id="ui-networth" style="font-size:8px;text-transform:uppercase;opacity:.6;font-weight:bold">Net Worth</div>
-            <div id="portfolio-total" class="portfolio-total">€0.00</div>
+            <div id="portfolio-total" class="portfolio-total currency-clickable" onclick="cycleCurrency(event)">€0.00<span id="portfolio-currency-badge" class="currency-badge">EUR</span></div>
         </div>
         <div style="display:flex;gap:6px;align-items:center;">
             <button onclick="openDistribution()" class="btn-icon">📊</button>
-            <button id="ui-btn-assets" onclick="togglePortfolio()" class="btn-action">ASSETS</button>
+            <button id="ui-btn-assets" onclick="openAssetsModal()" class="btn-action">ASSETS</button>
             <button id="ui-btn-edit" onclick="openEdit()" class="btn-action">EDIT</button>
         </div>
     </div>
@@ -671,6 +722,12 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
             <input type="text" id="new-asset-input" placeholder="TICKER OR CA (0x...)" style="width:100%;padding:12px;background:#000;border:1px solid var(--border);color:#fff;border-radius:4px;font-size:12px">
             <button id="ui-btn-add" onclick="addNewAsset()" style="width:100%;margin-top:8px;padding:12px;background:var(--title);color:#000;border:none;font-weight:bold;border-radius:4px;font-size:11px">LISA VARA</button>
         </div>
+    </div>
+</div>
+<div id="assets-overlay" class="modal-overlay" onclick="this.style.display='none'">
+    <div class="modal assets-modal" onclick="event.stopPropagation()">
+        <div id="ui-assets-title" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;text-transform:uppercase;font-size:11px;color:var(--title)">MINU VARAD</div>
+        <div id="assets-content" class="assets-scroll"></div>
     </div>
 </div>
 <div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'">
@@ -776,6 +833,8 @@ let touchStartY=0;
 let currentPrices={};
 let marketData=[];
 let usdToEur=1;
+let fxRates={EUR:1,USD:1,RUB:1};
+let displayCurrency=localStorage.getItem('display_currency')||'EUR';
 let priceHistory={};
 try{
     const savedSymbols=localStorage.getItem('user_symbols');
@@ -921,6 +980,18 @@ async function updateMarket(){
                 usdToEur=1/eurUsdt;
         }
     }catch(e){}
+    try{
+        const fx=await fetch(
+            'https://api.frankfurter.app/latest?from=EUR&to=USD,RUB'
+        );
+        if(fx.ok){
+            const data=await fx.json();
+            const usd=parseFloat(data.rates&&data.rates.USD);
+            const rub=parseFloat(data.rates&&data.rates.RUB);
+            if(Number.isFinite(usd)&&usd>0)fxRates.USD=usd;
+            if(Number.isFinite(rub)&&rub>0)fxRates.RUB=rub;
+        }
+    }catch(e){}
     const binanceSyms=
         symbols.filter(s=>!s.startsWith('0x')&&s.length<15);
     const dexAddrs=
@@ -1014,8 +1085,8 @@ function renderUI(){
                 <span class="label-text">${sym}</span>
                 ${pnlText}
             </div>
-            <div class="value-text">
-                €${p.toFixed(2)}
+            <div class="value-text currency-clickable" onclick="cycleCurrency(event)">
+                ${formatMoney(p)}
             </div>
         </div>`;
         wrapper.appendChild(card);
@@ -1152,12 +1223,12 @@ function renderPortfolio(){
                     ?(caNames[s]||"DEX")
                     :s.replace(/(USDT|USD)$/,"")}
                 </span>
-                <span>€${(qty*price).toFixed(2)}</span>
+                <span>${formatMoney(qty*price)}</span>
             </div>`;
         }
     });
-    document.getElementById('portfolio-total').innerText=
-        `€${total.toFixed(2)}`;
+    document.getElementById('portfolio-total').innerHTML=
+        `${formatMoney(total)}<span id="portfolio-currency-badge" class="currency-badge">${displayCurrency}</span>`;
     document.getElementById('portfolio-list').innerHTML=
         items||
         `<div style="opacity:.5;font-size:10px;text-align:center">
@@ -1165,14 +1236,75 @@ function renderPortfolio(){
         </div>`;
     renderHourlyPerformance();
 }
-function togglePortfolio(){
-    const d=
-        document.getElementById('portfolio-details');
-    d.style.display=
-        d.style.display==='block'
-        ?'none'
-        :'block';
-    renderHourlyPerformance();
+function getCurrencySymbol(){
+    return displayCurrency==='USD'?'$':displayCurrency==='RUB'?'₽':'€';
+}
+function convertFromEur(value){
+    const rate=Number(fxRates[displayCurrency])||1;
+    return value*rate;
+}
+function formatMoney(value){
+    const converted=convertFromEur(Number(value)||0);
+    const symbol=getCurrencySymbol();
+    const decimals=displayCurrency==='RUB'?2:2;
+    return `${symbol}${converted.toLocaleString('et-EE',{minimumFractionDigits:decimals,maximumFractionDigits:decimals})}`;
+}
+function cycleCurrency(event){
+    if(event){event.preventDefault();event.stopPropagation();}
+    displayCurrency=displayCurrency==='EUR'?'USD':displayCurrency==='USD'?'RUB':'EUR';
+    localStorage.setItem('display_currency',displayCurrency);
+    renderUI();
+    if(document.getElementById('assets-overlay').style.display==='flex')openAssetsModal();
+}
+function openAssetsModal(){
+    const t=translations[currentLang]||translations.et;
+    const content=document.getElementById('assets-content');
+    const rows=[];
+    let total=0;
+    symbols.forEach(s=>{
+        const qty=parseFloat(localStorage.getItem('p_'+s))||0;
+        const price=currentPrices[s]||0;
+        if(qty>0&&price>0){
+            const value=qty*price;
+            total+=value;
+            const avg=parseFloat(localStorage.getItem('avg_'+s));
+            const coin=getDisplayName(s);
+            const market=getMarketCoin(s);
+            const change=market?parseFloat(market.priceChangePercent):0;
+            rows.push({s,coin,qty,avg,price,value,change});
+        }
+    });
+    rows.sort((a,b)=>b.value-a.value);
+    const tableRows=rows.map(r=>{
+        const share=total>0?(r.value/total)*100:0;
+        const cls=r.change>=0?'assets-positive':'assets-negative';
+        return `<tr>
+            <td><span class="assets-coin">${r.coin}</span><span class="assets-sub">${r.s.startsWith('0x')?'CA / DEX':'SPOT'}</span></td>
+            <td>${Number(r.qty).toLocaleString('et-EE',{maximumFractionDigits:8})}</td>
+            <td>${Number.isFinite(r.avg)?formatMoney(r.avg):'—'}</td>
+            <td>${formatMoney(r.price)}</td>
+            <td>${formatMoney(r.value)}</td>
+            <td class="${cls}">${r.change>=0?'+':''}${r.change.toFixed(2)}%</td>
+            <td>${share.toFixed(1)}%</td>
+        </tr>`;
+    }).join('');
+    content.innerHTML=rows.length?`
+        <table class="assets-table">
+            <thead><tr>
+                <th>${currentLang==='et'?'KRÜPTO':'ASSET'}</th>
+                <th>${currentLang==='et'?'KOGUS':'QTY'}</th>
+                <th>${currentLang==='et'?'KESKMINE OST':'AVG BUY'}</th>
+                <th>${currentLang==='et'?'HIND':'PRICE'}</th>
+                <th>${currentLang==='et'?'VÄÄRTUS':'VALUE'}</th>
+                <th>24H</th><th>${currentLang==='et'?'JAOTUS':'SHARE'}</th>
+            </tr></thead>
+            <tbody>${tableRows}</tbody>
+        </table>
+        <div class="assets-total"><span>${currentLang==='et'?'KOKKU':'TOTAL'}</span><span class="assets-total-value">${formatMoney(total)}</span></div>
+        <div class="currency-hint">${currentLang==='et'?'Vajuta hinnale või netoväärtusele, et vahetada EUR / USD / RUB':'Tap a price or net worth to switch EUR / USD / RUB'} • ${displayCurrency}</div>
+    `:`<div class="history-empty">${t.no_assets}</div>`;
+    document.getElementById('ui-assets-title').innerText=currentLang==='et'?'MINU VARAD':'MY ASSETS';
+    document.getElementById('assets-overlay').style.display='flex';
 }
 function openDistribution(){
     const t=translations[currentLang];
@@ -1526,67 +1658,36 @@ async function addNewAsset(){
     updateMarket();
 }
 function openEdit(){
-    const fields=
-        symbols.map(s=>{
-            const isDex=
-                s.startsWith('0x')||s.length>=15;
-            const displayName=
-                isDex
-                ?(caNames[s]||s)
-                :s.replace(/(USDT|USD)$/,"");
-            return `
-            <div style="margin-bottom:12px">
-                <label style="font-size:10px;font-weight:bold;color:var(--title)">
-                    ${displayName} QTY
-                </label>
-                <br>
-                <input
-                    type="number"
-                    id="e-${s}"
-                    value="${localStorage.getItem('p_'+s)||''}"
-                    style="width:100%;padding:12px;background:#000;
-                    border:1px solid var(--border);color:#fff;
-                    border-radius:4px;margin-top:4px"
-                >
-                <label style="font-size:10px;font-weight:bold;
-                color:var(--title);display:block;margin-top:8px">
-                    ${displayName} AVERAGE BUY (€)
-                </label>
-                <br>
-                <input
-                    type="number"
-                    step="any"
-                    id="a-${s}"
-                    value="${localStorage.getItem('avg_'+s)||''}"
-                    placeholder="0.00"
-                    style="width:100%;padding:12px;background:#000;
-                    border:1px solid var(--border);color:#fff;
-                    border-radius:4px;margin-top:4px"
-                >
-            </div>`;
-        }).join('');
-    const overlay=
-        document.createElement('div');
+    const fields=symbols.map(s=>{
+        const isDex=s.startsWith('0x')||s.length>=15;
+        const displayName=isDex?(caNames[s]||s):s.replace(/(USDT|USD)$/,'');
+        return `
+        <div class="edit-asset-block">
+            <div class="edit-asset-name"><span>${displayName}</span><span class="edit-asset-line"></span></div>
+            <div class="edit-asset-grid">
+                <div class="edit-field">
+                    <label>${currentLang==='et'?'KOGUS (QTY)':'QUANTITY (QTY)'}</label>
+                    <input type="number" step="any" id="e-${s}" value="${localStorage.getItem('p_'+s)||''}">
+                </div>
+                <div class="edit-field">
+                    <label>${currentLang==='et'?'KESKMINE OSTUHIND (€)':'AVERAGE BUY (€)'}</label>
+                    <input type="number" step="any" id="a-${s}" value="${localStorage.getItem('avg_'+s)||''}" placeholder="0.00">
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+    const overlay=document.createElement('div');
     overlay.className='modal-overlay edit-overlay';
     overlay.style.display='flex';
-    overlay.innerHTML=
-    `<div class="modal"
-        onclick="event.stopPropagation()"
-        style="padding:20px">
-        <div style="overflow-y:auto;max-height:60vh">
-            ${fields}
-        </div>
-        <button
-            onclick="saveP(this)"
-            style="padding:15px;margin-top:10px;
-            background:var(--title);color:#000;
-            font-weight:bold;border:none;border-radius:4px;
-            font-size:11px">
-            ${translations[currentLang].save}
-        </button>
-    </div>`;
-    overlay.onclick=
-        ()=>overlay.remove();
+    overlay.innerHTML=`
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="action-header">${currentLang==='et'?'MUUDA VARADE ANDMEID':'EDIT ASSET DATA'}</div>
+            <div class="edit-compact-scroll">
+                ${fields||'<div class="history-empty">No assets.</div>'}
+                <button class="edit-save" onclick="saveP(this)">${translations[currentLang].save}</button>
+            </div>
+        </div>`;
+    overlay.onclick=()=>overlay.remove();
     document.body.appendChild(overlay);
 }
 function saveP(btn){
