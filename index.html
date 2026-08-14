@@ -16,7 +16,7 @@
 [data-theme="white-black"]{--bg:#fff;--card:#f6f8fa;--header:#fff;--text:#000;--accent:#e1e4e8;--border:#000;--title:#000;--up:#1a7f37;--down:#cf222e}
 [data-theme="terminal"]{--bg:#050505;--card:rgba(0,20,0,.2);--header:#000;--text:#0f0;--accent:#030;--border:#0f0;--title:#0f0;--up:#0f0;--down:red}
 [data-theme="gold"]{--bg:#1a140a;--card:rgba(45,35,15,.4);--header:#261e0f;--text:#f0d78c;--accent:#3d3016;--border:#d4af37;--title:#d4af37;--up:#ffd700;--down:#ff4500}
-[data-theme="nando-gray"]{--bg:#1c1c1c;--card:#2d2d2d;--header:#141414;--text:#e0e0e0;--accent:#404040;--border:#505050;--title:#fff;--up:#4ade80;--down:#f87171}
+[data-theme="nando-gray"]{--bg:#1c1c1c;--card:#2d2d2d;--header:#2d2d2d;--text:#e0e0e0;--accent:#2d2d2d;--border:#505050;--title:#fff;--up:#4ade80;--down:#f87171}
 [data-theme="forest"]{--bg:#06120B;--card:rgba(10,45,25,.4);--header:#0E3A21;--text:#A7DFB1;--accent:#1B4D31;--border:#2ECC71;--title:#2ECC71;--up:#2ecc71;--down:#e74c3c}
 [data-theme="retro"]{--bg:#281800;--card:rgba(60,30,0,.3);--header:#3d2400;--text:#ffb000;--accent:#4d2d00;--border:#ffb000;--title:#ffb000;--up:#ffb000;--down:red}
 [data-theme="midnight"]{--bg:#020617;--card:#1e293b;--header:#0f172a;--text:#f1f5f9;--accent:#334155;--border:#38bdf8;--title:#38bdf8;--up:#22c55e;--down:#ef4444}
@@ -495,6 +495,105 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     -webkit-text-fill-color:#000 !important;
 }
 
+
+/* =========================================================
+   NANDO GRAY — UNIFORM BOX SURFACES
+   All terminal boxes use the same neutral gray surface.
+   The page background remains darker so the boxes stay
+   visually separated without introducing mixed box colors.
+   ========================================================= */
+[data-theme="nando-gray"] .header,
+[data-theme="nando-gray"] #portfolio-section,
+[data-theme="nando-gray"] .card,
+[data-theme="nando-gray"] .mid-btn,
+[data-theme="nando-gray"] .small-card,
+[data-theme="nando-gray"] .half-card,
+[data-theme="nando-gray"] .perf-row,
+[data-theme="nando-gray"] .disclaimer-box,
+[data-theme="nando-gray"] .modal,
+[data-theme="nando-gray"] .modal-scroll,
+[data-theme="nando-gray"] .action-modal-scroll,
+[data-theme="nando-gray"] .theme-btn,
+[data-theme="nando-gray"] .news-btn,
+[data-theme="nando-gray"] .history-row,
+[data-theme="nando-gray"] .history-buy,
+[data-theme="nando-gray"] .history-chart,
+[data-theme="nando-gray"] #chart-container,
+[data-theme="nando-gray"] .whatif-box,
+[data-theme="nando-gray"] .watch-box,
+[data-theme="nando-gray"] .alert-box,
+[data-theme="nando-gray"] .alert-row,
+[data-theme="nando-gray"] .watch-row,
+[data-theme="nando-gray"] .dist-stat,
+[data-theme="nando-gray"] .dist-holding,
+[data-theme="nando-gray"] .dist-heat-item,
+[data-theme="nando-gray"] .dist-tab,
+[data-theme="nando-gray"] .action-select,
+[data-theme="nando-gray"] .action-input,
+[data-theme="nando-gray"] .action-btn,
+[data-theme="nando-gray"] .mini-btn,
+[data-theme="nando-gray"] #manage-overlay #asset-list-manage,
+[data-theme="nando-gray"] #manage-overlay #new-asset-input,
+[data-theme="nando-gray"] #manage-overlay #ui-btn-add,
+[data-theme="nando-gray"] #info-content,
+[data-theme="nando-gray"] #info-header,
+[data-theme="nando-gray"] #dist-content,
+[data-theme="nando-gray"] #history-assets-list,
+[data-theme="nando-gray"] #history-detail-content,
+[data-theme="nando-gray"] #alerts-content,
+[data-theme="nando-gray"] #watchlist-content,
+[data-theme="nando-gray"] #ants-content,
+[data-theme="nando-gray"] #whatif-content,
+[data-theme="nando-gray"] .edit-overlay input {
+    background:#2d2d2d !important;
+    color:#e0e0e0 !important;
+}
+
+[data-theme="nando-gray"] .dist-stat,
+[data-theme="nando-gray"] .dist-holding,
+[data-theme="nando-gray"] .dist-heat-item {
+    background:#2d2d2d !important;
+}
+
+[data-theme="nando-gray"] .dist-bar-bg,
+[data-theme="nando-gray"] .dist-holding-bar {
+    background:#2d2d2d !important;
+    border:1px solid #505050;
+}
+
+[data-theme="nando-gray"] .modal-overlay {
+    background:rgba(0,0,0,.85);
+}
+
+[data-theme="nando-gray"] .theme-btn,
+[data-theme="nando-gray"] .news-btn,
+[data-theme="nando-gray"] .action-btn,
+[data-theme="nando-gray"] .dist-tab,
+[data-theme="nando-gray"] .mini-btn {
+    border-color:#505050 !important;
+}
+
+[data-theme="nando-gray"] .action-select,
+[data-theme="nando-gray"] .action-input,
+[data-theme="nando-gray"] #manage-overlay #new-asset-input,
+[data-theme="nando-gray"] .edit-overlay input {
+    border-color:#505050 !important;
+    color:#e0e0e0 !important;
+    -webkit-text-fill-color:#e0e0e0 !important;
+}
+
+[data-theme="nando-gray"] .action-select::placeholder,
+[data-theme="nando-gray"] .action-input::placeholder,
+[data-theme="nando-gray"] #manage-overlay #new-asset-input::placeholder,
+[data-theme="nando-gray"] .edit-overlay input::placeholder {
+    color:#a8a8a8 !important;
+    -webkit-text-fill-color:#a8a8a8 !important;
+}
+
+[data-theme="nando-gray"] .dist-tab.active {
+    background:#404040 !important;
+    color:#fff !important;
+}
 </style>
 </head>
 <body data-theme="nando-gray">
