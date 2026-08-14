@@ -649,7 +649,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 </head>
 <body data-theme="nando-gray">
 <div class="header">
-    <div id="status"><span class="live-dot"></span> LIVE • --:--:--</div>
+    <div id="status"><span class="live-dot"></span> <span id="ui-live">OTSE</span> • --:--:--</div>
     <h2 id="ui-title">🚀 APLO KRÜPTO TERMINAL</h2>
     <div style="display:flex;gap:12px;align-items:center;">
         <span style="cursor:pointer;font-size:18px;font-weight:bold;color:var(--title)" onclick="openManageAssets()">+</span>
@@ -677,11 +677,11 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 </div>
 <div id="main-wrapper"></div>
 <div class="mid-row">
-    <div class="mid-btn" onclick="openHistoryAssets()" title="Price History">📊</div>
-    <div class="mid-btn" onclick="openAntsScore()" title="ANTS Score">📈</div>
-    <div class="mid-btn" onclick="openWhatIf()" title="What If?">⚖️</div>
-    <div class="mid-btn" onclick="openAlerts()" title="Alerts">🔔</div>
-    <div class="mid-btn" onclick="openWatchlist()" title="Watchlist / Test">💎</div>
+    <div class="mid-btn" onclick="openHistoryAssets()" title="HINNAAJALUGU">📊</div>
+    <div class="mid-btn" onclick="openAntsScore()" title="ANTS SKOOR">📈</div>
+    <div class="mid-btn" onclick="openWhatIf()" title="MIS SIIS, KUI?">⚖️</div>
+    <div class="mid-btn" onclick="openAlerts()" title="HINNAHOIATUSED">🔔</div>
+    <div class="mid-btn" onclick="openWatchlist()" title="VAATLUS / TEST">💎</div>
 </div>
 <div class="bottom-row">
     <div class="small-card" onclick="openGeneralNews()">
@@ -692,7 +692,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     </div>
     <div class="half-card">
         <div class="ticker-wrap">
-            <div class="ticker" id="insights-ticker">Initializing terminal data...</div>
+            <div class="ticker" id="insights-ticker"></div>
         </div>
     </div>
 </div>
@@ -745,7 +745,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 <div id="history-assets-overlay" class="modal-overlay" onclick="this.style.display='none'">
     <div class="modal" onclick="event.stopPropagation()">
         <div style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;font-size:11px;color:var(--title)">
-            📊 PRICE HISTORY
+            <span id="ui-history-title">HINNAAJALUGU</span>
         </div>
         <div id="history-assets-list" style="padding:8px;overflow-y:auto;max-height:60vh"></div>
     </div>
@@ -793,7 +793,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <select id="alert-direction" class="action-select"><option value="above" data-i18n="above">ABOVE ↑</option><option value="below" data-i18n="below">BELOW ↓</option></select>
       </div>
       <div class="action-grid">
-        <input id="alert-target" class="action-input" type="number" step="any" placeholder="Target price (EUR)">
+        <input id="alert-target" class="action-input" type="number" step="any" data-i18n-placeholder="target_price" placeholder="Target price (EUR)">
         <button class="action-btn primary" onclick="addAlert()" data-i18n="add_alert">ADD ALERT</button>
       </div>
       <div id="alerts-content"></div>
@@ -807,7 +807,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
       <div class="action-sub" data-i18n="watch_sub">Salvesta hüpoteetiline ost ja jälgi selle arengut</div>
       <div class="action-grid">
         <select id="test-symbol" class="action-select"></select>
-        <input id="test-investment" class="action-input" type="number" step="any" value="100" placeholder="100 EUR">
+        <input id="test-investment" class="action-input" type="number" step="any" value="100" data-i18n-placeholder="investment_amount" placeholder="100 EUR">
       </div>
       <div class="action-grid">
         <input id="test-price" class="action-input" type="number" step="any" placeholder="Baseline price (EUR)" data-i18n-placeholder="baseline">
@@ -826,6 +826,71 @@ const translations={
  es:{title:"🚀 TERMINAL CRIPTO APLO",networth:"Patrimonio Neto",assets:"ACTIVOS",edit:"EDITAR",save:"GUARDAR",news:"📰 NOTICIAS",manage:"GESTIONAR ACTIVOS",btn_add:"AÑADIR ACTIVO",dist_title:"DISTRIBUCIÓN DE ACTIVOS",no_assets:"Sin activos.",no_assets_dist:"No hay activos para mostrar.",remove:"Eliminar",theme_title:"TEMAS",language_title:"IDIOMA",legal_label:"AVISO LEGAL",disclaimer_short:"Terminal cripto experimental / de entretenimiento. No es asesoramiento financiero.",info_title:"INFORMACIÓN LEGAL Y RESPONSABILIDAD",info_body:"Este sitio y esta aplicación se ofrecen estrictamente con fines de <strong>entretenimiento y educación</strong>. El creador <strong>no asume ninguna responsabilidad</strong> por pérdidas, daños, oportunidades perdidas, operaciones, decisiones de inversión, decisiones de trading o cualquier otra consecuencia derivada del uso de este sitio, sus cálculos, precios, puntuaciones, alertas, datos históricos, enlaces o cualquier otra información mostrada. Los criptoactivos son altamente volátiles y pueden causar una pérdida parcial o total del capital. Nada de esta página constituye asesoramiento financiero, de inversión, legal, fiscal o de trading. Usted es el único responsable de sus decisiones y debe verificar la información antes de actuar. Al utilizar este sitio, acepta estas condiciones.",history_title:"📊 HISTORIAL DE PRECIOS",ants_title:"🧠 PUNTUACIÓN ANTS",whatif_title:"🎯 ¿Y SI?",alerts_title:"🔔 ALERTAS DE PRECIO",watch_title:"💎 LISTA / PRUEBA",asset:"ACTIVO",investment:"INVERSIÓN (EUR)",target:"OBJETIVO (EUR)",current:"ACTUAL",above:"POR ENCIMA ↑",below:"POR DEBAJO ↓",add_alert:"AÑADIR ALERTA",save_test:"GUARDAR PRUEBA",delete:"ELIMINAR",baseline:"PRECIO BASE (EUR)",date:"FECHA",score_sub:"Señal heurística de tendencia y momentum del terminal",whatif_sub:"Calcula el efecto de un posible precio objetivo",alerts_sub:"La alerta se comprueba en cada actualización del mercado",watch_sub:"Guarda una compra hipotética y sigue su evolución",distribution:"DISTRIBUCIÓN DE ACTIVOS",distribution_mix:"MEZCLA DE CARTERA",distribution_risk:"RIESGO / CONCENTRACIÓN",distribution_value:"VALOR",distribution_share:"CUOTA",distribution_empty:"Añade cantidades para ver la distribución interactiva.",largest:"POSICIÓN MÁS GRANDE",positions:"POSICIONES",diversification:"DIVERSIFICACIÓN",concentration:"CONCENTRACIÓN",balanced:"Equilibrada",moderate:"Moderada",high:"Alta",facts_hint:"Toca el ticker para pausar / continuar",fact_label:"DATO CRIPTO",no_test:"No hay pruebas guardadas.",no_alerts:"No hay alertas activas.",remove_alert:"ELIMINAR",history_points:"puntos de precio",history_empty:"El historial se recopila cada hora.",no_buy:"SIN COMPRA",avg_buy:"COMPRA MEDIA",current_price:"ACTUAL",legal_footer:"Este terminal es un proyecto de entretenimiento. Úselo bajo su propia responsabilidad."},
  ru:{title:"🚀 КРИПТО ТЕРМИНАЛ APLO",networth:"Чистая стоимость",assets:"АКТИВЫ",edit:"ИЗМЕНИТЬ",save:"СОХРАНИТЬ",news:"📰 НОВОСТИ",manage:"УПРАВЛЕНИЕ АКТИВАМИ",btn_add:"ДОБАВИТЬ АКТИВ",dist_title:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",no_assets:"Нет активов.",no_assets_dist:"Нет активов для отображения.",remove:"Удалить",theme_title:"ТЕМЫ",language_title:"ЯЗЫК",legal_label:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ",disclaimer_short:"Развлекательный / экспериментальный крипто-терминал. Не является финансовым советом.",info_title:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ И ОТВЕТСТВЕННОСТЬ",info_body:"Этот сайт и приложение созданы исключительно в <strong>развлекательных и образовательных целях</strong>. Создатель <strong>не несёт никакой ответственности</strong> за убытки, ущерб, упущенные возможности, сделки, инвестиционные или торговые решения и любые другие последствия использования сайта, его расчётов, цен, оценок, предупреждений, исторических данных, ссылок или иной информации. Криптоактивы крайне волатильны и могут привести к частичной или полной потере капитала. Ничто на этой странице не является финансовой, инвестиционной, юридической, налоговой или торговой рекомендацией. Вы самостоятельно отвечаете за свои решения и обязаны проверять информацию перед действиями. Используя сайт, вы подтверждаете принятие этих условий.",history_title:"📊 ИСТОРИЯ ЦЕН",ants_title:"🧠 ОЦЕНКА ANTS",whatif_title:"🎯 ЧТО, ЕСЛИ?",alerts_title:"🔔 ЦЕНОВЫЕ АЛЕРТЫ",watch_title:"💎 СПИСОК / ТЕСТ",asset:"АКТИВ",investment:"ИНВЕСТИЦИЯ (EUR)",target:"ЦЕЛЬ (EUR)",current:"ТЕКУЩАЯ",above:"ВЫШЕ ↑",below:"НИЖЕ ↓",add_alert:"ДОБАВИТЬ АЛЕРТ",save_test:"СОХРАНИТЬ ТЕСТ",delete:"УДАЛИТЬ",baseline:"БАЗОВАЯ ЦЕНА (EUR)",date:"ДАТА",score_sub:"Эвристический сигнал тренда и импульса терминала",whatif_sub:"Рассчитайте влияние возможной целевой цены",alerts_sub:"Алерт проверяется при каждом обновлении рынка",watch_sub:"Сохраните гипотетическую покупку и следите за ней",distribution:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",distribution_mix:"СОСТАВ ПОРТФЕЛЯ",distribution_risk:"РИСК / КОНЦЕНТРАЦИЯ",distribution_value:"СТОИМОСТЬ",distribution_share:"ДОЛЯ",distribution_empty:"Добавьте количества активов для интерактивного распределения.",largest:"КРУПНЕЙШАЯ ПОЗИЦИЯ",positions:"ПОЗИЦИИ",diversification:"ДИВЕРСИФИКАЦИЯ",concentration:"КОНЦЕНТРАЦИЯ",balanced:"Сбалансировано",moderate:"Умеренная",high:"Высокая",facts_hint:"Нажмите на тикер, чтобы поставить на паузу / продолжить",fact_label:"КРИПТО ФАКТ",no_test:"Тестовых позиций пока нет.",no_alerts:"Активных алертов нет.",remove_alert:"УДАЛИТЬ",history_points:"ценовых точек",history_empty:"История собирается каждый час.",no_buy:"НЕТ ПОКУПКИ",avg_buy:"СРЕДНЯЯ ПОКУПКА",current_price:"ТЕКУЩАЯ",legal_footer:"Этот терминал создан в развлекательных целях. Используйте его полностью на свой страх и риск."}
 };
+
+const uiText={
+  en:{
+    crypto:"CRYPTO",qty:"QTY",avgBuy:"AVG BUY",price:"PRICE",value:"VALUE",share:"SHARE",total:"TOTAL",
+    spot:"SPOT",caDex:"CA / DEX",pricePoints:"price points",buy:"BUY",noBuy:"NO BUY",history:"HISTORY",
+    priceHistory:"PRICE HISTORY",averageBuy:"AVERAGE BUY",current:"CURRENT",noAssets:"No assets.",
+    editAssetData:"EDIT ASSET DATA",globalNews:"GLOBAL CRYPTO NEWS",copy:"COPIED ✓",copyFailed:"COPY FAILED",
+    clickCopy:"Click to copy CA",tradeBinance:"${T('tradeBinance')}",dexScanner:"📊 OPEN DEXSCREENER",
+    strong:"STRONG",positive:"POSITIVE",neutral:"NEUTRAL",weak:"WEAK",highRisk:"HIGH RISK",
+    momentum24:"${T('momentum24')}",historyTrend:"${T('historyTrend')}",buyPosition:"${T('buyPosition')}",dataDepth:"${T('dataDepth')}",
+    notSet:"not set",points:"points",antsDisclaimer:"${T('antsDisclaimer')}",
+    enterInvestment:"Enter investment and target price.",pl:"P/L",roi:"ROI",units:"units",
+    delete:"DELETE",above:"↑ ABOVE",below:"↓ BELOW",now:"NOW",triggered:"TRIGGERED",ready:"READY TO TRIGGER",waiting:"WAITING",
+    validTarget:"Enter a valid target price.",validTest:"Enter asset, investment and baseline price.",base:"BASE",test:"TEST",
+    testSaved:"No test positions saved yet.",initializing:"Initializing terminal data...",live:"LIVE",
+    priceHistoryTitle:"PRICE HISTORY"
+  },
+  et:{
+    crypto:"KRÜPTO",qty:"KOGUS",avgBuy:"KESKMINE OST",price:"HIND",value:"VÄÄRTUS",share:"OSAKAAL",total:"KOKKU",
+    spot:"SPOT",caDex:"CA / DEX",pricePoints:"hinnapunkti",buy:"OST",noBuy:"OSTUHIND PUUDUB",history:"AJALUGU",
+    priceHistory:"HINNAAJALUGU",averageBuy:"KESKMINE OST",current:"PRAEGU",noAssets:"Varad puuduvad.",
+    editAssetData:"MUUDA VARADE ANDMEID",globalNews:"KRÜPTOMAAILMA UUDISED",copy:"KOPEERITUD ✓",copyFailed:"KOPEERIMINE EBAÕNNESTUS",
+    clickCopy:"Vajuta CA kopeerimiseks",tradeBinance:"KAUPLE BINANCE'IS",dexScanner:"${T('dexScanner')}",
+    strong:"TUGEV",positive:"POSITIIVNE",neutral:"NEUTRAALNE",weak:"NÕRK",highRisk:"KÕRGE RISK",
+    momentum24:"${T('momentum24')}",historyTrend:"AJALOOTREND",buyPosition:"OSTUPOSITSIOON",dataDepth:"ANDMETE SÜGAVUS",
+    notSet:"määramata",points:"punkti",antsDisclaimer:"ANTS SKOOR on terminali heuristiline hinnang, mis põhineb saadaolevatel andmetel. See ei ole hinnaprognoos.",
+    enterInvestment:"Sisesta investeering ja sihthind.",pl:"KASUM/KAHJUM",roi:"ROI",units:"ühikut",
+    delete:"KUSTUTA",above:"↑ ÜLE",below:"↓ ALLA",now:"PRAEGU",triggered:"KÄIVITUNUD",ready:"VALMIS KÄIVITUMA",waiting:"OOTAB",
+    validTarget:"Sisesta kehtiv sihthind.",validTest:"Sisesta vara, investeering ja alghind.",base:"ALUS",test:"TEST",
+    testSaved:"Testpositsioone pole veel salvestatud.",initializing:"Terminali andmete laadimine...",live:"OTSE",
+    priceHistoryTitle:"HINNAAJALUGU"
+  },
+  es:{
+    crypto:"ACTIVO",qty:"CANT.",avgBuy:"COMPRA MEDIA",price:"PRECIO",value:"VALOR",share:"CUOTA",total:"TOTAL",
+    spot:"SPOT",caDex:"CA / DEX",pricePoints:"puntos de precio",buy:"COMPRA",noBuy:"SIN COMPRA",history:"HISTORIAL",
+    priceHistory:"HISTORIAL DE PRECIOS",averageBuy:"COMPRA MEDIA",current:"ACTUAL",noAssets:"Sin activos.",
+    editAssetData:"EDITAR DATOS DE ACTIVOS",globalNews:"NOTICIAS CRIPTO GLOBALES",copy:"COPIADO ✓",copyFailed:"ERROR AL COPIAR",
+    clickCopy:"Pulsa para copiar CA",tradeBinance:"OPERAR EN BINANCE",dexScanner:"📊 ABRIR DEXSCREENER",
+    strong:"FUERTE",positive:"POSITIVO",neutral:"NEUTRAL",weak:"DÉBIL",highRisk:"ALTO RIESGO",
+    momentum24:"MOMENTO 24H",historyTrend:"TENDENCIA HISTÓRICA",buyPosition:"POSICIÓN DE COMPRA",dataDepth:"PROFUNDIDAD DE DATOS",
+    notSet:"no establecido",points:"puntos",antsDisclaimer:"La PUNTUACIÓN ANTS es una evaluación heurística del terminal basada en los datos disponibles. No es una predicción de precios.",
+    enterInvestment:"Introduce la inversión y el precio objetivo.",pl:"P/G",roi:"ROI",units:"unidades",
+    delete:"ELIMINAR",above:"↑ POR ENCIMA",below:"↓ POR DEBAJO",now:"AHORA",triggered:"ACTIVADA",ready:"LISTA PARA ACTIVARSE",waiting:"EN ESPERA",
+    validTarget:"Introduce un precio objetivo válido.",validTest:"Introduce el activo, la inversión y el precio base.",base:"BASE",test:"PRUEBA",
+    testSaved:"No hay posiciones de prueba guardadas.",initializing:"Cargando datos del terminal...",live:"EN VIVO",
+    priceHistoryTitle:"HISTORIAL DE PRECIOS"
+  },
+  ru:{
+    crypto:"АКТИВ",qty:"КОЛ-ВО",avgBuy:"СРЕДНЯЯ ПОКУПКА",price:"ЦЕНА",value:"СТОИМОСТЬ",share:"ДОЛЯ",total:"ИТОГО",
+    spot:"СПОТ",caDex:"CA / DEX",pricePoints:"ценовых точек",buy:"ПОКУПКА",noBuy:"НЕТ ПОКУПКИ",history:"ИСТОРИЯ",
+    priceHistory:"ИСТОРИЯ ЦЕН",averageBuy:"СРЕДНЯЯ ПОКУПКА",current:"ТЕКУЩАЯ",noAssets:"Нет активов.",
+    editAssetData:"ИЗМЕНЕНИЕ ДАННЫХ АКТИВОВ",globalNews:"ГЛОБАЛЬНЫЕ КРИПТОНОВОСТИ",copy:"СКОПИРОВАНО ✓",copyFailed:"НЕ УДАЛОСЬ СКОПИРОВАТЬ",
+    clickCopy:"Нажмите, чтобы скопировать CA",tradeBinance:"ТОРГОВАТЬ НА BINANCE",dexScanner:"📊 ОТКРЫТЬ DEXSCREENER",
+    strong:"СИЛЬНЫЙ",positive:"ПОЗИТИВНЫЙ",neutral:"НЕЙТРАЛЬНЫЙ",weak:"СЛАБЫЙ",highRisk:"ВЫСОКИЙ РИСК",
+    momentum24:"ИМПУЛЬС 24Ч",historyTrend:"ТРЕНД ИСТОРИИ",buyPosition:"ПОЗИЦИЯ ПОКУПКИ",dataDepth:"ГЛУБИНА ДАННЫХ",
+    notSet:"не задано",points:"точек",antsDisclaimer:"ОЦЕНКА ANTS — эвристическая оценка терминала на основе доступных данных. Это не прогноз цены.",
+    enterInvestment:"Введите сумму инвестиции и целевую цену.",pl:"П/У",roi:"ROI",units:"единиц",
+    delete:"УДАЛИТЬ",above:"↑ ВЫШЕ",below:"↓ НИЖЕ",now:"СЕЙЧАС",triggered:"СРАБОТАЛО",ready:"ГОТОВО К СРАБАТЫВАНИЮ",waiting:"ОЖИДАНИЕ",
+    validTarget:"Введите корректную целевую цену.",validTest:"Введите актив, сумму инвестиции и базовую цену.",base:"БАЗА",test:"ТЕСТ",
+    testSaved:"Тестовых позиций пока нет.",initializing:"Загрузка данных терминала...",live:"В ЭФИРЕ",
+    priceHistoryTitle:"ИСТОРИЯ ЦЕН"
+  }
+};
+const T=k=>(uiText[currentLang]||uiText.et)[k]??(uiText.en[k]||k);
+
 let currentLang=localStorage.getItem('lang')||'et';
 let symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"];
 let caNames={};
@@ -917,6 +982,12 @@ function applyLang(){
     document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(t[k]!==undefined)el.innerHTML=t[k];});
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.getAttribute('data-i18n-placeholder');if(t[k]!==undefined)el.placeholder=t[k];});
     const add=document.getElementById('new-asset-input'); if(add)add.placeholder=currentLang==='et'?'TICKER VÕI CA (0x...)':currentLang==='ru'?'ТИКЕР ИЛИ CA (0x...)':currentLang==='es'?'TICKER O CA (0x...)':'TICKER OR CA (0x...)';
+    const live=document.getElementById('ui-live'); if(live)live.innerText=T('live');
+    const histTitle=document.getElementById('ui-history-title'); if(histTitle)histTitle.innerText=T('priceHistory');
+    const ticker=document.getElementById('insights-ticker'); if(ticker)ticker.title=t('facts_hint');
+    const phMap={target_price:currentLang==='et'?'Sihthind (EUR)':currentLang==='ru'?'Целевая цена (EUR)':currentLang==='es'?'Precio objetivo (EUR)':'Target price (EUR)',investment_amount:currentLang==='et'?'100 EUR':'100 EUR'};
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.getAttribute('data-i18n-placeholder');if(phMap[k])el.placeholder=phMap[k];});
+    document.querySelectorAll('.mid-btn').forEach((el,i)=>{const titles=[T('priceHistoryTitle'),translations[currentLang].ants_title,translations[currentLang].whatif_title,translations[currentLang].alerts_title,translations[currentLang].watch_title];if(titles[i])el.title=titles[i];});
     const d=document.getElementById('history-assets-overlay'); if(d&&d.querySelector('.history-modal-title'))d.querySelector('.history-modal-title').innerText=t.history_title;
     refreshActionLabels();
     if(tickerEl){tickerEl.title=t.facts_hint;renderCryptoFacts();}
@@ -1311,7 +1382,7 @@ function openAssetsModal(){
         const share=total>0?(r.value/total)*100:0;
         const cls=r.change>=0?'assets-positive':'assets-negative';
         return `<tr>
-            <td><span class="assets-coin">${r.coin}</span><span class="assets-sub">${r.s.startsWith('0x')?'CA / DEX':'SPOT'}</span></td>
+            <td><span class="assets-coin">${r.coin}</span><span class="assets-sub">${r.s.startsWith('0x')?T('caDex'):T('spot')}</span></td>
             <td>${Number(r.qty).toLocaleString('et-EE',{maximumFractionDigits:8})}</td>
             <td>${Number.isFinite(r.avg)?formatMoney(r.avg):'—'}</td>
             <td>${formatMoney(r.price)}</td>
@@ -1323,19 +1394,19 @@ function openAssetsModal(){
     content.innerHTML=rows.length?`
         <table class="assets-table">
             <thead><tr>
-                <th>${currentLang==='et'?'KRÜPTO':'ASSET'}</th>
-                <th>${currentLang==='et'?'KOGUS':'QTY'}</th>
-                <th>${currentLang==='et'?'KESKMINE OST':'AVG BUY'}</th>
-                <th>${currentLang==='et'?'HIND':'PRICE'}</th>
-                <th>${currentLang==='et'?'VÄÄRTUS':'VALUE'}</th>
-                <th>24H</th><th>${currentLang==='et'?'JAOTUS':'SHARE'}</th>
+                <th>${T('crypto')}</th>
+                <th>${T('qty')}</th>
+                <th>${T('avgBuy')}</th>
+                <th>${T('price')}</th>
+                <th>${T('value')}</th>
+                <th>24H</th><th>${T('share')}</th>
             </tr></thead>
             <tbody>${tableRows}</tbody>
         </table>
-        <div class="assets-total"><span>${currentLang==='et'?'KOKKU':'TOTAL'}</span><span class="assets-total-value">${formatMoney(total)}</span></div>
+        <div class="assets-total"><span>${T('total')}</span><span class="assets-total-value">${formatMoney(total)}</span></div>
         <div class="currency-hint">${currentLang==='et'?'Vajuta hinnale või netoväärtusele, et vahetada EUR / USD / RUB':'Tap a price or net worth to switch EUR / USD / RUB'} • ${displayCurrency}</div>
     `:`<div class="history-empty">${t.no_assets}</div>`;
-    document.getElementById('ui-assets-title').innerText=currentLang==='et'?'MINU VARAD':'MY ASSETS';
+    document.getElementById('ui-assets-title').innerText=T('assetsTitle');
     document.getElementById('assets-overlay').style.display='flex';
 }
 function openDistribution(){
@@ -1381,17 +1452,17 @@ function openHistoryAssets(){
             <div>
                 <span class="label-text">${name}</span>
                 <div style="font-size:8px;opacity:.5;margin-top:3px">
-                    ${points} price points
+                    ${points} ${T('pricePoints')}
                 </div>
             </div>
             <div style="text-align:right">
                 <div style="font-size:10px">
                     ${Number.isFinite(avgBuy)
-                    ?'BUY '+formatMoney(avgBuy)
-                    :'NO BUY'}
+                    ?T('buy')+' '+formatMoney(avgBuy)
+                    :T('noBuy')}
                 </div>
                 <div style="font-size:8px;opacity:.5">
-                    HISTORY →
+                    ${T('history')} →
                 </div>
             </div>
         </div>`;
@@ -1435,7 +1506,7 @@ function openHistoryDetail(symbol,name){
     document.getElementById(
         'history-detail-header'
     ).innerText=
-        `${name} PRICE HISTORY`;
+        `${name} ${T('priceHistory')}`;
     const content=
         document.getElementById(
             'history-detail-content'
@@ -1444,7 +1515,7 @@ function openHistoryDetail(symbol,name){
     if(Number.isFinite(avgBuy)&&avgBuy>0){
         html+=
         `<div class="history-buy">
-            AVERAGE BUY:
+            ${T('averageBuy')}:
             <strong>${formatMoney(avgBuy)}</strong>
          </div>`;
     }
@@ -1461,8 +1532,8 @@ function openHistoryDetail(symbol,name){
     if(points.length<2){
         html+=
         `<div class="history-empty">
-            ${translations[currentLang].history_empty||'History is collected every hour.'}<br><br>
-            ${points.length} ${translations[currentLang].history_points||'price points'}.
+            ${translations[currentLang].history_empty}<br><br>
+            ${points.length} ${translations[currentLang].history_points}.
          </div>`;
     }else{
         html+=
@@ -1587,7 +1658,7 @@ function drawHistoryChart(points,avgBuy,current){
                fill="var(--title)"
                font-size="8"
                text-anchor="end">
-            BUY
+            ${T('buy')}
          </text>`;
     }
     const path=
@@ -1697,11 +1768,11 @@ function openEdit(){
             <div class="edit-asset-name"><span>${displayName}</span><span class="edit-asset-line"></span></div>
             <div class="edit-asset-grid">
                 <div class="edit-field">
-                    <label>${currentLang==='et'?'KOGUS (QTY)':'QUANTITY (QTY)'}</label>
+                    <label>${T('qty')}</label>
                     <input type="number" step="any" id="e-${s}" value="${localStorage.getItem('p_'+s)||''}">
                 </div>
                 <div class="edit-field">
-                    <label>${currentLang==='et'?'KESKMINE OSTUHIND (EUR)':'AVERAGE BUY (EUR)'}</label>
+                    <label>${T('avgBuy')}</label>
                     <input type="number" step="any" id="a-${s}" value="${localStorage.getItem('avg_'+s)||''}" placeholder="0.00">
                 </div>
             </div>
@@ -1712,9 +1783,9 @@ function openEdit(){
     overlay.style.display='flex';
     overlay.innerHTML=`
         <div class="modal" onclick="event.stopPropagation()">
-            <div class="action-header">${currentLang==='et'?'MUUDA VARADE ANDMEID':'EDIT ASSET DATA'}</div>
+            <div class="action-header">${T('editAssetData')}</div>
             <div class="edit-compact-scroll">
-                ${fields||'<div class="history-empty">No assets.</div>'}
+                ${fields||'<div class="history-empty">'+T('noAssets')+'</div>'}
                 <button class="edit-save" onclick="saveP(this)">${translations[currentLang].save}</button>
             </div>
         </div>`;
@@ -1755,7 +1826,7 @@ function saveP(btn){
 }
 function openGeneralNews(){
     document.getElementById('info-header').innerText=
-        'GLOBAL CRYPTO NEWS';
+        T('globalNews');
     document.getElementById('info-content').innerHTML=
     `<a href="https://cryptopanic.com"
         target="_blank"
@@ -1795,11 +1866,11 @@ async function copyCA(el, ca){
             ta.remove();
         }
         const original=el.innerHTML;
-        el.innerHTML='CA: <span class="ca-copy-value">COPIED ✓</span>';
+        el.innerHTML='CA: <span class="ca-copy-value">'+T('copy')+'</span>';
         setTimeout(()=>{el.innerHTML=original;},1200);
     }catch(e){
         const original=el.innerHTML;
-        el.innerHTML='CA: <span class="ca-copy-value">COPY FAILED</span>';
+        el.innerHTML='CA: <span class="ca-copy-value">'+T('copyFailed')+'</span>';
         setTimeout(()=>{el.innerHTML=original;},1200);
     }
 }
@@ -1813,7 +1884,7 @@ function openInfoModal(sym,fullSym,isDex){
         :'dark';
     document.getElementById('info-content').innerHTML=
         isDex
-        ?`<div class="ca-copy-box" title="Click to copy CA" onclick="copyCA(this, '${fullSym}')" style="margin-top:10px;padding:10px;
+        ?`<div class="ca-copy-box" title="${T('clickCopy')}" onclick="copyCA(this, '${fullSym}')" style="margin-top:10px;padding:10px;
         background:var(--accent);font-size:9px;text-align:center;cursor:pointer;user-select:none">
             CA: <span class="ca-copy-value">${fullSym}</span>
          </div>
@@ -1821,7 +1892,7 @@ function openInfoModal(sym,fullSym,isDex){
             target="_blank"
             class="news-btn"
             style="background:var(--title);color:#000;border:none;margin-top:10px">
-            📊 AVA DEXSCREENERIS
+            ${T('dexScanner')}IS
          </a>`
         :`<div id="chart-container">
             <div id="tv-medium-widget"></div>
@@ -1830,7 +1901,7 @@ function openInfoModal(sym,fullSym,isDex){
              target="_blank"
              class="news-btn"
              style="background:#F3BA2F;color:#000;border:none">
-             TRADE ON BINANCE
+             ${T('tradeBinance')}
           </a>`;
     if(!isDex){
         setTimeout(()=>{
@@ -1887,11 +1958,11 @@ function getScoreData(symbol){
     return {score,momentum,trend,position,dataDepth,change,price,avg,points};
 }
 function scoreState(score){
-    if(score>=75)return ['STRONG','up'];
-    if(score>=60)return ['POSITIVE','up'];
-    if(score>=45)return ['NEUTRAL',''];
-    if(score>=30)return ['WEAK','down'];
-    return ['HIGH RISK','down'];
+    if(score>=75)return [T('strong'),'up'];
+    if(score>=60)return [T('positive'),'up'];
+    if(score>=45)return [T('neutral'),''];
+    if(score>=30)return [T('weak'),'down'];
+    return [T('highRisk'),'down'];
 }
 function openAntsScore(){
     populateActionSelect('ants-symbol');
@@ -1901,25 +1972,25 @@ function openAntsScore(){
 function renderAntsScore(){
     const s=document.getElementById('ants-symbol').value;
     const box=document.getElementById('ants-content');
-    if(!s){box.innerHTML='<div class="history-empty">No assets.</div>';return;}
+    if(!s){box.innerHTML='<div class="history-empty">'+T('noAssets')+'</div>';return;}
     const d=getScoreData(s);
     const [state,cls]=scoreState(d.score);
     const fmt=x=>Number.isFinite(x)?formatPrice(x):'—';
     box.innerHTML=`
       <div class="score-big ${cls}">${d.score}/100</div>
       <div class="score-state ${cls}">${state}</div>
-      <div class="score-row"><span>24H MOMENTUM</span><div class="score-bar"><div class="score-fill" style="width:${d.momentum}%"></div></div><span class="score-num">${Math.round(d.momentum)}</span></div>
-      <div class="score-row"><span>HISTORY TREND</span><div class="score-bar"><div class="score-fill" style="width:${d.trend}%"></div></div><span class="score-num">${Math.round(d.trend)}</span></div>
-      <div class="score-row"><span>BUY POSITION</span><div class="score-bar"><div class="score-fill" style="width:${d.position}%"></div></div><span class="score-num">${Math.round(d.position)}</span></div>
-      <div class="score-row"><span>DATA DEPTH</span><div class="score-bar"><div class="score-fill" style="width:${d.dataDepth}%"></div></div><span class="score-num">${Math.round(d.dataDepth)}</span></div>
+      <div class="score-row"><span>${T('momentum24')}</span><div class="score-bar"><div class="score-fill" style="width:${d.momentum}%"></div></div><span class="score-num">${Math.round(d.momentum)}</span></div>
+      <div class="score-row"><span>${T('historyTrend')}</span><div class="score-bar"><div class="score-fill" style="width:${d.trend}%"></div></div><span class="score-num">${Math.round(d.trend)}</span></div>
+      <div class="score-row"><span>${T('buyPosition')}</span><div class="score-bar"><div class="score-fill" style="width:${d.position}%"></div></div><span class="score-num">${Math.round(d.position)}</span></div>
+      <div class="score-row"><span>${T('dataDepth')}</span><div class="score-bar"><div class="score-fill" style="width:${d.dataDepth}%"></div></div><span class="score-num">${Math.round(d.dataDepth)}</span></div>
       <div class="whatif-box" style="font-size:9px;line-height:1.5">
         <b>${getDisplayName(s)}</b><br>
-        CURRENT: ${formatMoney(d.price)}<br>
+        ${T('current')}: ${formatMoney(d.price)}<br>
         24H: <span class="${d.change>=0?'up':'down'}">${d.change>=0?'+':''}${d.change.toFixed(2)}%</span><br>
-        BUY: ${Number.isFinite(d.avg)?formatMoney(d.avg):'not set'}<br>
-        HISTORY: ${d.points.length} points
+        ${T('buy')}: ${Number.isFinite(d.avg)?formatMoney(d.avg):T('notSet')}<br>
+        ${T('history')}: ${d.points.length} ${T('points')}
       </div>
-      <div style="font-size:7px;opacity:.5;text-align:center">ANTS SCORE is a terminal heuristic based on available data. It is not a price prediction.</div>`;
+      <div style="font-size:7px;opacity:.5;text-align:center">${T('antsDisclaimer')}</div>`;
 }
 function openWhatIf(){
     populateActionSelect('whatif-symbol');
@@ -1935,15 +2006,15 @@ function renderWhatIf(){
     const investment=parseFloat(document.getElementById('whatif-investment').value)||0;
     document.getElementById('whatif-current').value=current?formatPrice(current):'';
     const box=document.getElementById('whatif-content');
-    if(!current||!target||!investment){box.innerHTML='<div class="history-empty">Sisesta investeering ja sihthind.</div>';return;}
+    if(!current||!target||!investment){box.innerHTML='<div class="history-empty">'+T('enterInvestment')+'</div>';return;}
     const qty=investment/current;
     const finalValue=qty*target;
     const profit=finalValue-investment;
     const roi=(profit/investment)*100;
     box.innerHTML=`<div class="whatif-box">
       <div class="whatif-result ${profit>=0?'up':'down'}">${formatMoney(finalValue)}</div>
-      <div class="whatif-sub">P/L ${profit>=0?'+':'-'}${formatMoney(Math.abs(profit))} • ROI ${roi>=0?'+':''}${roi.toFixed(1)}%</div>
-      <div style="font-size:8px;margin-top:10px;line-height:1.6;opacity:.7">${getDisplayName(s)} • ${formatMoney(current)} → ${formatMoney(target)} • ${qty.toFixed(6)} units</div>
+      <div class="whatif-sub">${T('pl')} ${profit>=0?'+':'-'}${formatMoney(Math.abs(profit))} • ${T('roi')} ${roi>=0?'+':''}${roi.toFixed(1)}%</div>
+      <div style="font-size:8px;margin-top:10px;line-height:1.6;opacity:.7">${getDisplayName(s)} • ${formatMoney(current)} → ${formatMoney(target)} • ${qty.toFixed(6)} ${T('units')}</div>
     </div>`;
 }
 let priceAlerts=[];
@@ -1958,7 +2029,7 @@ function addAlert(){
     const symbol=document.getElementById('alert-symbol').value;
     const direction=document.getElementById('alert-direction').value;
     const target=parseFloat(document.getElementById('alert-target').value);
-    if(!symbol||!Number.isFinite(target)||target<=0){alert('Sisesta kehtiv sihthind.');return;}
+    if(!symbol||!Number.isFinite(target)||target<=0){alert(T('validTarget'));return;}
     priceAlerts.push({id:Date.now(),symbol,direction,target,active:true,triggered:false});
     document.getElementById('alert-target').value='';
     saveAlerts();renderAlerts();
@@ -1970,7 +2041,7 @@ function renderAlerts(){
     box.innerHTML=priceAlerts.map(a=>{
         const price=currentPrices[a.symbol]||0;
         const hit=a.direction==='above'?price>=a.target:price<=a.target;
-        return `<div class="alert-row ${a.triggered?'':' '}"><div class="alert-row-head"><span>${getDisplayName(a.symbol)}</span><button class="mini-btn" onclick="deleteAlert(${a.id})">DELETE</button></div><div>${a.direction==='above'?'↑ ABOVE':'↓ BELOW'} ${formatMoney(a.target)} • NOW ${price?formatMoney(price):'—'}</div><div style="margin-top:4px;opacity:.6">${a.triggered?'TRIGGERED':hit?'READY TO TRIGGER':'WAITING'}</div></div>`;
+        return `<div class="alert-row ${a.triggered?'':' '}"><div class="alert-row-head"><span>${getDisplayName(a.symbol)}</span><button class="mini-btn" onclick="deleteAlert(${a.id})">${T('delete')}</button></div><div>${a.direction==='above'?T('above'):T('below')} ${formatMoney(a.target)} • ${T('now')} ${price?formatMoney(price):'—'}</div><div style="margin-top:4px;opacity:.6">${a.triggered?T('triggered'):hit?T('ready'):T('waiting')}</div></div>`;
     }).join('');
 }
 function checkAlerts(){
@@ -2007,7 +2078,7 @@ function addTestCase(){
     const investment=parseFloat(document.getElementById('test-investment').value);
     const price=parseFloat(document.getElementById('test-price').value);
     const date=document.getElementById('test-date').value||new Date().toISOString().slice(0,10);
-    if(!symbol||!Number.isFinite(investment)||investment<=0||!Number.isFinite(price)||price<=0){alert('Sisesta asset, investeering ja algushind.');return;}
+    if(!symbol||!Number.isFinite(investment)||investment<=0||!Number.isFinite(price)||price<=0){alert(T('validTest'));return;}
     testCases.push({id:Date.now(),symbol,investment,price,date,createdAt:Date.now()});
     saveTests();renderWatchlist();
 }
@@ -2020,7 +2091,7 @@ function renderWatchlist(){
         const value=current?(t.investment/t.price)*current:t.investment;
         const pnl=value-t.investment;
         const roi=(pnl/t.investment)*100;
-        return `<div class="watch-row"><div class="watch-row-head"><span>${getDisplayName(t.symbol)}</span><button class="mini-btn" onclick="deleteTestCase(${t.id})">DELETE</button></div><div>${t.date} • BASE ${formatMoney(t.price)}</div><div style="margin-top:4px">TEST ${formatMoney(t.investment)} → <b>${formatMoney(value)}</b></div><div class="${roi>=0?'up':'down'}" style="margin-top:3px;font-weight:bold">${roi>=0?'+':''}${roi.toFixed(1)}% • ${pnl>=0?'+':'-'}${formatMoney(Math.abs(pnl))}</div></div>`;
+        return `<div class="watch-row"><div class="watch-row-head"><span>${getDisplayName(t.symbol)}</span><button class="mini-btn" onclick="deleteTestCase(${t.id})">${T('delete')}</button></div><div>${t.date} • ${T('base')} ${formatMoney(t.price)}</div><div style="margin-top:4px">${T('test')} ${formatMoney(t.investment)} → <b>${formatMoney(value)}</b></div><div class="${roi>=0?'up':'down'}" style="margin-top:3px;font-weight:bold">${roi>=0?'+':''}${roi.toFixed(1)}% • ${pnl>=0?'+':'-'}${formatMoney(Math.abs(pnl))}</div></div>`;
     }).join('');
 }
 const _updateMarketOriginal=updateMarket;
@@ -2107,7 +2178,7 @@ if(tickerEl){
 }
 setInterval(()=>{
     document.getElementById('status').innerHTML=
-        '<span class="live-dot"></span> LIVE - '+
+        '<span class="live-dot"></span> '+T('live')+' - '+
         new Date().toLocaleTimeString();
 },1000);
 setInterval(updateMarket,30000);
