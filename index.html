@@ -1158,13 +1158,59 @@ async function updateMarket(){
         'ca_names',
         JSON.stringify(caNames)
     );
-    if(combinedData.length>0){
-        marketData=combinedData.sort(
-            (a,b)=>
-                parseFloat(b.priceChangePercent)-
-                parseFloat(a.priceChangePercent)
-        );
-    }
+    /*
+       IMPORTANT: every asset saved in `symbols` must remain visible.
+       An API/DexScreener miss must never make a user's asset disappear
+       from the terminal.  Use the latest locally stored price when
+       possible; otherwise keep the card visible with a `—` price.
+    */
+    const apiByKey={};
+    combinedData.forEach(item=>{
+        const key=item.isDex?item.address:item.symbol;
+        if(key)apiByKey[String(key).toLowerCase()]=item;
+    });
+
+    const completeData=symbols.map(s=>{
+        const key=String(s).toLowerCase();
+        const live=apiByKey[key];
+        if(live){
+            live.priceAvailable=true;
+            return live;
+        }
+
+        const isDex=s.startsWith('0x')||s.length>=15;
+        const history=priceHistory[s];
+        const points=history&&Array.isArray(history.points)?history.points:[];
+        const lastPoint=points.length?points[points.length-1]:null;
+        let fallbackEur=Number(lastPoint&&lastPoint.price);
+
+        if(!Number.isFinite(fallbackEur)||fallbackEur<=0){
+            fallbackEur=0;
+        }
+
+        const fallbackLastPrice=isDex
+            ?fallbackEur
+            :(fallbackEur>0&&Number.isFinite(usdToEur)&&usdToEur>0
+                ?fallbackEur/usdToEur
+                :0);
+
+        return {
+            symbol:isDex?(caNames[s]||'DEX'):s,
+            isDex,
+            address:isDex?s:undefined,
+            lastPrice:fallbackLastPrice,
+            priceChangePercent:0,
+            priceAvailable:false,
+            stalePrice:fallbackEur>0
+        };
+    });
+
+    marketData=completeData.sort((a,b)=>{
+        if(a.priceAvailable!==b.priceAvailable)
+            return a.priceAvailable?-1:1;
+        return parseFloat(b.priceChangePercent||0)-parseFloat(a.priceChangePercent||0);
+    });
+
     renderUI();
     recordHourlyPrices();
     if(statusEl)
@@ -1178,16 +1224,19 @@ function renderUI(){
         const sym=c.isDex
             ?(caNames[c.address]||"DEX")
             :c.symbol.replace(/(USDT|USD)$/,"");
-        const p=parseFloat(c.lastPrice)*
-            (c.isDex?1:usdToEur);
+        const rawPrice=parseFloat(c.lastPrice);
+        const p=(Number.isFinite(rawPrice)&&rawPrice>0)
+            ?rawPrice*(c.isDex?1:usdToEur)
+            :0;
         const priceKey=
             c.isDex?c.address:c.symbol;
         currentPrices[priceKey]=p;
+        const hasPrice=!!c.priceAvailable&&p>0;
         const avgBuy=parseFloat(
             localStorage.getItem('avg_'+priceKey)
         );
         const pnl=
-            Number.isFinite(avgBuy)&&avgBuy>0
+            hasPrice&&Number.isFinite(avgBuy)&&avgBuy>0
             ?((p-avgBuy)/avgBuy)*100
             :null;
         const pnlText=
@@ -1211,8 +1260,8 @@ function renderUI(){
                 <span class="label-text">${sym}</span>
                 ${pnlText}
             </div>
-            <div class="value-text currency-clickable" onclick="cycleCurrency(event)">
-                ${formatMoney(p)}
+            <div class="value-text ${hasPrice?'currency-clickable':''}" ${hasPrice?'onclick="cycleCurrency(event)"':''}>
+                ${hasPrice?formatMoney(p):'—'}
             </div>
         </div>`;
         wrapper.appendChild(card);
@@ -1395,14 +1444,15 @@ function openAssetsModal(){
     symbols.forEach(s=>{
         const qty=parseFloat(localStorage.getItem('p_'+s))||0;
         const price=currentPrices[s]||0;
-        if(qty>0&&price>0){
-            const value=qty*price;
-            total+=value;
+        if(qty>0){
+            const hasPrice=price>0;
+            const value=hasPrice?qty*price:0;
+            if(hasPrice)total+=value;
             const avg=parseFloat(localStorage.getItem('avg_'+s));
             const coin=getDisplayName(s);
             const market=getMarketCoin(s);
             const change=market?parseFloat(market.priceChangePercent):0;
-            rows.push({s,coin,qty,avg,price,value,change});
+            rows.push({s,coin,qty,avg,price,value,change,hasPrice});
         }
     });
     rows.sort((a,b)=>b.value-a.value);
@@ -1413,9 +1463,9 @@ function openAssetsModal(){
             <td><span class="assets-coin">${r.coin}</span><span class="assets-sub">${r.s.startsWith('0x')?T('caDex'):T('spot')}</span></td>
             <td>${Number(r.qty).toLocaleString('et-EE',{maximumFractionDigits:8})}</td>
             <td>${Number.isFinite(r.avg)?formatMoney(r.avg):'—'}</td>
-            <td>${formatMoney(r.price)}</td>
-            <td>${formatMoney(r.value)}</td>
-            <td class="${cls}">${r.change>=0?'+':''}${r.change.toFixed(2)}%</td>
+            <td>${r.hasPrice?formatMoney(r.price):'—'}</td>
+            <td>${r.hasPrice?formatMoney(r.value):'—'}</td>
+            <td class="${cls}">${r.hasPrice?(r.change>=0?'+':'')+r.change.toFixed(2)+'%':'—'}</td>
             <td>${share.toFixed(1)}%</td>
         </tr>`;
     }).join('');
