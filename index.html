@@ -21,6 +21,12 @@
 [data-theme="forest"]{--bg:#06120B;--card:rgba(10,45,25,.4);--header:#0E3A21;--text:#A7DFB1;--accent:#1B4D31;--border:#2ECC71;--title:#2ECC71;--up:#2ecc71;--down:#e74c3c}
 [data-theme="retro"]{--bg:#281800;--card:rgba(60,30,0,.3);--header:#3d2400;--text:#ffb000;--accent:#4d2d00;--border:#ffb000;--title:#ffb000;--up:#ffb000;--down:red}
 [data-theme="midnight"]{--bg:#020617;--card:#1e293b;--header:#0f172a;--text:#f1f5f9;--accent:#334155;--border:#38bdf8;--title:#38bdf8;--up:#22c55e;--down:#ef4444}
+[data-theme="ocean"]{--bg:#04151f;--card:#082533;--header:#06202c;--text:#c9f3ff;--accent:#0c4256;--border:#21d4fd;--title:#21d4fd;--up:#4ade80;--down:#fb7185}
+[data-theme="violet"]{--bg:#10071d;--card:#1d1030;--header:#160a25;--text:#eadcff;--accent:#4b2675;--border:#b36bff;--title:#d49aff;--up:#4ade80;--down:#fb7185}
+[data-theme="crimson"]{--bg:#160607;--card:#291011;--header:#20090a;--text:#ffe1e1;--accent:#5a2022;--border:#ff5a5f;--title:#ff7378;--up:#6ee7b7;--down:#ff4d5d}
+[data-theme="ice"]{--bg:#edf6fb;--card:#fff;--header:#dcecf5;--text:#18313f;--accent:#c1d9e6;--border:#347f9f;--title:#176b8c;--up:#16794f;--down:#b4232d}
+[data-theme="copper"]{--bg:#160e09;--card:#291b12;--header:#21130c;--text:#f7dfc6;--accent:#5a351f;--border:#d98245;--title:#f0a15a;--up:#7ee2a8;--down:#ff6b5b}
+[data-theme="matrix"]{--bg:#000900;--card:#001500;--header:#000d00;--text:#b8ffb8;--accent:#064d06;--border:#22ff44;--title:#22ff44;--up:#39ff88;--down:#ff3344}
 
 *{
 box-sizing:border-box;
@@ -121,11 +127,8 @@ background:var(--card);border:1px solid var(--border);border-radius:6px;overflow
 width:100%;overflow:hidden;white-space:nowrap;position:relative;
 height:100%;display:flex;align-items:center
 }
-.ticker{
-display:inline-flex;white-space:nowrap;font-size:9px;font-weight:bold;
-padding-left:100%;animation:marquee 300s linear infinite
-}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+.ticker{display:inline-flex;white-space:nowrap;font-size:9px;font-weight:bold;min-width:max-content;animation:marquee 85s linear infinite;cursor:pointer;will-change:transform}.ticker.paused{animation-play-state:paused}@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+.fact-chip{display:inline-flex;align-items:center;gap:8px;margin-right:34px}.fact-dot{width:5px;height:5px;border-radius:50%;background:var(--title);display:inline-block;box-shadow:0 0 7px var(--title)}
 
 .disclaimer-box{
 height:auto;min-height:50px;background:var(--header);padding:8px 10px;
@@ -165,6 +168,7 @@ display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;font
 }
 .dist-bar-bg{height:8px;background:var(--accent);border-radius:4px;overflow:hidden}
 .dist-bar-fill{height:100%;background:var(--title);border-radius:4px;transition:width 1s ease-out}
+.dist-dashboard{display:flex;flex-direction:column;gap:12px}.dist-hero{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center}.donut-wrap{position:relative;width:150px;height:150px}.donut-svg{width:150px;height:150px;transform:rotate(-90deg)}.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}.donut-total{font-size:16px;font-weight:900}.donut-label{font-size:7px;opacity:.55;text-transform:uppercase}.dist-summary{display:flex;flex-direction:column;gap:7px}.dist-stat{padding:8px;border:1px solid var(--accent);border-radius:5px;background:rgba(0,0,0,.12)}.dist-stat small{display:block;font-size:7px;opacity:.55;text-transform:uppercase}.dist-stat b{font-size:11px}.dist-tabs{display:flex;gap:4px}.dist-tab{flex:1;padding:7px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:4px;font-size:8px;font-weight:bold;cursor:pointer}.dist-tab.active{background:var(--title);color:#000!important}.dist-panel{display:none}.dist-panel.active{display:block}.dist-holding{padding:8px;border:1px solid var(--accent);border-radius:5px;margin-bottom:5px}.dist-holding-top{display:flex;justify-content:space-between;font-size:9px;font-weight:bold}.dist-holding-bar{height:6px;background:var(--accent);border-radius:4px;overflow:hidden;margin-top:6px}.dist-holding-fill{height:100%;background:var(--title);border-radius:4px}.dist-heat{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}.dist-heat-item{padding:10px;border:1px solid var(--accent);border-radius:5px;text-align:center}.dist-heat-item b{display:block;font-size:12px}.dist-heat-item span{font-size:7px;opacity:.55}.dist-note{font-size:7px;opacity:.55;text-align:center;line-height:1.4}.legal-copy{font-size:9px;line-height:1.65;opacity:.9}.legal-copy strong{color:var(--title)}
 .custom-control{
 display:flex;justify-content:space-between;align-items:center;margin:10px 0;
 font-size:10px;color:var(--text)
@@ -295,16 +299,10 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 <div id="settings-overlay" class="modal-overlay" onclick="this.style.display='none'">
     <div class="modal" onclick="event.stopPropagation()">
         <div class="modal-scroll">
-            <div class="section-title">TEEMA</div>
+            <div class="section-title" data-i18n="theme_title">THEME</div>
             <div id="theme-grid" class="theme-grid"></div>
 
-            <div class="section-title">CUSTOM THEME</div>
-            <div class="custom-control">Background <input type="color" id="cp-bg" onchange="updateCustomTheme()"></div>
-            <div class="custom-control">Cards <input type="color" id="cp-card" onchange="updateCustomTheme()"></div>
-            <div class="custom-control">Border <input type="color" id="cp-border" onchange="updateCustomTheme()"></div>
-            <div class="custom-control">Text <input type="color" id="cp-text" onchange="updateCustomTheme()"></div>
-
-            <div class="section-title">KEEL</div>
+            <div class="section-title" data-i18n="language_title">LANGUAGE</div>
             <div class="theme-grid">
                 <button class="theme-btn" onclick="setLang('en')">ENGLISH</button>
                 <button class="theme-btn" onclick="setLang('et')">EESTI</button>
@@ -366,9 +364,9 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 <!-- ACTION 2: ANTS SCORE -->
 <div id="ants-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
-    <div class="action-header">🧠 ANTS SCORE</div>
+    <div class="action-header" data-i18n="ants_title">🧠 ANTS SCORE</div>
     <div class="action-modal-scroll">
-      <div class="action-sub">Terminali enda heuristiline momentum / trendisignaal</div>
+      <div class="action-sub" data-i18n="score_sub">Terminali enda heuristiline momentum / trendisignaal</div>
       <select id="ants-symbol" class="action-select" onchange="renderAntsScore()"></select>
       <div id="ants-content"></div>
     </div>
@@ -378,16 +376,16 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 <!-- ACTION 3: WHAT IF -->
 <div id="whatif-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
-    <div class="action-header">🎯 WHAT IF?</div>
+    <div class="action-header" data-i18n="whatif_title">🎯 WHAT IF?</div>
     <div class="action-modal-scroll">
-      <div class="action-sub">Arvuta võimaliku sihthinna mõju</div>
+      <div class="action-sub" data-i18n="whatif_sub">Arvuta võimaliku sihthinna mõju</div>
       <div class="action-grid">
-        <div><div style="font-size:8px;margin-bottom:4px">ASSET</div><select id="whatif-symbol" class="action-select" onchange="renderWhatIf()"></select></div>
-        <div><div style="font-size:8px;margin-bottom:4px">INVESTMENT €</div><input id="whatif-investment" class="action-input" type="number" step="any" value="100" oninput="renderWhatIf()"></div>
+        <div><div style="font-size:8px;margin-bottom:4px" data-i18n="asset">ASSET</div><select id="whatif-symbol" class="action-select" onchange="renderWhatIf()"></select></div>
+        <div><div style="font-size:8px;margin-bottom:4px" data-i18n="investment">INVESTMENT €</div><input id="whatif-investment" class="action-input" type="number" step="any" value="100" oninput="renderWhatIf()"></div>
       </div>
       <div class="action-grid">
-        <div><div style="font-size:8px;margin-bottom:4px">TARGET €</div><input id="whatif-target" class="action-input" type="number" step="any" value="1" oninput="renderWhatIf()"></div>
-        <div><div style="font-size:8px;margin-bottom:4px">CURRENT €</div><input id="whatif-current" class="action-input" type="number" step="any" readonly></div>
+        <div><div style="font-size:8px;margin-bottom:4px" data-i18n="target">TARGET €</div><input id="whatif-target" class="action-input" type="number" step="any" value="1" oninput="renderWhatIf()"></div>
+        <div><div style="font-size:8px;margin-bottom:4px" data-i18n="current">CURRENT €</div><input id="whatif-current" class="action-input" type="number" step="any" readonly></div>
       </div>
       <div id="whatif-content"></div>
     </div>
@@ -397,16 +395,16 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 <!-- ACTION 4: ALERTS -->
 <div id="alerts-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
-    <div class="action-header">🔔 PRICE ALERTS</div>
+    <div class="action-header" data-i18n="alerts_title">🔔 PRICE ALERTS</div>
     <div class="action-modal-scroll">
-      <div class="action-sub">Hoiatus käivitub järgmise turu-uudenduse ajal</div>
+      <div class="action-sub" data-i18n="alerts_sub">Hoiatus käivitub järgmise turu-uudenduse ajal</div>
       <div class="action-grid">
         <select id="alert-symbol" class="action-select"></select>
-        <select id="alert-direction" class="action-select"><option value="above">ABOVE ↑</option><option value="below">BELOW ↓</option></select>
+        <select id="alert-direction" class="action-select"><option value="above" data-i18n="above">ABOVE ↑</option><option value="below" data-i18n="below">BELOW ↓</option></select>
       </div>
       <div class="action-grid">
         <input id="alert-target" class="action-input" type="number" step="any" placeholder="Target price €">
-        <button class="action-btn primary" onclick="addAlert()">ADD ALERT</button>
+        <button class="action-btn primary" onclick="addAlert()" data-i18n="add_alert">ADD ALERT</button>
       </div>
       <div id="alerts-content"></div>
     </div>
@@ -416,18 +414,18 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 <!-- ACTION 5: WATCHLIST / TEST -->
 <div id="watchlist-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
-    <div class="action-header">💎 WATCHLIST / TEST</div>
+    <div class="action-header" data-i18n="watch_title">💎 WATCHLIST / TEST</div>
     <div class="action-modal-scroll">
-      <div class="action-sub">Salvesta hüpoteetiline ost ja jälgi selle arengut</div>
+      <div class="action-sub" data-i18n="watch_sub">Salvesta hüpoteetiline ost ja jälgi selle arengut</div>
       <div class="action-grid">
         <select id="test-symbol" class="action-select"></select>
         <input id="test-investment" class="action-input" type="number" step="any" value="100" placeholder="€100">
       </div>
       <div class="action-grid">
-        <input id="test-price" class="action-input" type="number" step="any" placeholder="Baseline price €">
+        <input id="test-price" class="action-input" type="number" step="any" placeholder="Baseline price €" data-i18n-placeholder="baseline">
         <input id="test-date" class="action-input" type="date">
       </div>
-      <button class="action-btn primary" onclick="addTestCase()">SAVE TEST</button>
+      <button class="action-btn primary" onclick="addTestCase()" data-i18n="save_test">SAVE TEST</button>
       <div id="watchlist-content" style="margin-top:10px"></div>
     </div>
   </div>
@@ -437,10 +435,10 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 
 <script>
 const translations={
-en:{title:"🚀 APLO CRYPTO TERMINAL",networth:"Net Worth",assets:"ASSETS",edit:"EDIT",save:"SAVE",news:"📰 NEWS",manage:"MANAGE ASSETS",disclaimer:"Experimental project. Use at your own risk.",legal_label:"LEGAL NOTICE",btn_add:"ADD ASSET",dist_title:"ASSET DISTRIBUTION",no_assets:"No assets.",no_assets_dist:"No assets to display.",disclaimer_full:"This application is an experimental software project.",remove:"Remove"},
-et:{title:"🚀 APLO KRÜPTO TERMINAL",networth:"Netoväärtus",assets:"VARAD",edit:"MUUDA",save:"SALVESTA",news:"📰 UUDISED",manage:"HALDA VARASID",disclaimer:"Eksperimentaalne projekt. Kasuta omal vastutusel.",legal_label:"ÕIGUSLIK TEADE",btn_add:"LISA VARA",dist_title:"VARADE JAOTUS",no_assets:"Varad puuduvad.",no_assets_dist:"Kuvamiseks pole varasid.",disclaimer_full:"See rakendus on eksperimentaalne tarkvaraprojekt.",remove:"Eemalda"},
-es:{title:"🚀 TERMINAL CRIPTO APLO",networth:"Patrimonio Neto",assets:"ACTIVOS",edit:"EDITAR",save:"GUARDAR",news:"📰 NOTICIAS",manage:"GESTIONAR ACTIVOS",disclaimer:"Proyecto experimental.",legal_label:"AVISO LEGAL",btn_add:"AÑADIR ACTIVO",dist_title:"DISTRIBUCIÓN DE ACTIVOS",no_assets:"Sin activos.",no_assets_dist:"No hay activos para mostrar.",disclaimer_full:"Esta aplicación es un proyecto de software experimental.",remove:"Eliminar"},
-ru:{title:"🚀 КРИПТО ТЕРМИНАЛ APLO",networth:"Чистая стоимость",assets:"АКТИВЫ",edit:"ИЗМЕНИТЬ",save:"СОХРАНИТЬ",news:"📰 НОВОСТИ",manage:"УПРАВЛЕНИЕ",disclaimer:"Экспериментальный проект.",legal_label:"ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ",btn_add:"ДОБАВИТЬ АКТИВ",dist_title:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",no_assets:"Нет активов.",no_assets_dist:"Нет активов для отображения.",disclaimer_full:"Данное приложение является экспериментальным программным проектом.",remove:"Удалить"}
+ en:{title:"🚀 APLO CRYPTO TERMINAL",networth:"Net Worth",assets:"ASSETS",edit:"EDIT",save:"SAVE",news:"📰 NEWS",manage:"MANAGE ASSETS",btn_add:"ADD ASSET",dist_title:"ASSET DISTRIBUTION",no_assets:"No assets.",no_assets_dist:"No assets to display.",remove:"Remove",theme_title:"THEMES",language_title:"LANGUAGE",legal_label:"LEGAL NOTICE",disclaimer_short:"Entertainment / experimental crypto terminal. No financial advice.",info_title:"LEGAL & INFORMATION",info_body:"This website and application are provided strictly for <strong>entertainment and educational purposes</strong>. The creator accepts <strong>no responsibility or liability</strong> for any loss, damage, missed opportunity, trading decision, investment decision, transaction, or other consequence arising from the use of this website, its calculations, displayed prices, scores, alerts, historical data, links, or any other information presented here. Crypto assets are highly volatile and may result in partial or total loss of capital. Nothing on this page constitutes financial, investment, legal, tax, or trading advice. You are solely responsible for your own decisions and for verifying information before acting. By using this website, you acknowledge and accept these conditions.",history_title:"📊 PRICE HISTORY",ants_title:"🧠 ANTS SCORE",whatif_title:"🎯 WHAT IF?",alerts_title:"🔔 PRICE ALERTS",watch_title:"💎 WATCHLIST / TEST",asset:"ASSET",investment:"INVESTMENT €",target:"TARGET €",current:"CURRENT €",above:"ABOVE ↑",below:"BELOW ↓",add_alert:"ADD ALERT",save_test:"SAVE TEST",delete:"DELETE",baseline:"BASELINE PRICE €",date:"DATE",score_sub:"Terminal's heuristic trend and momentum signal",whatif_sub:"Calculate the effect of a possible target price",alerts_sub:"Alert is checked on every market update",watch_sub:"Save a hypothetical purchase and track it",distribution:"ASSET DISTRIBUTION",distribution_mix:"PORTFOLIO MIX",distribution_risk:"RISK / CONCENTRATION",distribution_value:"VALUE",distribution_share:"SHARE",distribution_empty:"Add assets and quantities to see the interactive distribution.",largest:"LARGEST POSITION",positions:"POSITIONS",diversification:"DIVERSIFICATION",concentration:"CONCENTRATION",balanced:"Balanced",moderate:"Moderate",high:"High",facts_hint:"Tap the ticker to pause / resume",fact_label:"CRYPTO FACT",no_test:"No test positions saved yet.",no_alerts:"No active alerts.",remove_alert:"REMOVE",history_points:"price points",no_buy:"NO BUY",avg_buy:"AVERAGE BUY",current_price:"CURRENT",legal_footer:"This terminal is an entertainment project. Use it entirely at your own risk."},
+ et:{title:"🚀 APLO KRÜPTO TERMINAL",networth:"Netoväärtus",assets:"VARAD",edit:"MUUDA",save:"SALVESTA",news:"📰 UUDISED",manage:"HALDA VARASID",btn_add:"LISA VARA",dist_title:"VARADE JAOTUS",no_assets:"Varad puuduvad.",no_assets_dist:"Kuvamiseks pole varasid.",remove:"Eemalda",theme_title:"TEEMAD",language_title:"KEEL",legal_label:"ÕIGUSLIK TEAVE",disclaimer_short:"Meelelahutuslik / eksperimentaalne krüptoterminal. Ei ole finantsnõu.",info_title:"ÕIGUSLIK INFO JA VASTUTUS",info_body:"See veebileht ja rakendus on loodud <strong>üksnes meelelahutuslikul ja hariduslikul eesmärgil</strong>. Lehe looja <strong>ei vastuta mitte mingil viisil</strong> ühegi kahju, rahalise kaotuse, saamata jäänud võimaluse, tehingu, investeerimisotsuse, kauplemisotsuse ega muu tagajärje eest, mis võib tuleneda selle lehe kasutamisest või siin kuvatud hindadest, arvutustest, skooridest, hoiatusest, ajaloolistest andmetest, linkidest või muust infost. Krüptovarad on väga volatiilsed ning nende väärtus võib oluliselt langeda või kapital võib täielikult kaduma minna. Mitte ükski sellel lehel olev osa ei ole finants-, investeerimis-, õigus-, maksu- ega kauplemisnõuanne. Vastutad täielikult ise oma otsuste eest ning pead enne tegutsemist info iseseisvalt üle kontrollima. Seda lehte kasutades kinnitad, et mõistad ja aktsepteerid neid tingimusi.",history_title:"📊 HINNAAJALUGU",ants_title:"🧠 ANTS SKOOR",whatif_title:"🎯 MIS SIIS, KUI?",alerts_title:"🔔 HINNAHOIATUSED",watch_title:"💎 VAATLUS / TEST",asset:"VARA",investment:"INVESTEERING €",target:"SIHT €",current:"PRAEGU €",above:"ÜLE ↑",below:"ALLA ↓",add_alert:"LISA HOIATUS",save_test:"SALVESTA TEST",delete:"KUSTUTA",baseline:"ALGUSHIND €",date:"KUUPÄEV",score_sub:"Terminali heuristiline trendi- ja momentumisignaal",whatif_sub:"Arvuta võimaliku sihthinna mõju",alerts_sub:"Hoiatust kontrollitakse iga turu uuenduse ajal",watch_sub:"Salvesta hüpoteetiline ost ja jälgi selle arengut",distribution:"VARADE JAOTUS",distribution_mix:"PORTFELLI JAOTUS",distribution_risk:"RISKI / KONTSETRATSIOONI VAADE",distribution_value:"VÄÄRTUS",distribution_share:"OSAKAAL",distribution_empty:"Lisa varade kogused, et näha interaktiivset jaotust.",largest:"SUURIM POSITSIOON",positions:"POSITSIOONID",diversification:"MITMEKESISUS",concentration:"KONTSENTRATSIOON",balanced:"Tasakaalus",moderate:"Mõõdukas",high:"Kõrge",facts_hint:"Puuduta tickerit pausiks / jätkamiseks",fact_label:"KRÜPTO FAKT",no_test:"Testpositsioone pole veel salvestatud.",no_alerts:"Aktiivseid hoiatusi pole.",remove_alert:"EEMALDA",history_points:"hinnapunkti",no_buy:"OSTUHIND PUUDUB",avg_buy:"KESKMINE OSTUHIND",current_price:"PRAEGU",legal_footer:"See terminal on loodud meelelahutuslikul eesmärgil. Kasutad seda täielikult omal vastutusel."},
+ es:{title:"🚀 TERMINAL CRIPTO APLO",networth:"Patrimonio Neto",assets:"ACTIVOS",edit:"EDITAR",save:"GUARDAR",news:"📰 NOTICIAS",manage:"GESTIONAR ACTIVOS",btn_add:"AÑADIR ACTIVO",dist_title:"DISTRIBUCIÓN DE ACTIVOS",no_assets:"Sin activos.",no_assets_dist:"No hay activos para mostrar.",remove:"Eliminar",theme_title:"TEMAS",language_title:"IDIOMA",legal_label:"AVISO LEGAL",disclaimer_short:"Terminal cripto experimental / de entretenimiento. No es asesoramiento financiero.",info_title:"INFORMACIÓN LEGAL Y RESPONSABILIDAD",info_body:"Este sitio y esta aplicación se ofrecen estrictamente con fines de <strong>entretenimiento y educación</strong>. El creador <strong>no asume ninguna responsabilidad</strong> por pérdidas, daños, oportunidades perdidas, operaciones, decisiones de inversión, decisiones de trading o cualquier otra consecuencia derivada del uso de este sitio, sus cálculos, precios, puntuaciones, alertas, datos históricos, enlaces o cualquier otra información mostrada. Los criptoactivos son altamente volátiles y pueden causar una pérdida parcial o total del capital. Nada de esta página constituye asesoramiento financiero, de inversión, legal, fiscal o de trading. Usted es el único responsable de sus decisiones y debe verificar la información antes de actuar. Al utilizar este sitio, acepta estas condiciones.",history_title:"📊 HISTORIAL DE PRECIOS",ants_title:"🧠 PUNTUACIÓN ANTS",whatif_title:"🎯 ¿Y SI?",alerts_title:"🔔 ALERTAS DE PRECIO",watch_title:"💎 LISTA / PRUEBA",asset:"ACTIVO",investment:"INVERSIÓN €",target:"OBJETIVO €",current:"ACTUAL €",above:"POR ENCIMA ↑",below:"POR DEBAJO ↓",add_alert:"AÑADIR ALERTA",save_test:"GUARDAR PRUEBA",delete:"ELIMINAR",baseline:"PRECIO BASE €",date:"FECHA",score_sub:"Señal heurística de tendencia y momentum del terminal",whatif_sub:"Calcula el efecto de un posible precio objetivo",alerts_sub:"La alerta se comprueba en cada actualización del mercado",watch_sub:"Guarda una compra hipotética y sigue su evolución",distribution:"DISTRIBUCIÓN DE ACTIVOS",distribution_mix:"MEZCLA DE CARTERA",distribution_risk:"RIESGO / CONCENTRACIÓN",distribution_value:"VALOR",distribution_share:"CUOTA",distribution_empty:"Añade cantidades para ver la distribución interactiva.",largest:"POSICIÓN MÁS GRANDE",positions:"POSICIONES",diversification:"DIVERSIFICACIÓN",concentration:"CONCENTRACIÓN",balanced:"Equilibrada",moderate:"Moderada",high:"Alta",facts_hint:"Toca el ticker para pausar / continuar",fact_label:"DATO CRIPTO",no_test:"No hay pruebas guardadas.",no_alerts:"No hay alertas activas.",remove_alert:"ELIMINAR",history_points:"puntos de precio",no_buy:"SIN COMPRA",avg_buy:"COMPRA MEDIA",current_price:"ACTUAL",legal_footer:"Este terminal es un proyecto de entretenimiento. Úselo bajo su propia responsabilidad."},
+ ru:{title:"🚀 КРИПТО ТЕРМИНАЛ APLO",networth:"Чистая стоимость",assets:"АКТИВЫ",edit:"ИЗМЕНИТЬ",save:"СОХРАНИТЬ",news:"📰 НОВОСТИ",manage:"УПРАВЛЕНИЕ АКТИВАМИ",btn_add:"ДОБАВИТЬ АКТИВ",dist_title:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",no_assets:"Нет активов.",no_assets_dist:"Нет активов для отображения.",remove:"Удалить",theme_title:"ТЕМЫ",language_title:"ЯЗЫК",legal_label:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ",disclaimer_short:"Развлекательный / экспериментальный крипто-терминал. Не является финансовым советом.",info_title:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ И ОТВЕТСТВЕННОСТЬ",info_body:"Этот сайт и приложение созданы исключительно в <strong>развлекательных и образовательных целях</strong>. Создатель <strong>не несёт никакой ответственности</strong> за убытки, ущерб, упущенные возможности, сделки, инвестиционные или торговые решения и любые другие последствия использования сайта, его расчётов, цен, оценок, предупреждений, исторических данных, ссылок или иной информации. Криптоактивы крайне волатильны и могут привести к частичной или полной потере капитала. Ничто на этой странице не является финансовой, инвестиционной, юридической, налоговой или торговой рекомендацией. Вы самостоятельно отвечаете за свои решения и обязаны проверять информацию перед действиями. Используя сайт, вы подтверждаете принятие этих условий.",history_title:"📊 ИСТОРИЯ ЦЕН",ants_title:"🧠 ОЦЕНКА ANTS",whatif_title:"🎯 ЧТО, ЕСЛИ?",alerts_title:"🔔 ЦЕНОВЫЕ АЛЕРТЫ",watch_title:"💎 СПИСОК / ТЕСТ",asset:"АКТИВ",investment:"ИНВЕСТИЦИЯ €",target:"ЦЕЛЬ €",current:"ТЕКУЩАЯ €",above:"ВЫШЕ ↑",below:"НИЖЕ ↓",add_alert:"ДОБАВИТЬ АЛЕРТ",save_test:"СОХРАНИТЬ ТЕСТ",delete:"УДАЛИТЬ",baseline:"БАЗОВАЯ ЦЕНА €",date:"ДАТА",score_sub:"Эвристический сигнал тренда и импульса терминала",whatif_sub:"Рассчитайте влияние возможной целевой цены",alerts_sub:"Алерт проверяется при каждом обновлении рынка",watch_sub:"Сохраните гипотетическую покупку и следите за ней",distribution:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",distribution_mix:"СОСТАВ ПОРТФЕЛЯ",distribution_risk:"РИСК / КОНЦЕНТРАЦИЯ",distribution_value:"СТОИМОСТЬ",distribution_share:"ДОЛЯ",distribution_empty:"Добавьте количества активов для интерактивного распределения.",largest:"КРУПНЕЙШАЯ ПОЗИЦИЯ",positions:"ПОЗИЦИИ",diversification:"ДИВЕРСИФИКАЦИЯ",concentration:"КОНЦЕНТРАЦИЯ",balanced:"Сбалансировано",moderate:"Умеренная",high:"Высокая",facts_hint:"Нажмите на тикер, чтобы поставить на паузу / продолжить",fact_label:"КРИПТО ФАКТ",no_test:"Тестовых позиций пока нет.",no_alerts:"Активных алертов нет.",remove_alert:"УДАЛИТЬ",history_points:"ценовых точек",no_buy:"НЕТ ПОКУПКИ",avg_buy:"СРЕДНЯЯ ПОКУПКА",current_price:"ТЕКУЩАЯ",legal_footer:"Этот терминал создан в развлекательных целях. Используйте его полностью на свой страх и риск."}
 };
 
 let currentLang=localStorage.getItem('lang')||'et';
@@ -573,18 +571,25 @@ function ensureHistoryForExistingAssets(){
 }
 
 function applyLang(){
-    const t=translations[currentLang];
-
-    document.getElementById('ui-title').innerText=t.title;
-    document.getElementById('ui-networth').innerText=t.networth;
-    document.getElementById('ui-btn-assets').innerText=t.assets;
-    document.getElementById('ui-btn-edit').innerText=t.edit;
-    document.getElementById('ui-news-hub').innerText=t.news;
-    document.getElementById('ui-manage-title').innerText=t.manage;
-    document.getElementById('ui-btn-add').innerText=t.btn_add;
-    document.getElementById('ui-dist-title').innerText=t.dist_title;
-
+    const t=translations[currentLang]||translations.et;
+    const ids={
+      'ui-title':'title','ui-networth':'networth','ui-btn-assets':'assets','ui-btn-edit':'edit','ui-news-hub':'news','ui-manage-title':'manage','ui-btn-add':'btn_add','ui-dist-title':'dist_title','ui-disclaimer':'disclaimer_short'
+    };
+    Object.keys(ids).forEach(id=>{const el=document.getElementById(id);if(el)el.innerText=t[ids[id]];});
+    document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(t[k]!==undefined)el.innerHTML=t[k];});
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.getAttribute('data-i18n-placeholder');if(t[k]!==undefined)el.placeholder=t[k];});
+    const add=document.getElementById('new-asset-input'); if(add)add.placeholder=currentLang==='et'?'TICKER VÕI CA (0x...)':currentLang==='ru'?'ТИКЕР ИЛИ CA (0x...)':currentLang==='es'?'TICKER O CA (0x...)':'TICKER OR CA (0x...)';
+    const d=document.getElementById('history-assets-overlay'); if(d&&d.querySelector('.history-modal-title'))d.querySelector('.history-modal-title').innerText=t.history_title;
+    refreshActionLabels();
+    if(tickerEl){tickerEl.title=t.facts_hint;renderCryptoFacts();}
     renderUI();
+}
+function refreshActionLabels(){
+    const t=translations[currentLang];
+    const ids=['ants-symbol','whatif-symbol','alert-symbol','test-symbol'];
+    ids.forEach(id=>{const el=document.getElementById(id);if(el&&el.options.length===0)populateAssetSelect(id);});
+    const dir=document.getElementById('alert-direction');if(dir){dir.options[0].text=t.above;dir.options[1].text=t.below;}
+    if(document.getElementById('dist-overlay').style.display==='flex')openDistribution();
 }
 
 function setLang(l){
@@ -623,7 +628,7 @@ mainWrapper.addEventListener('touchend',async e=>{
 
 const themeNames=[
 "black-white","white-black","terminal","gold",
-"nando-gray","forest","retro","midnight"
+"nando-gray","forest","retro","midnight","ocean","violet","crimson","ice","copper","matrix"
 ];
 
 document.getElementById('theme-grid').innerHTML=
@@ -636,9 +641,7 @@ ${t.toUpperCase().replace('-',' ')}
 function setTheme(t){
     document.body.setAttribute('data-theme',t);
     localStorage.setItem('theme',t);
-    document.getElementById('custom-style').innerHTML='';
-    localStorage.removeItem('custom_theme');
-}
+    }
 
 async function updateMarket(){
     const statusEl=document.getElementById('status');
@@ -997,55 +1000,24 @@ function togglePortfolio(){
 }
 
 function openDistribution(){
-    let total=0;
-    let holdings=[];
-
-    symbols.forEach(s=>{
-        const isDex=
-            s.startsWith('0x')||s.length>=15;
-
-        const qty=
-            parseFloat(localStorage.getItem('p_'+s))||0;
-
-        const price=
-            currentPrices[s]||0;
-
-        if(qty>0&&price>0){
-            total+=qty*price;
-
-            holdings.push({
-                name:isDex
-                    ?(caNames[s]||"DEX")
-                    :s.replace(/(USDT|USD)$/,""),
-                val:qty*price
-            });
-        }
-    });
-
-    const container=
-        document.getElementById('dist-content');
-
-    container.innerHTML=
-        holdings.length>0
-        ?holdings.map(h=>
-        `<div class="dist-row">
-            <div class="dist-label">
-                <span>${h.name}</span>
-                <span>€${h.val.toFixed(2)}</span>
-            </div>
-            <div class="dist-bar-bg">
-                <div class="dist-bar-fill"
-                    style="width:${total>0?((h.val/total)*100).toFixed(0):0}%">
-                </div>
-            </div>
-        </div>`
-        ).join('')
-        :`<div style="opacity:.5;text-align:center">
-            ${translations[currentLang].no_assets_dist}
-          </div>`;
-
+    const t=translations[currentLang];
+    const holdings=[]; let total=0;
+    symbols.forEach(s=>{const qty=parseFloat(localStorage.getItem('p_'+s))||0;const price=currentPrices[s]||0;if(qty>0&&price>0){const val=qty*price;total+=val;holdings.push({s,name:getDisplayName(s),val});}});
+    holdings.sort((a,b)=>b.val-a.val);
+    const container=document.getElementById('dist-content');
+    if(!holdings.length){container.innerHTML=`<div class="dist-dashboard"><div class="history-empty">${t.distribution_empty}</div></div>`;document.getElementById('dist-overlay').style.display='flex';return;}
+    const max=holdings[0].val, share=max/total*100;
+    const concentration=share>=60?t.high:share>=35?t.moderate:t.balanced;
+    const radius=54, circumference=2*Math.PI*radius;
+    let offset=0;
+    const segments=holdings.map((h,i)=>{const pct=h.val/total*100;const dash=(pct/100)*circumference;const seg=`<circle cx="75" cy="75" r="${radius}" fill="none" stroke="hsl(${(i*47)%360} 75% 60%)" stroke-width="20" stroke-dasharray="${dash} ${circumference-dash}" stroke-dashoffset="${-offset}"/>`;offset+=dash;return seg;}).join('');
+    const rows=holdings.map((h,i)=>{const pct=h.val/total*100;return `<div class="dist-holding"><div class="dist-holding-top"><span><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:hsl(${(i*47)%360} 75% 60%);margin-right:5px"></i>${h.name}</span><span>€${h.val.toFixed(2)} • ${pct.toFixed(1)}%</span></div><div class="dist-holding-bar"><div class="dist-holding-fill" style="width:${pct}%;background:hsl(${(i*47)%360} 75% 60%)"></div></div></div>`}).join('');
+    const heat=holdings.slice(0,6).map((h,i)=>`<div class="dist-heat-item"><b>${(h.val/total*100).toFixed(1)}%</b><span>${h.name}</span></div>`).join('');
+    container.innerHTML=`<div class="dist-dashboard"><div class="dist-hero"><div class="donut-wrap"><svg class="donut-svg" viewBox="0 0 150 150"><circle cx="75" cy="75" r="54" fill="none" stroke="var(--accent)" stroke-width="20"/>${segments}</svg><div class="donut-center"><div class="donut-total">€${total.toFixed(2)}</div><div class="donut-label">${t.distribution_value}</div></div></div><div class="dist-summary"><div class="dist-stat"><small>${t.positions}</small><b>${holdings.length}</b></div><div class="dist-stat"><small>${t.largest}</small><b>${holdings[0].name} ${share.toFixed(1)}%</b></div><div class="dist-stat"><small>${t.concentration}</small><b>${concentration}</b></div></div></div><div class="dist-tabs"><button class="dist-tab active" onclick="switchDistTab(this,'dist-mix')">${t.distribution_mix}</button><button class="dist-tab" onclick="switchDistTab(this,'dist-risk')">${t.distribution_risk}</button></div><div id="dist-mix" class="dist-panel active">${rows}</div><div id="dist-risk" class="dist-panel"><div class="dist-heat">${heat}</div><div class="dist-note" style="margin-top:10px">${t.distribution_risk}: ${concentration}. This is a simple portfolio concentration indicator, not investment advice.</div></div></div>`;
     document.getElementById('dist-overlay').style.display='flex';
 }
+function switchDistTab(btn,id){document.querySelectorAll('#dist-content .dist-tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('#dist-content .dist-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById(id).classList.add('active');}
+
 
 /*
 ========================================================
@@ -1652,17 +1624,10 @@ function openGeneralNews(){
 }
 
 function openAppInfo(){
-    document.getElementById('info-header').innerText=
-        translations[currentLang].legal_label;
-
-    document.getElementById('info-content').innerHTML=
-    `<div style="font-size:10px;line-height:1.5;color:var(--text)">
-        ${translations[currentLang].disclaimer_full}
-     </div>`;
-
-    document.getElementById(
-        'info-overlay'
-    ).style.display='flex';
+    const t=translations[currentLang];
+    document.getElementById('info-header').innerText=t.info_title;
+    document.getElementById('info-content').innerHTML=`<div class="legal-copy">${t.info_body}</div><div style="margin-top:14px;padding:10px;border:1px solid var(--accent);border-radius:5px;font-size:8px;line-height:1.5;text-align:center">${t.legal_footer}</div>`;
+    document.getElementById('info-overlay').style.display='flex';
 }
 
 function openInfoModal(sym,fullSym,isDex){
@@ -1924,46 +1889,6 @@ updateMarket=async function(){
 
 /*
 ========================================================
-CUSTOM THEME
-========================================================
-*/
-
-function updateCustomTheme(){
-    const bg=
-        document.getElementById('cp-bg').value;
-
-    const card=
-        document.getElementById('cp-card').value;
-
-    const border=
-        document.getElementById('cp-border').value;
-
-    const text=
-        document.getElementById('cp-text').value;
-
-    const css=
-    `:root{
-        --bg:${bg};
-        --card:${card};
-        --border:${border};
-        --text:${text};
-        --title:${text}
-    }`;
-
-    document.getElementById(
-        'custom-style'
-    ).innerHTML=css;
-
-    localStorage.setItem(
-        'custom_theme',
-        JSON.stringify({
-            bg,card,border,text
-        })
-    );
-}
-
-/*
-========================================================
 INITIALIZATION
 ========================================================
 */
@@ -1972,22 +1897,6 @@ window.addEventListener('load',()=>{
     const savedTheme=localStorage.getItem('theme');
     if(savedTheme)document.body.setAttribute('data-theme',savedTheme);
 
-    const saved=
-        localStorage.getItem('custom_theme');
-
-    if(saved){
-        const {
-            bg,card,border,text
-        }=JSON.parse(saved);
-
-        document.getElementById('cp-bg').value=bg;
-        document.getElementById('cp-card').value=card;
-        document.getElementById('cp-border').value=border;
-        document.getElementById('cp-text').value=text;
-
-        updateCustomTheme();
-    }
-
     ensureHistoryForExistingAssets();
     renderHourlyPerformance();
 });
@@ -1995,9 +1904,27 @@ window.addEventListener('load',()=>{
 const tickerEl=
     document.getElementById('insights-ticker');
 
+const cryptoFacts={
+ en:["BTC • Maximum supply is 21 million coins.","ETH • Ethereum moved to Proof of Stake in 2022.","SOL • Solana uses Proof of History together with Proof of Stake.","BNB • BNB is the native asset of the BNB Chain ecosystem.","XRP • XRP was created for fast value transfer and uses the XRP Ledger.","ADA • Cardano uses the Ouroboros Proof-of-Stake protocol.","LINK • Chainlink is designed to connect smart contracts with external data.","DOGE • Dogecoin has no fixed maximum supply and adds new coins over time.","AVAX • Avalanche is built around a family of interoperable blockchain networks."],
+ et:["BTC • Bitcoini maksimaalne kogus on 21 miljonit.","ETH • Ethereum läks 2022. aastal üle Proof of Stake'ile.","SOL • Solana kasutab Proof of History't koos Proof of Stake'iga.","BNB • BNB on BNB Chaini ökosüsteemi põhivara.","XRP • XRP loodi kiire väärtuse ülekandmise jaoks ja töötab XRP Ledgeris.","ADA • Cardano kasutab Ouroboros Proof-of-Stake protokolli.","LINK • Chainlink ühendab nutilepinguid väliste andmeallikatega.","DOGE • Dogecoinil puudub fikseeritud maksimaalne kogus ja uusi münte lisandub ajas.","AVAX • Avalanche koosneb omavahel seotud plokiahelate võrgustikust."],
+ es:["BTC • El suministro máximo de Bitcoin es de 21 millones.","ETH • Ethereum pasó a Proof of Stake en 2022.","SOL • Solana utiliza Proof of History junto con Proof of Stake.","BNB • BNB es el activo nativo del ecosistema BNB Chain.","XRP • XRP fue creado para transferencias rápidas de valor en XRP Ledger.","ADA • Cardano utiliza el protocolo Ouroboros Proof of Stake.","LINK • Chainlink conecta contratos inteligentes con datos externos.","DOGE • Dogecoin no tiene un suministro máximo fijo y emite nuevas monedas.","AVAX • Avalanche se basa en una familia de redes blockchain interoperables."],
+ ru:["BTC • Максимальное предложение Bitcoin — 21 миллион монет.","ETH • Ethereum перешёл на Proof of Stake в 2022 году.","SOL • Solana использует Proof of History вместе с Proof of Stake.","BNB • BNB является нативным активом экосистемы BNB Chain.","XRP • XRP создан для быстрых переводов ценности в XRP Ledger.","ADA • Cardano использует протокол Ouroboros Proof of Stake.","LINK • Chainlink связывает смарт-контракты с внешними данными.","DOGE • У Dogecoin нет фиксированного максимального предложения.","AVAX • Avalanche построен как семейство взаимосвязанных блокчейн-сетей."]
+};
+let factIndex=0;
+function renderCryptoFacts(){
+    if(!tickerEl)return;
+    const facts=cryptoFacts[currentLang]||cryptoFacts.et;
+    const ordered=[...facts.slice(factIndex),...facts.slice(0,factIndex)];
+    tickerEl.innerHTML=ordered.map(f=>`<span class="fact-chip"><span class="fact-dot"></span><span>${f}</span></span>`).join('');
+    factIndex=(factIndex+1)%facts.length;
+}
 if(tickerEl){
-    tickerEl.innerText=
-    "CRYPTO TERMINAL READY *** TRACKING LIVE ASSETS *** MARKET DATA UPDATING ***";
+    renderCryptoFacts();
+    tickerEl.title=(translations[currentLang]||translations.et).facts_hint;
+    tickerEl.addEventListener('click',()=>tickerEl.classList.toggle('paused'));
+    tickerEl.addEventListener('mouseenter',()=>tickerEl.classList.add('paused'));
+    tickerEl.addEventListener('mouseleave',()=>tickerEl.classList.remove('paused'));
+    setInterval(renderCryptoFacts,12000);
 }
 
 setInterval(()=>{
