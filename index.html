@@ -809,6 +809,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <select id="test-symbol" class="action-select"></select>
         <input id="test-investment" class="action-input" type="number" step="any" value="100" data-i18n-placeholder="investment_amount" placeholder="100 EUR">
       </div>
+      <input id="test-ca" class="action-input" type="text" data-i18n-placeholder="watch_ca" placeholder="CA / CONTRACT ADDRESS (optional)" style="width:100%;margin-top:7px">
       <div class="action-grid">
         <input id="test-price" class="action-input" type="number" step="any" placeholder="Baseline price (EUR)" data-i18n-placeholder="baseline">
         <input id="test-date" class="action-input" type="date">
@@ -833,30 +834,30 @@ const uiText={
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"price points",buy:"BUY",noBuy:"NO BUY",history:"HISTORY",
     priceHistory:"PRICE HISTORY",averageBuy:"AVERAGE BUY",current:"CURRENT",noAssets:"No assets.",
     editAssetData:"EDIT ASSET DATA",globalNews:"GLOBAL CRYPTO NEWS",copy:"COPIED ✓",copyFailed:"COPY FAILED",
-    clickCopy:"Click to copy CA",tradeBinance:"${T('tradeBinance')}",dexScanner:"📊 OPEN DEXSCREENER",
+    clickCopy:"Click to copy CA",tradeBinance:"TRADE ON BINANCE",dexScanner:"📊 OPEN DEXSCREENER",
     strong:"STRONG",positive:"POSITIVE",neutral:"NEUTRAL",weak:"WEAK",highRisk:"HIGH RISK",
-    momentum24:"${T('momentum24')}",historyTrend:"${T('historyTrend')}",buyPosition:"${T('buyPosition')}",dataDepth:"${T('dataDepth')}",
-    notSet:"not set",points:"points",antsDisclaimer:"${T('antsDisclaimer')}",
+    momentum24:"24H MOMENTUM",historyTrend:"HISTORY TREND",buyPosition:"BUY POSITION",dataDepth:"DATA DEPTH",
+    notSet:"not set",points:"points",antsDisclaimer:"ANTS SCORE is a terminal heuristic based on available data. It is not a price prediction.",
     enterInvestment:"Enter investment and target price.",pl:"P/L",roi:"ROI",units:"units",
     delete:"DELETE",above:"↑ ABOVE",below:"↓ BELOW",now:"NOW",triggered:"TRIGGERED",ready:"READY TO TRIGGER",waiting:"WAITING",
     validTarget:"Enter a valid target price.",validTest:"Enter asset, investment and baseline price.",base:"BASE",test:"TEST",
     testSaved:"No test positions saved yet.",initializing:"Initializing terminal data...",live:"LIVE",
-    priceHistoryTitle:"PRICE HISTORY"
+    priceHistoryTitle:"PRICE HISTORY",watch_ca:"CA / CONTRACT ADDRESS (OPTIONAL)",watch_ca_hint:"Use a CA to track an asset that is not in your terminal.",watch_added:"CA added to watchlist.",watch_not_found:"CA could not be found on Dexscreener."
   },
   et:{
     crypto:"KRÜPTO",qty:"KOGUS",avgBuy:"KESKMINE OST",price:"HIND",value:"VÄÄRTUS",share:"OSAKAAL",total:"KOKKU",
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"hinnapunkti",buy:"OST",noBuy:"OSTUHIND PUUDUB",history:"AJALUGU",
     priceHistory:"HINNAAJALUGU",averageBuy:"KESKMINE OST",current:"PRAEGU",noAssets:"Varad puuduvad.",
     editAssetData:"MUUDA VARADE ANDMEID",globalNews:"KRÜPTOMAAILMA UUDISED",copy:"KOPEERITUD ✓",copyFailed:"KOPEERIMINE EBAÕNNESTUS",
-    clickCopy:"Vajuta CA kopeerimiseks",tradeBinance:"KAUPLE BINANCE'IS",dexScanner:"${T('dexScanner')}",
+    clickCopy:"Vajuta CA kopeerimiseks",tradeBinance:"KAUPLE BINANCE'IS",dexScanner:"📊 AVA DEXSCREENER",
     strong:"TUGEV",positive:"POSITIIVNE",neutral:"NEUTRAALNE",weak:"NÕRK",highRisk:"KÕRGE RISK",
-    momentum24:"${T('momentum24')}",historyTrend:"AJALOOTREND",buyPosition:"OSTUPOSITSIOON",dataDepth:"ANDMETE SÜGAVUS",
+    momentum24:"24H MOMENTUM",historyTrend:"AJALOOTREND",buyPosition:"OSTUPOSITSIOON",dataDepth:"ANDMETE SÜGAVUS",
     notSet:"määramata",points:"punkti",antsDisclaimer:"ANTS SKOOR on terminali heuristiline hinnang, mis põhineb saadaolevatel andmetel. See ei ole hinnaprognoos.",
     enterInvestment:"Sisesta investeering ja sihthind.",pl:"KASUM/KAHJUM",roi:"ROI",units:"ühikut",
     delete:"KUSTUTA",above:"↑ ÜLE",below:"↓ ALLA",now:"PRAEGU",triggered:"KÄIVITUNUD",ready:"VALMIS KÄIVITUMA",waiting:"OOTAB",
     validTarget:"Sisesta kehtiv sihthind.",validTest:"Sisesta vara, investeering ja alghind.",base:"ALUS",test:"TEST",
     testSaved:"Testpositsioone pole veel salvestatud.",initializing:"Terminali andmete laadimine...",live:"OTSE",
-    priceHistoryTitle:"HINNAAJALUGU"
+    priceHistoryTitle:"HINNAAJALUGU",watch_ca:"CA / KONTRAKTIAADRESS (VALIKULINE)",watch_ca_hint:"Kasuta CA-d, et jälgida vara, mida terminalis ei ole.",watch_added:"CA lisati vaatlusesse.",watch_not_found:"CA-d ei leitud Dexscreenerist."
   },
   es:{
     crypto:"ACTIVO",qty:"CANT.",avgBuy:"COMPRA MEDIA",price:"PRECIO",value:"VALOR",share:"CUOTA",total:"TOTAL",
@@ -871,7 +872,7 @@ const uiText={
     delete:"ELIMINAR",above:"↑ POR ENCIMA",below:"↓ POR DEBAJO",now:"AHORA",triggered:"ACTIVADA",ready:"LISTA PARA ACTIVARSE",waiting:"EN ESPERA",
     validTarget:"Introduce un precio objetivo válido.",validTest:"Introduce el activo, la inversión y el precio base.",base:"BASE",test:"PRUEBA",
     testSaved:"No hay posiciones de prueba guardadas.",initializing:"Cargando datos del terminal...",live:"EN VIVO",
-    priceHistoryTitle:"HISTORIAL DE PRECIOS"
+    priceHistoryTitle:"HISTORIAL DE PRECIOS",watch_ca:"CA / DIRECCIÓN DEL CONTRATO (OPCIONAL)",watch_ca_hint:"Usa una CA para seguir un activo que no está en tu terminal.",watch_added:"CA añadida a la lista.",watch_not_found:"No se encontró la CA en Dexscreener."
   },
   ru:{
     crypto:"АКТИВ",qty:"КОЛ-ВО",avgBuy:"СРЕДНЯЯ ПОКУПКА",price:"ЦЕНА",value:"СТОИМОСТЬ",share:"ДОЛЯ",total:"ИТОГО",
@@ -886,7 +887,7 @@ const uiText={
     delete:"УДАЛИТЬ",above:"↑ ВЫШЕ",below:"↓ НИЖЕ",now:"СЕЙЧАС",triggered:"СРАБОТАЛО",ready:"ГОТОВО К СРАБАТЫВАНИЮ",waiting:"ОЖИДАНИЕ",
     validTarget:"Введите корректную целевую цену.",validTest:"Введите актив, сумму инвестиции и базовую цену.",base:"БАЗА",test:"ТЕСТ",
     testSaved:"Тестовых позиций пока нет.",initializing:"Загрузка данных терминала...",live:"В ЭФИРЕ",
-    priceHistoryTitle:"ИСТОРИЯ ЦЕН"
+    priceHistoryTitle:"ИСТОРИЯ ЦЕН",watch_ca:"CA / АДРЕС КОНТРАКТА (НЕОБЯЗАТЕЛЬНО)",watch_ca_hint:"Используйте CA для отслеживания актива, которого нет в терминале.",watch_added:"CA добавлен в список.",watch_not_found:"CA не найден в Dexscreener."
   }
 };
 const T=k=>(uiText[currentLang]||uiText.et)[k]??(uiText.en[k]||k);
@@ -980,6 +981,7 @@ function applyLang(){
     };
     Object.keys(ids).forEach(id=>{const el=document.getElementById(id);if(el)el.innerText=t[ids[id]];});
     document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(t[k]!==undefined)el.innerHTML=t[k];});
+    const watchCA=document.getElementById('test-ca'); if(watchCA)watchCA.placeholder=T('watch_ca');
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.getAttribute('data-i18n-placeholder');if(t[k]!==undefined)el.placeholder=t[k];});
     const add=document.getElementById('new-asset-input'); if(add)add.placeholder=currentLang==='et'?'TICKER VÕI CA (0x...)':currentLang==='ru'?'ТИКЕР ИЛИ CA (0x...)':currentLang==='es'?'TICKER O CA (0x...)':'TICKER OR CA (0x...)';
     const live=document.getElementById('ui-live'); if(live)live.innerText=T('live');
@@ -990,7 +992,7 @@ function applyLang(){
     document.querySelectorAll('.mid-btn').forEach((el,i)=>{const titles=[T('priceHistoryTitle'),translations[currentLang].ants_title,translations[currentLang].whatif_title,translations[currentLang].alerts_title,translations[currentLang].watch_title];if(titles[i])el.title=titles[i];});
     const d=document.getElementById('history-assets-overlay'); if(d&&d.querySelector('.history-modal-title'))d.querySelector('.history-modal-title').innerText=t.history_title;
     refreshActionLabels();
-    if(tickerEl){tickerEl.title=t.facts_hint;renderCryptoFacts();}
+    if(typeof tickerEl!=='undefined' && tickerEl){tickerEl.title=t.facts_hint;renderCryptoFacts();}
     renderUI();
 }
 function refreshActionLabels(){
@@ -1001,7 +1003,7 @@ function refreshActionLabels(){
     if(document.getElementById('dist-overlay').style.display==='flex')openDistribution();
 }
 function setLang(l){
-    currentLang=l;
+    currentLang=['en','et','es','ru'].includes(l)?l:'en';
     factIndex=0;
     localStorage.setItem('lang',l);
     applyLang();
@@ -1028,15 +1030,16 @@ mainWrapper.addEventListener('touchend',async e=>{
     }
     touchStartY=0;
 },{passive:true});
-const themeNames=[
-"black-white","white-black","terminal","gold",
-"nando-gray","forest","retro","midnight","ocean","violet","crimson","ice","copper","matrix"
+const themeOptions=[
+  ["black-white","BLACK WHITE"],["white-black","WHITE BLACK"],
+  ["terminal","TERMINAL"],["gold","GOLD"],["nando-gray","GRAY"],
+  ["forest","FOREST"],["retro","RETRO"],["midnight","MIDNIGHT"],
+  ["ocean","OCEAN"],["violet","VIOLET"],["crimson","CRIMSON"],
+  ["ice","ICE"],["copper","COPPER"],["matrix","MATRIX"]
 ];
 document.getElementById('theme-grid').innerHTML=
-themeNames.map(t=>
-`<button class="theme-btn" onclick="setTheme('${t}')">
-${t.toUpperCase().replace('-',' ')}
-</button>`
+themeOptions.map(([key,label])=>
+`<button class="theme-btn" onclick="setTheme('${key}')">${label}</button>`
 ).join('');
 function setTheme(t){
     document.body.setAttribute('data-theme',t);
@@ -1105,26 +1108,51 @@ async function updateMarket(){
                 combinedData=await priceRes.json();
         }catch(e){}
     }
-    for(let addr of dexAddrs){
+    async function fetchDexAsset(addr){
         try{
+            let pairs=[];
             const res=await fetch(
-                `https://api.dexscreener.com/latest/dex/tokens/${addr}`
+                `https://api.dexscreener.com/latest/dex/tokens/${encodeURIComponent(addr)}`,
+                {cache:'no-store'}
             );
-            const data=await res.json();
-            if(data.pairs&&data.pairs[0]){
-                const p=data.pairs[0];
-                caNames[addr]=p.baseToken.symbol;
-                combinedData.push({
-                    symbol:p.baseToken.symbol,
-                    isDex:true,
-                    address:addr,
-                    lastPrice:
-                        parseFloat(p.priceUsd)*usdToEur,
-                    priceChangePercent:
-                        p.priceChange.h24||0
-                });
+            if(res.ok){
+                const data=await res.json();
+                if(Array.isArray(data.pairs))pairs=data.pairs;
             }
-        }catch(e){}
+            if(!pairs.length){
+                const search=await fetch(
+                    `https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(addr)}`,
+                    {cache:'no-store'}
+                );
+                if(search.ok){
+                    const data=await search.json();
+                    if(Array.isArray(data.pairs))pairs=data.pairs.filter(p=>
+                        String(p.baseToken&&p.baseToken.address||'').toLowerCase()===String(addr).toLowerCase() ||
+                        String(p.quoteToken&&p.quoteToken.address||'').toLowerCase()===String(addr).toLowerCase()
+                    );
+                }
+            }
+            if(!pairs.length)return null;
+            const valid=pairs.filter(p=>p && p.baseToken && p.priceUsd && Number.isFinite(parseFloat(p.priceUsd)));
+            if(!valid.length)return null;
+            valid.sort((a,b)=>{
+                const la=parseFloat(a.liquidity&&a.liquidity.usd)||0;
+                const lb=parseFloat(b.liquidity&&b.liquidity.usd)||0;
+                return lb-la;
+            });
+            const p=valid[0];
+            const baseAddress=String(p.baseToken.address||'').toLowerCase();
+            const tokenIsBase=baseAddress===String(addr).toLowerCase();
+            const symbol=tokenIsBase?(p.baseToken.symbol||'DEX'):(p.quoteToken&&p.quoteToken.symbol||p.baseToken.symbol||'DEX');
+            const priceUsd=parseFloat(p.priceUsd);
+            const h24=parseFloat(p.priceChange&&p.priceChange.h24);
+            caNames[addr]=symbol;
+            return {symbol,isDex:true,address:addr,lastPrice:priceUsd*usdToEur,priceChangePercent:Number.isFinite(h24)?h24:0};
+        }catch(e){return null;}
+    }
+    for(const addr of dexAddrs){
+        const item=await fetchDexAsset(addr);
+        if(item)combinedData.push(item);
     }
     localStorage.setItem(
         'ca_names',
@@ -1888,7 +1916,7 @@ function openInfoModal(sym,fullSym,isDex){
         background:var(--accent);font-size:9px;text-align:center;cursor:pointer;user-select:none">
             CA: <span class="ca-copy-value">${fullSym}</span>
          </div>
-         <a href="https://dexscreener.com/bsc/${fullSym}"
+         <a href="https://dexscreener.com/search?q=${encodeURIComponent(fullSym)}"
             target="_blank"
             class="news-btn"
             style="background:var(--title);color:#000;border:none;margin-top:10px">
@@ -2037,7 +2065,7 @@ function addAlert(){
 function deleteAlert(id){priceAlerts=priceAlerts.filter(a=>a.id!==id);saveAlerts();renderAlerts();}
 function renderAlerts(){
     const box=document.getElementById('alerts-content');
-    if(!priceAlerts.length){box.innerHTML='<div class="history-empty">Aktiivseid hoiatusi pole.</div>';return;}
+    if(!priceAlerts.length){box.innerHTML='<div class="history-empty">'+T('no_alerts')+'</div>';return;}
     box.innerHTML=priceAlerts.map(a=>{
         const price=currentPrices[a.symbol]||0;
         const hit=a.direction==='above'?price>=a.target:price<=a.target;
@@ -2062,37 +2090,84 @@ function checkAlerts(){
     if(box&&document.getElementById('alerts-overlay').style.display==='flex')renderAlerts();
 }
 let testCases=[];
+let watchCustomPrices={};
+let watchCustomNames={};
 try{testCases=JSON.parse(localStorage.getItem('aplo_test_cases')||'[]');if(!Array.isArray(testCases))testCases=[];}catch(e){testCases=[];}
 function saveTests(){localStorage.setItem('aplo_test_cases',JSON.stringify(testCases));}
+async function resolveWatchCA(ca){
+    ca=String(ca||'').trim();
+    if(!ca)return null;
+    try{
+        const res=await fetch(`https://api.dexscreener.com/latest/dex/tokens/${encodeURIComponent(ca)}`,{cache:'no-store'});
+        if(!res.ok)return null;
+        const data=await res.json();
+        const pairs=Array.isArray(data.pairs)?data.pairs:[];
+        const valid=pairs.filter(p=>p&&p.baseToken&&p.priceUsd&&Number.isFinite(parseFloat(p.priceUsd)));
+        if(!valid.length)return null;
+        valid.sort((a,b)=>(parseFloat(b.liquidity&&b.liquidity.usd)||0)-(parseFloat(a.liquidity&&a.liquidity.usd)||0));
+        const p=valid[0];
+        const price=parseFloat(p.priceUsd)*usdToEur;
+        const name=p.baseToken.symbol||'DEX';
+        watchCustomPrices[ca]=price;
+        watchCustomNames[ca]=name;
+        return {price,name};
+    }catch(e){return null;}
+}
 function openWatchlist(){
     populateActionSelect('test-symbol');
     const date=document.getElementById('test-date');
     if(!date.value)date.value=new Date().toISOString().slice(0,10);
     const sel=document.getElementById('test-symbol');
-    if(sel.value){const p=currentPrices[sel.value]||0;if(p&&!document.getElementById('test-price').value)document.getElementById('test-price').value=formatPrice(p);}
+    const caInput=document.getElementById('test-ca');
+    if(sel.value){
+        const p=currentPrices[sel.value]||0;
+        if(p&&!document.getElementById('test-price').value)document.getElementById('test-price').value=formatPrice(p);
+    }
+    if(caInput)caInput.value='';
     document.getElementById('watchlist-overlay').style.display='flex';
     renderWatchlist();
 }
-function addTestCase(){
+async function addTestCase(){
     const symbol=document.getElementById('test-symbol').value;
+    const caInput=document.getElementById('test-ca');
+    const customCA=caInput?caInput.value.trim():'';
     const investment=parseFloat(document.getElementById('test-investment').value);
-    const price=parseFloat(document.getElementById('test-price').value);
+    let price=parseFloat(document.getElementById('test-price').value);
     const date=document.getElementById('test-date').value||new Date().toISOString().slice(0,10);
-    if(!symbol||!Number.isFinite(investment)||investment<=0||!Number.isFinite(price)||price<=0){alert(T('validTest'));return;}
-    testCases.push({id:Date.now(),symbol,investment,price,date,createdAt:Date.now()});
-    saveTests();renderWatchlist();
+    let watchSymbol=symbol;
+    if(customCA){
+        const resolved=await resolveWatchCA(customCA);
+        if(!resolved){alert(T('watch_not_found'));return;}
+        watchSymbol=customCA;
+        price=price>0?price:resolved.price;
+    }else if(!price&&symbol){
+        price=currentPrices[symbol]||0;
+    }
+    if(!watchSymbol||!Number.isFinite(investment)||investment<=0||!Number.isFinite(price)||price<=0){alert(T('validTest'));return;}
+    testCases.push({id:Date.now(),symbol:watchSymbol,investment,price,date,createdAt:Date.now(),customCA:!!customCA});
+    saveTests();
+    if(caInput)caInput.value='';
+    renderWatchlist();
 }
 function deleteTestCase(id){testCases=testCases.filter(t=>t.id!==id);saveTests();renderWatchlist();}
-function renderWatchlist(){
+async function renderWatchlist(){
     const box=document.getElementById('watchlist-content');
-    if(!testCases.length){box.innerHTML='<div class="history-empty">Testpositsioone pole veel salvestatud.</div>';return;}
-    box.innerHTML=testCases.slice().reverse().map(t=>{
-        const current=currentPrices[t.symbol]||0;
+    if(!testCases.length){box.innerHTML='<div class="history-empty">'+T('no_test')+'</div>';return;}
+    const rows=[];
+    for(const t of testCases.slice().reverse()){
+        let current=currentPrices[t.symbol]||0;
+        let name=getDisplayName(t.symbol);
+        if(t.customCA){
+            const resolved=await resolveWatchCA(t.symbol);
+            current=resolved?resolved.price:(watchCustomPrices[t.symbol]||0);
+            name=resolved?resolved.name:(watchCustomNames[t.symbol]||'DEX');
+        }
         const value=current?(t.investment/t.price)*current:t.investment;
         const pnl=value-t.investment;
         const roi=(pnl/t.investment)*100;
-        return `<div class="watch-row"><div class="watch-row-head"><span>${getDisplayName(t.symbol)}</span><button class="mini-btn" onclick="deleteTestCase(${t.id})">${T('delete')}</button></div><div>${t.date} • ${T('base')} ${formatMoney(t.price)}</div><div style="margin-top:4px">${T('test')} ${formatMoney(t.investment)} → <b>${formatMoney(value)}</b></div><div class="${roi>=0?'up':'down'}" style="margin-top:3px;font-weight:bold">${roi>=0?'+':''}${roi.toFixed(1)}% • ${pnl>=0?'+':'-'}${formatMoney(Math.abs(pnl))}</div></div>`;
-    }).join('');
+        rows.push(`<div class="watch-row"><div class="watch-row-head"><span>${name}</span><button class="mini-btn" onclick="deleteTestCase(${t.id})">${T('delete')}</button></div><div>${t.customCA?'CA: '+t.symbol:t.date+' • '+T('base')+' '+formatMoney(t.price)}</div>${t.customCA?`<div style="margin-top:3px">${t.date} • ${T('base')} ${formatMoney(t.price)}</div>`:''}<div style="margin-top:4px">${T('test')} ${formatMoney(t.investment)} → <b>${formatMoney(value)}</b></div><div class="${roi>=0?'up':'down'}" style="margin-top:3px;font-weight:bold">${roi>=0?'+':''}${roi.toFixed(1)}% • ${pnl>=0?'+':'-'}${formatMoney(Math.abs(pnl))}</div></div>`);
+    }
+    box.innerHTML=rows.join('');
 }
 const _updateMarketOriginal=updateMarket;
 updateMarket=async function(){
