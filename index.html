@@ -1647,6 +1647,30 @@ function openAppInfo(){
     document.getElementById('info-content').innerHTML=`<div class="legal-copy">${t.info_body}</div><div style="margin-top:14px;padding:10px;border:1px solid var(--accent);border-radius:5px;font-size:8px;line-height:1.5;text-align:center">${t.legal_footer}</div>`;
     document.getElementById('info-overlay').style.display='flex';
 }
+async function copyCA(el, ca){
+    try{
+        if(navigator.clipboard && window.isSecureContext){
+            await navigator.clipboard.writeText(ca);
+        }else{
+            const ta=document.createElement('textarea');
+            ta.value=ca;
+            ta.style.position='fixed';
+            ta.style.left='-9999px';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+        }
+        const original=el.innerHTML;
+        el.innerHTML='CA: <span class="ca-copy-value">COPIED ✓</span>';
+        setTimeout(()=>{el.innerHTML=original;},1200);
+    }catch(e){
+        const original=el.innerHTML;
+        el.innerHTML='CA: <span class="ca-copy-value">COPY FAILED</span>';
+        setTimeout(()=>{el.innerHTML=original;},1200);
+    }
+}
 function openInfoModal(sym,fullSym,isDex){
     document.getElementById('info-header').innerText=
         `${sym} ANALYSIS`;
@@ -1657,9 +1681,9 @@ function openInfoModal(sym,fullSym,isDex){
         :'dark';
     document.getElementById('info-content').innerHTML=
         isDex
-        ?`<div style="margin-top:10px;padding:10px;
-        background:var(--accent);font-size:9px;text-align:center">
-            CA: ${fullSym}
+        ?`<div class="ca-copy-box" title="Click to copy CA" onclick="copyCA(this, '${fullSym}')" style="margin-top:10px;padding:10px;
+        background:var(--accent);font-size:9px;text-align:center;cursor:pointer;user-select:none">
+            CA: <span class="ca-copy-value">${fullSym}</span>
          </div>
          <a href="https://dexscreener.com/bsc/${fullSym}"
             target="_blank"
