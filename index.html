@@ -120,7 +120,7 @@ background:var(--card);border:1px solid var(--border);border-radius:6px;overflow
 width:100%;overflow:hidden;white-space:nowrap;position:relative;
 height:100%;display:flex;align-items:center
 }
-.ticker{display:inline-flex;white-space:nowrap;font-size:9px;font-weight:bold;min-width:max-content;animation:marquee 85s linear infinite;cursor:pointer;will-change:transform}.ticker.paused{animation-play-state:paused}@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+.ticker{display:inline-flex;white-space:nowrap;font-size:9px;font-weight:bold;min-width:max-content;animation:marquee 85s linear infinite;cursor:pointer;will-change:transform}.ticker.paused{animation-play-state:paused}@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .fact-chip{display:inline-flex;align-items:center;gap:8px;margin-right:34px}.fact-dot{width:5px;height:5px;border-radius:50%;background:var(--title);display:inline-block;box-shadow:0 0 7px var(--title)}
 .disclaimer-box{
 height:auto;min-height:50px;background:var(--header);padding:8px 10px;
@@ -1795,7 +1795,9 @@ function renderCryptoFacts(){
     if(!tickerEl)return;
     const facts=cryptoFacts[currentLang]||cryptoFacts.et;
     const ordered=[...facts.slice(factIndex),...facts.slice(0,factIndex)];
-    tickerEl.innerHTML=ordered.map(f=>`<span class="fact-chip"><span class="fact-dot"></span><span>${f}</span></span>`).join('');
+    const sequence=ordered.map(f=>`<span class="fact-chip"><span class="fact-dot"></span><span>${f}</span></span>`).join('');
+    // Duplicate the exact same sequence so the marquee can loop from -50% back to 0% seamlessly.
+    tickerEl.innerHTML=sequence+sequence;
     factIndex=(factIndex+1)%facts.length;
 }
 if(tickerEl){
@@ -1804,7 +1806,6 @@ if(tickerEl){
     tickerEl.addEventListener('click',()=>tickerEl.classList.toggle('paused'));
     tickerEl.addEventListener('mouseenter',()=>tickerEl.classList.add('paused'));
     tickerEl.addEventListener('mouseleave',()=>tickerEl.classList.remove('paused'));
-    setInterval(renderCryptoFacts,12000);
 }
 setInterval(()=>{
     document.getElementById('status').innerHTML=
