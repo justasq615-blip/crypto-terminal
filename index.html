@@ -120,9 +120,30 @@ background:var(--card);border:1px solid var(--border);border-radius:6px;overflow
 width:100%;overflow:hidden;white-space:nowrap;position:relative;
 height:100%;display:flex;align-items:center
 }
-.ticker{display:inline-flex;white-space:nowrap;font-size:9px;font-weight:bold;min-width:max-content;animation:marquee 75s linear infinite;cursor:pointer;will-change:transform}.ticker.paused{animation-play-state:paused}@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker{display:inline-flex;white-space:nowrap;font-size:9px;font-weight:bold;min-width:max-content;animation:marquee var(--ticker-duration,65s) linear infinite;cursor:pointer;will-change:transform;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}.ticker.paused{animation-play-state:paused}@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .fact-chip{display:inline-flex;align-items:center;gap:8px;margin-right:34px}.fact-dot{width:5px;height:5px;border-radius:50%;background:var(--title);display:inline-block;box-shadow:0 0 7px var(--title)}
 .market-chip{gap:7px}.market-chip strong{color:var(--title);font-size:8px}.market-chip .up{color:var(--up)!important}.market-chip .down{color:var(--down)!important}
+.ticker-speed-menu{
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ z-index:50;display:none;width:min(270px,88%);
+ padding:8px;background:var(--card);border:1px solid var(--border);
+ border-radius:7px;box-shadow:0 6px 22px rgba(0,0,0,.35);
+ text-align:center;white-space:normal
+}
+.ticker-speed-title{
+ font-size:8px;font-weight:bold;letter-spacing:.5px;color:var(--title);
+ margin-bottom:7px
+}
+.ticker-speed-options{display:flex;gap:6px;justify-content:center}
+.ticker-speed-options button{
+ flex:1;min-height:30px;padding:5px 4px;background:var(--header);
+ color:var(--text);border:1px solid var(--border);border-radius:5px;
+ font:inherit;font-size:8px;font-weight:bold;cursor:pointer;
+ touch-action:manipulation
+}
+.ticker-speed-options button.active{
+ background:var(--title);color:var(--bg);border-color:var(--title)
+}
 .disclaimer-box{
 height:auto;min-height:50px;background:var(--header);padding:8px 10px;
 border-radius:6px;border:1px solid var(--border);display:flex;
@@ -694,6 +715,14 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     <div class="half-card">
         <div class="ticker-wrap">
             <div class="ticker" id="insights-ticker"></div>
+            <div class="ticker-speed-menu" id="ticker-speed-menu" aria-hidden="true">
+                <div class="ticker-speed-title" id="ticker-speed-title">TICKER SPEED</div>
+                <div class="ticker-speed-options">
+                    <button type="button" data-ticker-speed="78" id="ticker-speed-slow">SLOW</button>
+                    <button type="button" data-ticker-speed="65" id="ticker-speed-normal">NORMAL</button>
+                    <button type="button" data-ticker-speed="52" id="ticker-speed-fast">FAST</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -823,10 +852,10 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
 const translations={
- en:{title:"🚀 APLO CRYPTO TERMINAL",networth:"Net Worth",assets:"ASSETS",edit:"EDIT",save:"SAVE",news:"📰 NEWS",manage:"MANAGE ASSETS",btn_add:"ADD ASSET",dist_title:"ASSET DISTRIBUTION",no_assets:"No assets.",no_assets_dist:"No assets to display.",remove:"Remove",theme_title:"THEMES",language_title:"LANGUAGE",legal_label:"LEGAL NOTICE",disclaimer_short:"Entertainment / experimental crypto terminal. No financial advice.",info_title:"LEGAL & INFORMATION",info_body:"This website and application are provided strictly for <strong>entertainment and educational purposes</strong>. The creator accepts <strong>no responsibility or liability</strong> for any loss, damage, missed opportunity, trading decision, investment decision, transaction, or other consequence arising from the use of this website, its calculations, displayed prices, scores, alerts, historical data, links, or any other information presented here. Crypto assets are highly volatile and may result in partial or total loss of capital. Nothing on this page constitutes financial, investment, legal, tax, or trading advice. You are solely responsible for your own decisions and for verifying information before acting. By using this website, you acknowledge and accept these conditions.",history_title:"📊 PRICE HISTORY",ants_title:"🧠 ANTS SCORE",whatif_title:"🎯 WHAT IF?",alerts_title:"🔔 PRICE ALERTS",watch_title:"💎 WATCHLIST / TEST",asset:"ASSET",investment:"INVESTMENT (EUR)",target:"TARGET (EUR)",current:"CURRENT",above:"ABOVE ↑",below:"BELOW ↓",add_alert:"ADD ALERT",save_test:"SAVE TEST",delete:"DELETE",baseline:"BASELINE PRICE (EUR)",date:"DATE",score_sub:"Terminal's heuristic trend and momentum signal",whatif_sub:"Calculate the effect of a possible target price",alerts_sub:"Alert is checked on every market update",watch_sub:"Save a hypothetical purchase and track it",distribution:"ASSET DISTRIBUTION",distribution_mix:"PORTFOLIO MIX",distribution_risk:"RISK / CONCENTRATION",distribution_value:"VALUE",distribution_share:"SHARE",distribution_empty:"Add assets and quantities to see the interactive distribution.",largest:"LARGEST POSITION",positions:"POSITIONS",diversification:"DIVERSIFICATION",concentration:"CONCENTRATION",balanced:"Balanced",moderate:"Moderate",high:"High",facts_hint:"Tap the ticker to pause / resume",market_ticker_hint:"Tap to switch EUR / USD / RUB",fact_label:"CRYPTO FACT",no_test:"No test positions saved yet.",no_alerts:"No active alerts.",remove_alert:"REMOVE",history_points:"price points",history_empty:"History is collected every hour.",no_buy:"NO BUY",avg_buy:"AVERAGE BUY",current_price:"CURRENT",legal_footer:"This terminal is an entertainment project. Use it entirely at your own risk."},
- et:{title:"🚀 APLO KRÜPTO TERMINAL",networth:"Netoväärtus",assets:"VARAD",edit:"MUUDA",save:"SALVESTA",news:"📰 UUDISED",manage:"HALDA VARASID",btn_add:"LISA VARA",dist_title:"VARADE JAOTUS",no_assets:"Varad puuduvad.",no_assets_dist:"Kuvamiseks pole varasid.",remove:"Eemalda",theme_title:"TEEMAD",language_title:"KEEL",legal_label:"ÕIGUSLIK TEAVE",disclaimer_short:"Meelelahutuslik / eksperimentaalne krüptoterminal. Ei ole finantsnõu.",info_title:"ÕIGUSLIK INFO JA VASTUTUS",info_body:"See veebileht ja rakendus on loodud <strong>üksnes meelelahutuslikul ja hariduslikul eesmärgil</strong>. Lehe looja <strong>ei vastuta mitte mingil viisil</strong> ühegi kahju, rahalise kaotuse, saamata jäänud võimaluse, tehingu, investeerimisotsuse, kauplemisotsuse ega muu tagajärje eest, mis võib tuleneda selle lehe kasutamisest või siin kuvatud hindadest, arvutustest, skooridest, hoiatusest, ajaloolistest andmetest, linkidest või muust infost. Krüptovarad on väga volatiilsed ning nende väärtus võib oluliselt langeda või kapital võib täielikult kaduma minna. Mitte ükski sellel lehel olev osa ei ole finants-, investeerimis-, õigus-, maksu- ega kauplemisnõuanne. Vastutad täielikult ise oma otsuste eest ning pead enne tegutsemist info iseseisvalt üle kontrollima. Seda lehte kasutades kinnitad, et mõistad ja aktsepteerid neid tingimusi.",history_title:"📊 HINNAAJALUGU",ants_title:"🧠 ANTS SKOOR",whatif_title:"🎯 MIS SIIS, KUI?",alerts_title:"🔔 HINNAHOIATUSED",watch_title:"💎 VAATLUS / TEST",asset:"VARA",investment:"INVESTEERING (EUR)",target:"SIHT (EUR)",current:"PRAEGU",above:"ÜLE ↑",below:"ALLA ↓",add_alert:"LISA HOIATUS",save_test:"SALVESTA TEST",delete:"KUSTUTA",baseline:"ALGUSHIND (EUR)",date:"KUUPÄEV",score_sub:"Terminali heuristiline trendi- ja momentumisignaal",whatif_sub:"Arvuta võimaliku sihthinna mõju",alerts_sub:"Hoiatust kontrollitakse iga turu uuenduse ajal",watch_sub:"Salvesta hüpoteetiline ost ja jälgi selle arengut",distribution:"VARADE JAOTUS",distribution_mix:"PORTFELLI JAOTUS",distribution_risk:"RISKI / KONTSETRATSIOONI VAADE",distribution_value:"VÄÄRTUS",distribution_share:"OSAKAAL",distribution_empty:"Lisa varade kogused, et näha interaktiivset jaotust.",largest:"SUURIM POSITSIOON",positions:"POSITSIOONID",diversification:"MITMEKESISUS",concentration:"KONTSENTRATSIOON",balanced:"Tasakaalus",moderate:"Mõõdukas",high:"Kõrge",facts_hint:"Puuduta tickerit pausiks / jätkamiseks",market_ticker_hint:"Puuduta, et vahetada EUR / USD / RUB",fact_label:"KRÜPTO FAKT",no_test:"Testpositsioone pole veel salvestatud.",no_alerts:"Aktiivseid hoiatusi pole.",remove_alert:"EEMALDA",history_points:"hinnapunkti",history_empty:"Ajalugu koguneb iga tunni järel.",no_buy:"OSTUHIND PUUDUB",avg_buy:"KESKMINE OSTUHIND",current_price:"PRAEGU",legal_footer:"See terminal on loodud meelelahutuslikul eesmärgil. Kasutad seda täielikult omal vastutusel."},
- es:{title:"🚀 TERMINAL CRIPTO APLO",networth:"Patrimonio Neto",assets:"ACTIVOS",edit:"EDITAR",save:"GUARDAR",news:"📰 NOTICIAS",manage:"GESTIONAR ACTIVOS",btn_add:"AÑADIR ACTIVO",dist_title:"DISTRIBUCIÓN DE ACTIVOS",no_assets:"Sin activos.",no_assets_dist:"No hay activos para mostrar.",remove:"Eliminar",theme_title:"TEMAS",language_title:"IDIOMA",legal_label:"AVISO LEGAL",disclaimer_short:"Terminal cripto experimental / de entretenimiento. No es asesoramiento financiero.",info_title:"INFORMACIÓN LEGAL Y RESPONSABILIDAD",info_body:"Este sitio y esta aplicación se ofrecen estrictamente con fines de <strong>entretenimiento y educación</strong>. El creador <strong>no asume ninguna responsabilidad</strong> por pérdidas, daños, oportunidades perdidas, operaciones, decisiones de inversión, decisiones de trading o cualquier otra consecuencia derivada del uso de este sitio, sus cálculos, precios, puntuaciones, alertas, datos históricos, enlaces o cualquier otra información mostrada. Los criptoactivos son altamente volátiles y pueden causar una pérdida parcial o total del capital. Nada de esta página constituye asesoramiento financiero, de inversión, legal, fiscal o de trading. Usted es el único responsable de sus decisiones y debe verificar la información antes de actuar. Al utilizar este sitio, acepta estas condiciones.",history_title:"📊 HISTORIAL DE PRECIOS",ants_title:"🧠 PUNTUACIÓN ANTS",whatif_title:"🎯 ¿Y SI?",alerts_title:"🔔 ALERTAS DE PRECIO",watch_title:"💎 LISTA / PRUEBA",asset:"ACTIVO",investment:"INVERSIÓN (EUR)",target:"OBJETIVO (EUR)",current:"ACTUAL",above:"POR ENCIMA ↑",below:"POR DEBAJO ↓",add_alert:"AÑADIR ALERTA",save_test:"GUARDAR PRUEBA",delete:"ELIMINAR",baseline:"PRECIO BASE (EUR)",date:"FECHA",score_sub:"Señal heurística de tendencia y momentum del terminal",whatif_sub:"Calcula el efecto de un posible precio objetivo",alerts_sub:"La alerta se comprueba en cada actualización del mercado",watch_sub:"Guarda una compra hipotética y sigue su evolución",distribution:"DISTRIBUCIÓN DE ACTIVOS",distribution_mix:"MEZCLA DE CARTERA",distribution_risk:"RIESGO / CONCENTRACIÓN",distribution_value:"VALOR",distribution_share:"CUOTA",distribution_empty:"Añade cantidades para ver la distribución interactiva.",largest:"POSICIÓN MÁS GRANDE",positions:"POSICIONES",diversification:"DIVERSIFICACIÓN",concentration:"CONCENTRACIÓN",balanced:"Equilibrada",moderate:"Moderada",high:"Alta",facts_hint:"Toca el ticker para pausar / continuar",market_ticker_hint:"Toca para cambiar EUR / USD / RUB",fact_label:"DATO CRIPTO",no_test:"No hay pruebas guardadas.",no_alerts:"No hay alertas activas.",remove_alert:"ELIMINAR",history_points:"puntos de precio",history_empty:"El historial se recopila cada hora.",no_buy:"SIN COMPRA",avg_buy:"COMPRA MEDIA",current_price:"ACTUAL",legal_footer:"Este terminal es un proyecto de entretenimiento. Úselo bajo su propia responsabilidad."},
- ru:{title:"🚀 КРИПТО ТЕРМИНАЛ APLO",networth:"Чистая стоимость",assets:"АКТИВЫ",edit:"ИЗМЕНИТЬ",save:"СОХРАНИТЬ",news:"📰 НОВОСТИ",manage:"УПРАВЛЕНИЕ АКТИВАМИ",btn_add:"ДОБАВИТЬ АКТИВ",dist_title:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",no_assets:"Нет активов.",no_assets_dist:"Нет активов для отображения.",remove:"Удалить",theme_title:"ТЕМЫ",language_title:"ЯЗЫК",legal_label:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ",disclaimer_short:"Развлекательный / экспериментальный крипто-терминал. Не является финансовым советом.",info_title:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ И ОТВЕТСТВЕННОСТЬ",info_body:"Этот сайт и приложение созданы исключительно в <strong>развлекательных и образовательных целях</strong>. Создатель <strong>не несёт никакой ответственности</strong> за убытки, ущерб, упущенные возможности, сделки, инвестиционные или торговые решения и любые другие последствия использования сайта, его расчётов, цен, оценок, предупреждений, исторических данных, ссылок или иной информации. Криптоактивы крайне волатильны и могут привести к частичной или полной потере капитала. Ничто на этой странице не является финансовой, инвестиционной, юридической, налоговой или торговой рекомендацией. Вы самостоятельно отвечаете за свои решения и обязаны проверять информацию перед действиями. Используя сайт, вы подтверждаете принятие этих условий.",history_title:"📊 ИСТОРИЯ ЦЕН",ants_title:"🧠 ОЦЕНКА ANTS",whatif_title:"🎯 ЧТО, ЕСЛИ?",alerts_title:"🔔 ЦЕНОВЫЕ АЛЕРТЫ",watch_title:"💎 СПИСОК / ТЕСТ",asset:"АКТИВ",investment:"ИНВЕСТИЦИЯ (EUR)",target:"ЦЕЛЬ (EUR)",current:"ТЕКУЩАЯ",above:"ВЫШЕ ↑",below:"НИЖЕ ↓",add_alert:"ДОБАВИТЬ АЛЕРТ",save_test:"СОХРАНИТЬ ТЕСТ",delete:"УДАЛИТЬ",baseline:"БАЗОВАЯ ЦЕНА (EUR)",date:"ДАТА",score_sub:"Эвристический сигнал тренда и импульса терминала",whatif_sub:"Рассчитайте влияние возможной целевой цены",alerts_sub:"Алерт проверяется при каждом обновлении рынка",watch_sub:"Сохраните гипотетическую покупку и следите за ней",distribution:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",distribution_mix:"СОСТАВ ПОРТФЕЛЯ",distribution_risk:"РИСК / КОНЦЕНТРАЦИЯ",distribution_value:"СТОИМОСТЬ",distribution_share:"ДОЛЯ",distribution_empty:"Добавьте количества активов для интерактивного распределения.",largest:"КРУПНЕЙШАЯ ПОЗИЦИЯ",positions:"ПОЗИЦИИ",diversification:"ДИВЕРСИФИКАЦИЯ",concentration:"КОНЦЕНТРАЦИЯ",balanced:"Сбалансировано",moderate:"Умеренная",high:"Высокая",facts_hint:"Нажмите на тикер, чтобы поставить на паузу / продолжить",market_ticker_hint:"Нажмите, чтобы сменить EUR / USD / RUB",fact_label:"КРИПТО ФАКТ",no_test:"Тестовых позиций пока нет.",no_alerts:"Активных алертов нет.",remove_alert:"УДАЛИТЬ",history_points:"ценовых точек",history_empty:"История собирается каждый час.",no_buy:"НЕТ ПОКУПКИ",avg_buy:"СРЕДНЯЯ ПОКУПКА",current_price:"ТЕКУЩАЯ",legal_footer:"Этот терминал создан в развлекательных целях. Используйте его полностью на свой страх и риск."}
+ en:{title:"🚀 APLO CRYPTO TERMINAL",networth:"Net Worth",assets:"ASSETS",edit:"EDIT",save:"SAVE",news:"📰 NEWS",manage:"MANAGE ASSETS",btn_add:"ADD ASSET",dist_title:"ASSET DISTRIBUTION",no_assets:"No assets.",no_assets_dist:"No assets to display.",remove:"Remove",theme_title:"THEMES",language_title:"LANGUAGE",legal_label:"LEGAL NOTICE",disclaimer_short:"Entertainment / experimental crypto terminal. No financial advice.",info_title:"LEGAL & INFORMATION",info_body:"This website and application are provided strictly for <strong>entertainment and educational purposes</strong>. The creator accepts <strong>no responsibility or liability</strong> for any loss, damage, missed opportunity, trading decision, investment decision, transaction, or other consequence arising from the use of this website, its calculations, displayed prices, scores, alerts, historical data, links, or any other information presented here. Crypto assets are highly volatile and may result in partial or total loss of capital. Nothing on this page constitutes financial, investment, legal, tax, or trading advice. You are solely responsible for your own decisions and for verifying information before acting. By using this website, you acknowledge and accept these conditions.",history_title:"📊 PRICE HISTORY",ants_title:"🧠 ANTS SCORE",whatif_title:"🎯 WHAT IF?",alerts_title:"🔔 PRICE ALERTS",watch_title:"💎 WATCHLIST / TEST",asset:"ASSET",investment:"INVESTMENT (EUR)",target:"TARGET (EUR)",current:"CURRENT",above:"ABOVE ↑",below:"BELOW ↓",add_alert:"ADD ALERT",save_test:"SAVE TEST",delete:"DELETE",baseline:"BASELINE PRICE (EUR)",date:"DATE",score_sub:"Terminal's heuristic trend and momentum signal",whatif_sub:"Calculate the effect of a possible target price",alerts_sub:"Alert is checked on every market update",watch_sub:"Save a hypothetical purchase and track it",distribution:"ASSET DISTRIBUTION",distribution_mix:"PORTFOLIO MIX",distribution_risk:"RISK / CONCENTRATION",distribution_value:"VALUE",distribution_share:"SHARE",distribution_empty:"Add assets and quantities to see the interactive distribution.",largest:"LARGEST POSITION",positions:"POSITIONS",diversification:"DIVERSIFICATION",concentration:"CONCENTRATION",balanced:"Balanced",moderate:"Moderate",high:"High",facts_hint:"Tap the ticker to pause / resume",ticker_speed:"TICKER SPEED",speed_slow:"SLOW",speed_normal:"NORMAL",speed_fast:"FAST",market_ticker_hint:"Tap to switch EUR / USD / RUB",fact_label:"CRYPTO FACT",no_test:"No test positions saved yet.",no_alerts:"No active alerts.",remove_alert:"REMOVE",history_points:"price points",history_empty:"History is collected every hour.",no_buy:"NO BUY",avg_buy:"AVERAGE BUY",current_price:"CURRENT",legal_footer:"This terminal is an entertainment project. Use it entirely at your own risk."},
+ et:{title:"🚀 APLO KRÜPTO TERMINAL",networth:"Netoväärtus",assets:"VARAD",edit:"MUUDA",save:"SALVESTA",news:"📰 UUDISED",manage:"HALDA VARASID",btn_add:"LISA VARA",dist_title:"VARADE JAOTUS",no_assets:"Varad puuduvad.",no_assets_dist:"Kuvamiseks pole varasid.",remove:"Eemalda",theme_title:"TEEMAD",language_title:"KEEL",legal_label:"ÕIGUSLIK TEAVE",disclaimer_short:"Meelelahutuslik / eksperimentaalne krüptoterminal. Ei ole finantsnõu.",info_title:"ÕIGUSLIK INFO JA VASTUTUS",info_body:"See veebileht ja rakendus on loodud <strong>üksnes meelelahutuslikul ja hariduslikul eesmärgil</strong>. Lehe looja <strong>ei vastuta mitte mingil viisil</strong> ühegi kahju, rahalise kaotuse, saamata jäänud võimaluse, tehingu, investeerimisotsuse, kauplemisotsuse ega muu tagajärje eest, mis võib tuleneda selle lehe kasutamisest või siin kuvatud hindadest, arvutustest, skooridest, hoiatusest, ajaloolistest andmetest, linkidest või muust infost. Krüptovarad on väga volatiilsed ning nende väärtus võib oluliselt langeda või kapital võib täielikult kaduma minna. Mitte ükski sellel lehel olev osa ei ole finants-, investeerimis-, õigus-, maksu- ega kauplemisnõuanne. Vastutad täielikult ise oma otsuste eest ning pead enne tegutsemist info iseseisvalt üle kontrollima. Seda lehte kasutades kinnitad, et mõistad ja aktsepteerid neid tingimusi.",history_title:"📊 HINNAAJALUGU",ants_title:"🧠 ANTS SKOOR",whatif_title:"🎯 MIS SIIS, KUI?",alerts_title:"🔔 HINNAHOIATUSED",watch_title:"💎 VAATLUS / TEST",asset:"VARA",investment:"INVESTEERING (EUR)",target:"SIHT (EUR)",current:"PRAEGU",above:"ÜLE ↑",below:"ALLA ↓",add_alert:"LISA HOIATUS",save_test:"SALVESTA TEST",delete:"KUSTUTA",baseline:"ALGUSHIND (EUR)",date:"KUUPÄEV",score_sub:"Terminali heuristiline trendi- ja momentumisignaal",whatif_sub:"Arvuta võimaliku sihthinna mõju",alerts_sub:"Hoiatust kontrollitakse iga turu uuenduse ajal",watch_sub:"Salvesta hüpoteetiline ost ja jälgi selle arengut",distribution:"VARADE JAOTUS",distribution_mix:"PORTFELLI JAOTUS",distribution_risk:"RISKI / KONTSETRATSIOONI VAADE",distribution_value:"VÄÄRTUS",distribution_share:"OSAKAAL",distribution_empty:"Lisa varade kogused, et näha interaktiivset jaotust.",largest:"SUURIM POSITSIOON",positions:"POSITSIOONID",diversification:"MITMEKESISUS",concentration:"KONTSENTRATSIOON",balanced:"Tasakaalus",moderate:"Mõõdukas",high:"Kõrge",facts_hint:"Puuduta tickerit pausiks / jätkamiseks",ticker_speed:"TICKERI KIIRUS",speed_slow:"AEGLANE",speed_normal:"TAVALINE",speed_fast:"KIIRE",market_ticker_hint:"Puuduta, et vahetada EUR / USD / RUB",fact_label:"KRÜPTO FAKT",no_test:"Testpositsioone pole veel salvestatud.",no_alerts:"Aktiivseid hoiatusi pole.",remove_alert:"EEMALDA",history_points:"hinnapunkti",history_empty:"Ajalugu koguneb iga tunni järel.",no_buy:"OSTUHIND PUUDUB",avg_buy:"KESKMINE OSTUHIND",current_price:"PRAEGU",legal_footer:"See terminal on loodud meelelahutuslikul eesmärgil. Kasutad seda täielikult omal vastutusel."},
+ es:{title:"🚀 TERMINAL CRIPTO APLO",networth:"Patrimonio Neto",assets:"ACTIVOS",edit:"EDITAR",save:"GUARDAR",news:"📰 NOTICIAS",manage:"GESTIONAR ACTIVOS",btn_add:"AÑADIR ACTIVO",dist_title:"DISTRIBUCIÓN DE ACTIVOS",no_assets:"Sin activos.",no_assets_dist:"No hay activos para mostrar.",remove:"Eliminar",theme_title:"TEMAS",language_title:"IDIOMA",legal_label:"AVISO LEGAL",disclaimer_short:"Terminal cripto experimental / de entretenimiento. No es asesoramiento financiero.",info_title:"INFORMACIÓN LEGAL Y RESPONSABILIDAD",info_body:"Este sitio y esta aplicación se ofrecen estrictamente con fines de <strong>entretenimiento y educación</strong>. El creador <strong>no asume ninguna responsabilidad</strong> por pérdidas, daños, oportunidades perdidas, operaciones, decisiones de inversión, decisiones de trading o cualquier otra consecuencia derivada del uso de este sitio, sus cálculos, precios, puntuaciones, alertas, datos históricos, enlaces o cualquier otra información mostrada. Los criptoactivos son altamente volátiles y pueden causar una pérdida parcial o total del capital. Nada de esta página constituye asesoramiento financiero, de inversión, legal, fiscal o de trading. Usted es el único responsable de sus decisiones y debe verificar la información antes de actuar. Al utilizar este sitio, acepta estas condiciones.",history_title:"📊 HISTORIAL DE PRECIOS",ants_title:"🧠 PUNTUACIÓN ANTS",whatif_title:"🎯 ¿Y SI?",alerts_title:"🔔 ALERTAS DE PRECIO",watch_title:"💎 LISTA / PRUEBA",asset:"ACTIVO",investment:"INVERSIÓN (EUR)",target:"OBJETIVO (EUR)",current:"ACTUAL",above:"POR ENCIMA ↑",below:"POR DEBAJO ↓",add_alert:"AÑADIR ALERTA",save_test:"GUARDAR PRUEBA",delete:"ELIMINAR",baseline:"PRECIO BASE (EUR)",date:"FECHA",score_sub:"Señal heurística de tendencia y momentum del terminal",whatif_sub:"Calcula el efecto de un posible precio objetivo",alerts_sub:"La alerta se comprueba en cada actualización del mercado",watch_sub:"Guarda una compra hipotética y sigue su evolución",distribution:"DISTRIBUCIÓN DE ACTIVOS",distribution_mix:"MEZCLA DE CARTERA",distribution_risk:"RIESGO / CONCENTRACIÓN",distribution_value:"VALOR",distribution_share:"CUOTA",distribution_empty:"Añade cantidades para ver la distribución interactiva.",largest:"POSICIÓN MÁS GRANDE",positions:"POSICIONES",diversification:"DIVERSIFICACIÓN",concentration:"CONCENTRACIÓN",balanced:"Equilibrada",moderate:"Moderada",high:"Alta",facts_hint:"Toca el ticker para pausar / continuar",ticker_speed:"VELOCIDAD DEL TICKER",speed_slow:"LENTA",speed_normal:"NORMAL",speed_fast:"RÁPIDA",market_ticker_hint:"Toca para cambiar EUR / USD / RUB",fact_label:"DATO CRIPTO",no_test:"No hay pruebas guardadas.",no_alerts:"No hay alertas activas.",remove_alert:"ELIMINAR",history_points:"puntos de precio",history_empty:"El historial se recopila cada hora.",no_buy:"SIN COMPRA",avg_buy:"COMPRA MEDIA",current_price:"ACTUAL",legal_footer:"Este terminal es un proyecto de entretenimiento. Úselo bajo su propia responsabilidad."},
+ ru:{title:"🚀 КРИПТО ТЕРМИНАЛ APLO",networth:"Чистая стоимость",assets:"АКТИВЫ",edit:"ИЗМЕНИТЬ",save:"СОХРАНИТЬ",news:"📰 НОВОСТИ",manage:"УПРАВЛЕНИЕ АКТИВАМИ",btn_add:"ДОБАВИТЬ АКТИВ",dist_title:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",no_assets:"Нет активов.",no_assets_dist:"Нет активов для отображения.",remove:"Удалить",theme_title:"ТЕМЫ",language_title:"ЯЗЫК",legal_label:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ",disclaimer_short:"Развлекательный / экспериментальный крипто-терминал. Не является финансовым советом.",info_title:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ И ОТВЕТСТВЕННОСТЬ",info_body:"Этот сайт и приложение созданы исключительно в <strong>развлекательных и образовательных целях</strong>. Создатель <strong>не несёт никакой ответственности</strong> за убытки, ущерб, упущенные возможности, сделки, инвестиционные или торговые решения и любые другие последствия использования сайта, его расчётов, цен, оценок, предупреждений, исторических данных, ссылок или иной информации. Криптоактивы крайне волатильны и могут привести к частичной или полной потере капитала. Ничто на этой странице не является финансовой, инвестиционной, юридической, налоговой или торговой рекомендацией. Вы самостоятельно отвечаете за свои решения и обязаны проверять информацию перед действиями. Используя сайт, вы подтверждаете принятие этих условий.",history_title:"📊 ИСТОРИЯ ЦЕН",ants_title:"🧠 ОЦЕНКА ANTS",whatif_title:"🎯 ЧТО, ЕСЛИ?",alerts_title:"🔔 ЦЕНОВЫЕ АЛЕРТЫ",watch_title:"💎 СПИСОК / ТЕСТ",asset:"АКТИВ",investment:"ИНВЕСТИЦИЯ (EUR)",target:"ЦЕЛЬ (EUR)",current:"ТЕКУЩАЯ",above:"ВЫШЕ ↑",below:"НИЖЕ ↓",add_alert:"ДОБАВИТЬ АЛЕРТ",save_test:"СОХРАНИТЬ ТЕСТ",delete:"УДАЛИТЬ",baseline:"БАЗОВАЯ ЦЕНА (EUR)",date:"ДАТА",score_sub:"Эвристический сигнал тренда и импульса терминала",whatif_sub:"Рассчитайте влияние возможной целевой цены",alerts_sub:"Алерт проверяется при каждом обновлении рынка",watch_sub:"Сохраните гипотетическую покупку и следите за ней",distribution:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",distribution_mix:"СОСТАВ ПОРТФЕЛЯ",distribution_risk:"РИСК / КОНЦЕНТРАЦИЯ",distribution_value:"СТОИМОСТЬ",distribution_share:"ДОЛЯ",distribution_empty:"Добавьте количества активов для интерактивного распределения.",largest:"КРУПНЕЙШАЯ ПОЗИЦИЯ",positions:"ПОЗИЦИИ",diversification:"ДИВЕРСИФИКАЦИЯ",concentration:"КОНЦЕНТРАЦИЯ",balanced:"Сбалансировано",moderate:"Умеренная",high:"Высокая",facts_hint:"Нажмите на тикер, чтобы поставить на паузу / продолжить",ticker_speed:"СКОРОСТЬ БЕГУЩЕЙ СТРОКИ",speed_slow:"МЕДЛЕННО",speed_normal:"НОРМАЛЬНО",speed_fast:"БЫСТРО",market_ticker_hint:"Нажмите, чтобы сменить EUR / USD / RUB",fact_label:"КРИПТО ФАКТ",no_test:"Тестовых позиций пока нет.",no_alerts:"Активных алертов нет.",remove_alert:"УДАЛИТЬ",history_points:"ценовых точек",history_empty:"История собирается каждый час.",no_buy:"НЕТ ПОКУПКИ",avg_buy:"СРЕДНЯЯ ПОКУПКА",current_price:"ТЕКУЩАЯ",legal_footer:"Этот терминал создан в развлекательных целях. Используйте его полностью на свой страх и риск."}
 };
 
 const uiText={
@@ -2390,6 +2419,113 @@ window.addEventListener('load',()=>{
 
 const tickerEl=document.getElementById('insights-ticker');
 
+const tickerSpeedMenu=document.getElementById('ticker-speed-menu');
+const tickerSpeedTitle=document.getElementById('ticker-speed-title');
+const tickerSpeedButtons=Array.from(document.querySelectorAll('[data-ticker-speed]'));
+const TICKER_SPEEDS={slow:78,normal:65,fast:52};
+const TICKER_SPEED_KEY='aplo_ticker_speed';
+let tickerSpeedSeconds=65;
+let tickerLongPressTimer=null;
+let tickerLongPressTriggered=false;
+let tickerPointerStartX=0;
+let tickerPointerStartY=0;
+let tickerPointerActive=false;
+
+try{
+    const savedSpeed=Number(localStorage.getItem(TICKER_SPEED_KEY));
+    if(Object.values(TICKER_SPEEDS).includes(savedSpeed))tickerSpeedSeconds=savedSpeed;
+}catch(e){}
+
+function applyTickerSpeed(){
+    if(tickerEl)tickerEl.style.setProperty('--ticker-duration',tickerSpeedSeconds+'s');
+    tickerSpeedButtons.forEach(btn=>{
+        const selected=Number(btn.dataset.tickerSpeed)===tickerSpeedSeconds;
+        btn.classList.toggle('active',selected);
+        btn.setAttribute('aria-pressed',selected?'true':'false');
+    });
+}
+
+function updateTickerSpeedMenuLabels(){
+    const t=translations[currentLang]||translations.et;
+    if(tickerSpeedTitle)tickerSpeedTitle.textContent=t.ticker_speed||'TICKER SPEED';
+    const labels=[
+        ['ticker-speed-slow',t.speed_slow||'SLOW'],
+        ['ticker-speed-normal',t.speed_normal||'NORMAL'],
+        ['ticker-speed-fast',t.speed_fast||'FAST']
+    ];
+    labels.forEach(([id,label])=>{
+        const el=document.getElementById(id);
+        if(el)el.textContent=label;
+    });
+}
+
+function openTickerSpeedMenu(){
+    if(!tickerSpeedMenu)return;
+    clearTimeout(tickerLongPressTimer);
+    tickerLongPressTriggered=true;
+    tickerEl.classList.add('paused');
+    tickerSpeedMenu.style.display='block';
+    tickerSpeedMenu.setAttribute('aria-hidden','false');
+    updateTickerSpeedMenuLabels();
+    applyTickerSpeed();
+}
+
+function closeTickerSpeedMenu(){
+    if(!tickerSpeedMenu)return;
+    tickerSpeedMenu.style.display='none';
+    tickerSpeedMenu.setAttribute('aria-hidden','true');
+    tickerEl.classList.remove('paused');
+}
+
+function setTickerSpeed(seconds){
+    const value=Number(seconds);
+    if(!Object.values(TICKER_SPEEDS).includes(value))return;
+    tickerSpeedSeconds=value;
+    try{localStorage.setItem(TICKER_SPEED_KEY,String(value));}catch(e){}
+    applyTickerSpeed();
+    closeTickerSpeedMenu();
+
+    // Restart cleanly with the newly selected duration.
+    tickerEl.style.animation='none';
+    tickerEl.offsetHeight;
+    tickerEl.style.animation='';
+}
+
+function cancelTickerLongPress(){
+    if(tickerLongPressTimer){
+        clearTimeout(tickerLongPressTimer);
+        tickerLongPressTimer=null;
+    }
+}
+
+function startTickerLongPress(e){
+    if(!tickerEl||e.button===2)return;
+    cancelTickerLongPress();
+    tickerPointerActive=true;
+    tickerLongPressTriggered=false;
+    tickerPointerStartX=e.clientX;
+    tickerPointerStartY=e.clientY;
+    tickerLongPressTimer=setTimeout(()=>{
+        if(tickerPointerActive)openTickerSpeedMenu();
+    },2000);
+}
+
+function moveTickerLongPress(e){
+    if(!tickerPointerActive)return;
+    const dx=e.clientX-tickerPointerStartX;
+    const dy=e.clientY-tickerPointerStartY;
+    if(Math.hypot(dx,dy)>12){
+        cancelTickerLongPress();
+        tickerPointerActive=false;
+    }
+}
+
+function endTickerLongPress(){
+    cancelTickerLongPress();
+    tickerPointerActive=false;
+}
+
+
 function escapeHtml(value){
     return String(value??'')
         .replace(/&/g,'&amp;')
@@ -2417,6 +2553,9 @@ function formatTickerPrice(eurValue){
         maximumFractionDigits:decimals
     });
 }
+
+applyTickerSpeed();
+updateTickerSpeedMenuLabels();
 
 function renderTop50Ticker(){
     if(!tickerEl)return;
@@ -2648,11 +2787,46 @@ function loadTop50Snapshot(){
 if(tickerEl){
     loadTop50Snapshot();
     renderTop50Ticker();
+    applyTickerSpeed();
+    updateTickerSpeedMenuLabels();
 
-    // Clicking the ticker cycles EUR -> USD -> RUB -> EUR.
-    tickerEl.addEventListener('click',()=>{
+    // Short tap cycles EUR -> USD -> RUB.
+    // Holding for 2 seconds opens the ticker-speed menu.
+    tickerEl.addEventListener('pointerdown',startTickerLongPress);
+    tickerEl.addEventListener('pointermove',moveTickerLongPress);
+    tickerEl.addEventListener('pointerup',()=>{
+        const wasLong=tickerLongPressTriggered;
+        endTickerLongPress();
+        if(wasLong){
+            tickerLongPressTriggered=false;
+            return;
+        }
         cycleCurrency();
         renderTop50Ticker();
+    });
+    tickerEl.addEventListener('pointercancel',endTickerLongPress);
+    tickerEl.addEventListener('pointerleave',()=>{
+        // Do not cancel an active touch just because the animated ticker moves;
+        // pointer cancellation is handled by pointercancel / movement threshold.
+    });
+    tickerEl.addEventListener('contextmenu',e=>e.preventDefault());
+
+    tickerSpeedButtons.forEach(btn=>{
+        btn.addEventListener('pointerdown',e=>e.stopPropagation());
+        btn.addEventListener('click',e=>{
+            e.preventDefault();
+            e.stopPropagation();
+            setTickerSpeed(btn.dataset.tickerSpeed);
+        });
+    });
+
+    document.addEventListener('pointerdown',e=>{
+        if(tickerSpeedMenu &&
+           tickerSpeedMenu.style.display==='block' &&
+           !tickerSpeedMenu.contains(e.target) &&
+           !tickerEl.contains(e.target)){
+            closeTickerSpeedMenu();
+        }
     });
 }
 
