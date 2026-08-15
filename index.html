@@ -895,6 +895,10 @@ const T=k=>(uiText[currentLang]||uiText.et)[k]??(uiText.en[k]||k);
 let currentLang=localStorage.getItem('lang')||'et';
 let symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"];
 let caNames={};
+let caFullNames={};
+const cryptoFullNames={
+    BTC:'Bitcoin',ETH:'Ethereum',SOL:'Solana',BNB:'BNB',XRP:'XRP',ADA:'Cardano',DOGE:'Dogecoin',AVAX:'Avalanche',DOT:'Polkadot',MATIC:'Polygon',POL:'Polygon',LINK:'Chainlink',LTC:'Litecoin',BCH:'Bitcoin Cash',TRX:'TRON',TON:'Toncoin',SHIB:'Shiba Inu',UNI:'Uniswap',ATOM:'Cosmos',XLM:'Stellar',NEAR:'NEAR Protocol',APT:'Aptos',SUI:'Sui',OP:'Optimism',ARB:'Arbitrum',PEPE:'Pepe',FIL:'Filecoin',ICP:'Internet Computer',ETC:'Ethereum Classic',XMR:'Monero',ALGO:'Algorand',VET:'VeChain',EOS:'EOS',AAVE:'Aave',MKR:'Maker',COMP:'Compound',GRT:'The Graph',SAND:'The Sandbox',MANA:'Decentraland',AXS:'Axie Infinity',FLOW:'Flow',HBAR:'Hedera',INJ:'Injective',SEI:'Sei',TIA:'Celestia',FET:'Artificial Superintelligence Alliance',RENDER:'Render',RNDR:'Render',WIF:'dogwifhat',BONK:'Bonk',JUP:'Jupiter',STX:'Stacks',IMX:'Immutable',ENS:'Ethereum Name Service',CRV:'Curve DAO Token',LDO:'Lido DAO',APE:'ApeCoin',QNT:'Quant',EGLD:'MultiversX',KAS:'Kaspa',XTZ:'Tezos',THETA:'Theta Network',RUNE:'THORChain',CAKE:'PancakeSwap',ENA:'Ethena',ONDO:'Ondo',WLD:'Worldcoin',TAO:'Bittensor',PENDLE:'Pendle'
+};
 let touchStartY=0;
 let currentPrices={};
 let marketData=[];
@@ -915,6 +919,8 @@ try{
     }
     const savedNames=localStorage.getItem('ca_names');
     if(savedNames)caNames=JSON.parse(savedNames);
+    const savedFullNames=localStorage.getItem('ca_full_names');
+    if(savedFullNames)caFullNames=JSON.parse(savedFullNames);
     const savedHistory=localStorage.getItem('crypto_price_history');
     if(savedHistory)priceHistory=JSON.parse(savedHistory);
 }catch(e){
@@ -1144,10 +1150,14 @@ async function updateMarket(){
             const baseAddress=String(p.baseToken.address||'').toLowerCase();
             const tokenIsBase=baseAddress===String(addr).toLowerCase();
             const symbol=tokenIsBase?(p.baseToken.symbol||'DEX'):(p.quoteToken&&p.quoteToken.symbol||p.baseToken.symbol||'DEX');
+            const fullName=tokenIsBase
+                ?(p.baseToken.name||symbol)
+                :(p.quoteToken&&p.quoteToken.name||p.baseToken.name||symbol);
             const priceUsd=parseFloat(p.priceUsd);
             const h24=parseFloat(p.priceChange&&p.priceChange.h24);
             caNames[addr]=symbol;
-            return {symbol,isDex:true,address:addr,lastPrice:priceUsd*usdToEur,priceChangePercent:Number.isFinite(h24)?h24:0};
+            caFullNames[addr]=fullName;
+            return {symbol,isDex:true,address:addr,fullName,lastPrice:priceUsd*usdToEur,priceChangePercent:Number.isFinite(h24)?h24:0};
         }catch(e){return null;}
     }
     for(const addr of dexAddrs){
@@ -1157,6 +1167,10 @@ async function updateMarket(){
     localStorage.setItem(
         'ca_names',
         JSON.stringify(caNames)
+    );
+    localStorage.setItem(
+        'ca_full_names',
+        JSON.stringify(caFullNames)
     );
     /*
        IMPORTANT: every asset saved in `symbols` must remain visible.
@@ -1175,6 +1189,8 @@ async function updateMarket(){
         const live=apiByKey[key];
         if(live){
             live.priceAvailable=true;
+            if(live.isDex&&live.address&&live.fullName)
+                caFullNames[live.address]=live.fullName;
             return live;
         }
 
@@ -1221,9 +1237,10 @@ function renderUI(){
     if(!wrapper)return;
     wrapper.innerHTML='';
     marketData.forEach(c=>{
-        const sym=c.isDex
+        const ticker=c.isDex
             ?(caNames[c.address]||"DEX")
-            :c.symbol.replace(/(USDT|USD)$/,"");
+            :c.symbol.replace(/(USDT|USD)$/,'');
+        const sym=getHomeCoinName(c.isDex?c.address:c.symbol,c.isDex,ticker);
         const rawPrice=parseFloat(c.lastPrice);
         const p=(Number.isFinite(rawPrice)&&rawPrice>0)
             ?rawPrice*(c.isDex?1:usdToEur)
@@ -1261,7 +1278,7 @@ function renderUI(){
                 ${pnlText}
             </div>
             <div class="value-text ${hasPrice?'currency-clickable':''}" ${hasPrice?'onclick="cycleCurrency(event)"':''}>
-                ${hasPrice?formatMoney(p):'—'}
+                ${hasPrice?formatCryptoMoney(p):'—'}
             </div>
         </div>`;
         wrapper.appendChild(card);
@@ -1394,9 +1411,7 @@ function renderPortfolio(){
             `<div style="display:flex;justify-content:space-between;
             margin-bottom:6px;font-size:11px">
                 <span>
-                    ${isDex
-                    ?(caNames[s]||"DEX")
-                    :s.replace(/(USDT|USD)$/,"")}
+                    ${getHomeCoinName(s,isDex)}
                 </span>
                 <span>${formatMoney(qty*price)}</span>
             </div>`;
@@ -1500,8 +1515,7 @@ function openDistribution(){
     let offset=0;
     const segments=holdings.map((h,i)=>{const pct=h.val/total*100;const dash=(pct/100)*circumference;const seg=`<circle cx="75" cy="75" r="${radius}" fill="none" stroke="hsl(${(i*47)%360} 75% 60%)" stroke-width="20" stroke-dasharray="${dash} ${circumference-dash}" stroke-dashoffset="${-offset}"/>`;offset+=dash;return seg;}).join('');
     const rows=holdings.map((h,i)=>{const pct=h.val/total*100;return `<div class="dist-holding"><div class="dist-holding-top"><span><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:hsl(${(i*47)%360} 75% 60%);margin-right:5px"></i>${h.name}</span><span>${formatMoney(h.val)} • ${pct.toFixed(1)}%</span></div><div class="dist-holding-bar"><div class="dist-holding-fill" style="width:${pct}%;background:hsl(${(i*47)%360} 75% 60%)"></div></div></div>`}).join('');
-    const heat=holdings.slice(0,6).map((h,i)=>`<div class="dist-heat-item"><b>${(h.val/total*100).toFixed(1)}%</b><span>${h.name}</span></div>`).join('');
-    container.innerHTML=`<div class="dist-dashboard"><div class="dist-hero"><div class="donut-wrap"><svg class="donut-svg" viewBox="0 0 150 150"><circle cx="75" cy="75" r="54" fill="none" stroke="var(--accent)" stroke-width="20"/>${segments}</svg><div class="donut-center"><div class="donut-total">${formatMoney(total)}</div><div class="donut-label">${t.distribution_value}</div></div></div><div class="dist-summary"><div class="dist-stat"><small>${t.positions}</small><b>${holdings.length}</b></div><div class="dist-stat"><small>${t.largest}</small><b>${holdings[0].name} ${share.toFixed(1)}%</b></div><div class="dist-stat"><small>${t.concentration}</small><b>${concentration}</b></div></div></div><div class="dist-tabs"><button class="dist-tab active" onclick="switchDistTab(this,'dist-mix')">${t.distribution_mix}</button><button class="dist-tab" onclick="switchDistTab(this,'dist-risk')">${t.distribution_risk}</button></div><div id="dist-mix" class="dist-panel active">${rows}</div><div id="dist-risk" class="dist-panel"><div class="dist-heat">${heat}</div><div class="dist-note" style="margin-top:10px">${t.distribution_risk}: ${concentration}. This is a simple portfolio concentration indicator, not investment advice.</div></div></div>`;
+    container.innerHTML=`<div class="dist-dashboard"><div class="dist-hero"><div class="donut-wrap"><svg class="donut-svg" viewBox="0 0 150 150"><circle cx="75" cy="75" r="54" fill="none" stroke="var(--accent)" stroke-width="20"/>${segments}</svg><div class="donut-center"><div class="donut-total">${formatMoney(total)}</div><div class="donut-label">${t.distribution_value}</div></div></div><div class="dist-summary"><div class="dist-stat"><small>${t.positions}</small><b>${holdings.length}</b></div><div class="dist-stat"><small>${t.largest}</small><b>${holdings[0].name} ${share.toFixed(1)}%</b></div><div class="dist-stat"><small>${t.concentration}</small><b>${concentration}</b></div></div></div><div class="dist-tabs"><button class="dist-tab active">${t.distribution_mix}</button></div><div id="dist-mix" class="dist-panel active">${rows}</div></div>`;
     document.getElementById('dist-overlay').style.display='flex';
 }
 function switchDistTab(btn,id){document.querySelectorAll('#dist-content .dist-tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('#dist-content .dist-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById(id).classList.add('active');}
@@ -1819,9 +1833,13 @@ async function addNewAsset(){
                 `https://api.dexscreener.com/latest/dex/search?q=${val}`
             );
             const data=await res.json();
-            if(data.pairs&&data.pairs.length>0)
-                caNames[val]=
-                    data.pairs[0].baseToken.symbol;
+            if(data.pairs&&data.pairs.length>0){
+                const pair=data.pairs[0];
+                caNames[val]=pair.baseToken&&pair.baseToken.symbol||'DEX';
+                caFullNames[val]=pair.baseToken&&pair.baseToken.name||caNames[val];
+                localStorage.setItem('ca_names',JSON.stringify(caNames));
+                localStorage.setItem('ca_full_names',JSON.stringify(caFullNames));
+            }
         }catch(e){}
         symbols.push(val);
     }else{
@@ -2000,6 +2018,37 @@ function openInfoModal(sym,fullSym,isDex){
     document.getElementById(
         'info-overlay'
     ).style.display='flex';
+}
+function getTicker(s,isDex=false){
+    if(isDex||String(s).startsWith('0x')||String(s).length>=15)
+        return caNames[s]||'DEX';
+    return String(s).replace(/(USDT|USD)$/,'');
+}
+function getHomeCoinName(s,isDex=false,tickerOverride=''){
+    const dex=!!isDex||String(s).startsWith('0x')||String(s).length>=15;
+    const ticker=tickerOverride||getTicker(s,dex);
+    const fullName=dex
+        ?(caFullNames[s]||ticker)
+        :(cryptoFullNames[ticker.toUpperCase()]||ticker);
+    return `${fullName} (${ticker})`;
+}
+function formatCryptoMoney(value){
+    const converted=convertFromEur(value);
+    if(converted===null||!Number.isFinite(converted))return '—';
+    const symbol=getCurrencySymbol();
+    let maximumFractionDigits=2;
+    if(converted!==0){
+        if(Math.abs(converted)<0.000000001)maximumFractionDigits=18;
+        else if(Math.abs(converted)<0.000001)maximumFractionDigits=15;
+        else if(Math.abs(converted)<0.01)maximumFractionDigits=12;
+        else if(Math.abs(converted)<1)maximumFractionDigits=10;
+        else maximumFractionDigits=8;
+    }
+    const formatted=converted.toLocaleString(getNumberLocale(),{
+        minimumFractionDigits:0,
+        maximumFractionDigits
+    });
+    return `${symbol}${formatted}`;
 }
 function getDisplayName(s){
     const isDex=s.startsWith('0x')||s.length>=15;
