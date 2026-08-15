@@ -923,7 +923,7 @@ const uiText={
   en:{
     crypto:"CRYPTO",qty:"QTY",avgBuy:"AVG BUY",price:"PRICE",value:"VALUE",share:"SHARE",total:"TOTAL",
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"price points",buy:"BUY",noBuy:"NO BUY",history:"HISTORY",
-    priceHistory:"PRICE HISTORY",averageBuy:"AVERAGE BUY",current:"CURRENT",noAssets:"No assets.",
+    priceHistory:"PRICE HISTORY",assetsTitle:"ASSETS",averageBuy:"AVERAGE BUY",current:"CURRENT",noAssets:"No assets.",
     editAssetData:"EDIT ASSET DATA",globalNews:"GLOBAL CRYPTO NEWS",copy:"COPIED ✓",copyFailed:"COPY FAILED",
     clickCopy:"Click to copy CA",tradeBinance:"TRADE ON BINANCE",dexScanner:"📊 OPEN DEXSCREENER",
     strong:"STRONG",positive:"POSITIVE",neutral:"NEUTRAL",weak:"WEAK",highRisk:"HIGH RISK",
@@ -938,7 +938,7 @@ const uiText={
   et:{
     crypto:"KRÜPTO",qty:"KOGUS",avgBuy:"KESKMINE OST",price:"HIND",value:"VÄÄRTUS",share:"OSAKAAL",total:"KOKKU",
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"hinnapunkti",buy:"OST",noBuy:"OSTUHIND PUUDUB",history:"AJALUGU",
-    priceHistory:"HINNAAJALUGU",averageBuy:"KESKMINE OST",current:"PRAEGU",noAssets:"Varad puuduvad.",
+    priceHistory:"HINNAAJALUGU",assetsTitle:"VARAD",averageBuy:"KESKMINE OST",current:"PRAEGU",noAssets:"Varad puuduvad.",
     editAssetData:"MUUDA VARADE ANDMEID",globalNews:"KRÜPTOMAAILMA UUDISED",copy:"KOPEERITUD ✓",copyFailed:"KOPEERIMINE EBAÕNNESTUS",
     clickCopy:"Vajuta CA kopeerimiseks",tradeBinance:"KAUPLE BINANCE'IS",dexScanner:"📊 AVA DEXSCREENER",
     strong:"TUGEV",positive:"POSITIIVNE",neutral:"NEUTRAALNE",weak:"NÕRK",highRisk:"KÕRGE RISK",
@@ -953,7 +953,7 @@ const uiText={
   es:{
     crypto:"ACTIVO",qty:"CANT.",avgBuy:"COMPRA MEDIA",price:"PRECIO",value:"VALOR",share:"CUOTA",total:"TOTAL",
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"puntos de precio",buy:"COMPRA",noBuy:"SIN COMPRA",history:"HISTORIAL",
-    priceHistory:"HISTORIAL DE PRECIOS",averageBuy:"COMPRA MEDIA",current:"ACTUAL",noAssets:"Sin activos.",
+    priceHistory:"HISTORIAL DE PRECIOS",assetsTitle:"ACTIVOS",averageBuy:"COMPRA MEDIA",current:"ACTUAL",noAssets:"Sin activos.",
     editAssetData:"EDITAR DATOS DE ACTIVOS",globalNews:"NOTICIAS CRIPTO GLOBALES",copy:"COPIADO ✓",copyFailed:"ERROR AL COPIAR",
     clickCopy:"Pulsa para copiar CA",tradeBinance:"OPERAR EN BINANCE",dexScanner:"📊 ABRIR DEXSCREENER",
     strong:"FUERTE",positive:"POSITIVO",neutral:"NEUTRAL",weak:"DÉBIL",highRisk:"ALTO RIESGO",
@@ -968,7 +968,7 @@ const uiText={
   ru:{
     crypto:"АКТИВ",qty:"КОЛ-ВО",avgBuy:"СРЕДНЯЯ ПОКУПКА",price:"ЦЕНА",value:"СТОИМОСТЬ",share:"ДОЛЯ",total:"ИТОГО",
     spot:"СПОТ",caDex:"CA / DEX",pricePoints:"ценовых точек",buy:"ПОКУПКА",noBuy:"НЕТ ПОКУПКИ",history:"ИСТОРИЯ",
-    priceHistory:"ИСТОРИЯ ЦЕН",averageBuy:"СРЕДНЯЯ ПОКУПКА",current:"ТЕКУЩАЯ",noAssets:"Нет активов.",
+    priceHistory:"ИСТОРИЯ ЦЕН",assetsTitle:"АКТИВЫ",averageBuy:"СРЕДНЯЯ ПОКУПКА",current:"ТЕКУЩАЯ",noAssets:"Нет активов.",
     editAssetData:"ИЗМЕНЕНИЕ ДАННЫХ АКТИВОВ",globalNews:"ГЛОБАЛЬНЫЕ КРИПТОНОВОСТИ",copy:"СКОПИРОВАНО ✓",copyFailed:"НЕ УДАЛОСЬ СКОПИРОВАТЬ",
     clickCopy:"Нажмите, чтобы скопировать CA",tradeBinance:"ТОРГОВАТЬ НА BINANCE",dexScanner:"📊 ОТКРЫТЬ DEXSCREENER",
     strong:"СИЛЬНЫЙ",positive:"ПОЗИТИВНЫЙ",neutral:"НЕЙТРАЛЬНЫЙ",weak:"СЛАБЫЙ",highRisk:"ВЫСОКИЙ РИСК",
@@ -1206,7 +1206,7 @@ function applyLang(){
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.getAttribute('data-i18n-placeholder');if(t[k]!==undefined)el.placeholder=t[k];});
     const add=document.getElementById('new-asset-input'); if(add)add.placeholder=currentLang==='et'?'TICKER VÕI CA (0x...)':currentLang==='ru'?'ТИКЕР ИЛИ CA (0x...)':currentLang==='es'?'TICKER O CA (0x...)':'TICKER OR CA (0x...)';
     const live=document.getElementById('ui-live'); if(live)live.innerText=T('live');
-    const legalBox=document.getElementById('ui-disclaimer'); if(legalBox)legalBox.innerHTML=`<span class="legal-notice-title">${t.legal_label||'LEGAL NOTICE'}</span><span class="legal-notice-summary">${t.disclaimer_short||''}</span>`;
+    const legalBox=document.getElementById('ui-disclaimer'); if(legalBox)legalBox.innerHTML=`<span class="legal-notice-title">${t.legal_label||'LEGAL NOTICE'}</span>`;
     const guideIcon=document.getElementById('ui-guide-icon'); if(guideIcon)guideIcon.title=(currentLang==='et'?'Kasutusjuhend':currentLang==='es'?'Guía de uso':currentLang==='ru'?'Руководство по использованию':'User guide');
     const histTitle=document.getElementById('ui-history-title'); if(histTitle)histTitle.innerText=T('priceHistory');
     const ticker=document.getElementById('insights-ticker'); if(ticker)ticker.title=T('market_ticker_hint');
@@ -1782,7 +1782,6 @@ function openAssetsModal(){
             <tbody>${tableRows}</tbody>
         </table>
         <div class="assets-total"><span>${T('total')}</span><span class="assets-total-value">${formatMoney(total)}</span></div>
-        <div class="currency-hint">${currentLang==='et'?'Vajuta hinnale või netoväärtusele, et vahetada EUR / USD / RUB':'Tap a price or net worth to switch EUR / USD / RUB'} • ${displayCurrency}</div>
     `:`<div class="history-empty">${t.no_assets}</div>`;
     document.getElementById('ui-assets-title').innerText=T('assetsTitle');
     document.getElementById('assets-overlay').style.display='flex';
