@@ -995,9 +995,10 @@ function isContractAddress(value){
     const raw=String(value||"").trim();
     if(!raw)return false;
     if(/^0x[0-9a-fA-F]{20,}$/.test(raw))return true;
-    // Solana/base58-style contract addresses are long alphanumeric strings.
-    // Binance symbols are short, so this safely separates the two cases.
-    return /^[1-9A-HJ-NP-Za-km-z]{25,}$/.test(raw);
+    // Keep compatibility with the original Terminal: long CA strings are
+    // contract addresses even when their alphabet is not strict base58.
+    // Binance symbols are short, so length is the reliable discriminator here.
+    return raw.length>=15;
 }
 function normalizeBinanceSymbol(value){
     const raw=String(value||"").trim();
@@ -2142,7 +2143,8 @@ async function addNewAsset(){
 function openEdit(){
     const fields=symbols.map(s=>{
         const isDex=isContractAddress(s);
-        const displayName=isDex?(caNames[s]||s):s.replace(/(USDT|USD)$/,'');
+        const cachedName=caNames[s];
+        const displayName=isDex?((cachedName&&cachedName!==s)?cachedName:'DEX'):s.replace(/(USDT|USD)$/,'');
         return `
         <div class="edit-asset-block">
             <div class="edit-asset-name"><span>${displayName}</span><span class="edit-asset-line"></span></div>
@@ -2330,15 +2332,18 @@ function openInfoModal(sym,fullSym,isDex){
     document.getElementById('info-overlay').style.display='flex';
 }
 function getTicker(s,isDex=false){
-    if(isDex||isContractAddress(s))
-        return caNames[s]||'DEX';
+    if(isDex||isContractAddress(s)){
+        const n=caNames[s];
+        return (n&&n!==s)?n:'DEX';
+    }
     return String(s).replace(/(USDT|USD)$/,'');
 }
 function getHomeCoinName(s,isDex=false,tickerOverride=''){
     const dex=!!isDex||isContractAddress(s);
     const ticker=tickerOverride||getTicker(s,dex);
+    const cachedFull=caFullNames[s];
     const fullName=dex
-        ?(caFullNames[s]||ticker)
+        ?((cachedFull&&cachedFull!==s)?cachedFull:ticker)
         :(cryptoFullNames[ticker.toUpperCase()]||ticker);
     return `${fullName} (${ticker})`;
 }
