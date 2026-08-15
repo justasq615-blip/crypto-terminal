@@ -124,19 +124,28 @@ height:100%;display:flex;align-items:center
 .fact-chip{display:inline-flex;align-items:center;gap:8px;margin-right:34px}.fact-dot{width:5px;height:5px;border-radius:50%;background:var(--title);display:inline-block;box-shadow:0 0 7px var(--title)}
 .market-chip{gap:7px}.market-chip strong{color:var(--title);font-size:8px}.market-chip .up{color:var(--up)!important}.market-chip .down{color:var(--down)!important}
 .ticker-speed-menu{
- position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
- z-index:50;display:none;width:min(270px,88%);
- padding:8px;background:var(--card);border:1px solid var(--border);
- border-radius:7px;box-shadow:0 6px 22px rgba(0,0,0,.35);
- text-align:center;white-space:normal
+ position:absolute;inset:0;z-index:100;display:none;
+ align-items:center;justify-content:center;width:100%;height:100%;
+ padding:8px 12px;background:var(--card);color:var(--text);
+ border:0;border-radius:0;box-shadow:none;
+ text-align:center;white-space:normal;
+ box-sizing:border-box;backdrop-filter:blur(3px);
+ -webkit-backdrop-filter:blur(3px)
+}
+.ticker-speed-menu::before{
+ content:"";position:absolute;inset:5px;border:1px solid var(--border);
+ border-radius:5px;pointer-events:none
+}
+.ticker-speed-content{
+ position:relative;z-index:1;width:100%;max-width:310px
 }
 .ticker-speed-title{
- font-size:8px;font-weight:bold;letter-spacing:.5px;color:var(--title);
- margin-bottom:7px
+ font-size:8px;font-weight:bold;letter-spacing:.6px;color:var(--title);
+ margin-bottom:8px
 }
-.ticker-speed-options{display:flex;gap:6px;justify-content:center}
+.ticker-speed-options{display:flex;gap:6px;justify-content:center;width:100%}
 .ticker-speed-options button{
- flex:1;min-height:30px;padding:5px 4px;background:var(--header);
+ flex:1;min-height:32px;padding:5px 4px;background:var(--header);
  color:var(--text);border:1px solid var(--border);border-radius:5px;
  font:inherit;font-size:8px;font-weight:bold;cursor:pointer;
  touch-action:manipulation
@@ -716,11 +725,13 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <div class="ticker-wrap">
             <div class="ticker" id="insights-ticker"></div>
             <div class="ticker-speed-menu" id="ticker-speed-menu" aria-hidden="true">
-                <div class="ticker-speed-title" id="ticker-speed-title">TICKER SPEED</div>
-                <div class="ticker-speed-options">
-                    <button type="button" data-ticker-speed="78" id="ticker-speed-slow">SLOW</button>
-                    <button type="button" data-ticker-speed="65" id="ticker-speed-normal">NORMAL</button>
-                    <button type="button" data-ticker-speed="52" id="ticker-speed-fast">FAST</button>
+                <div class="ticker-speed-content">
+                    <div class="ticker-speed-title" id="ticker-speed-title">TICKER SPEED</div>
+                    <div class="ticker-speed-options">
+                        <button type="button" data-ticker-speed="78" id="ticker-speed-slow">SLOW</button>
+                        <button type="button" data-ticker-speed="65" id="ticker-speed-normal">NORMAL</button>
+                        <button type="button" data-ticker-speed="52" id="ticker-speed-fast">FAST</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2464,7 +2475,7 @@ function openTickerSpeedMenu(){
     clearTimeout(tickerLongPressTimer);
     tickerLongPressTriggered=true;
     tickerEl.classList.add('paused');
-    tickerSpeedMenu.style.display='block';
+    tickerSpeedMenu.style.display='flex';
     tickerSpeedMenu.setAttribute('aria-hidden','false');
     updateTickerSpeedMenuLabels();
     applyTickerSpeed();
@@ -2818,6 +2829,10 @@ if(tickerEl){
             e.stopPropagation();
             setTickerSpeed(btn.dataset.tickerSpeed);
         });
+    });
+
+    tickerSpeedMenu.addEventListener('click',e=>{
+        if(e.target===tickerSpeedMenu)closeTickerSpeedMenu();
     });
 
     document.addEventListener('pointerdown',e=>{
