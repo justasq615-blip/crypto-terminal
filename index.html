@@ -992,7 +992,7 @@ function applyLang(){
     const add=document.getElementById('new-asset-input'); if(add)add.placeholder=currentLang==='et'?'TICKER VÕI CA (0x...)':currentLang==='ru'?'ТИКЕР ИЛИ CA (0x...)':currentLang==='es'?'TICKER O CA (0x...)':'TICKER OR CA (0x...)';
     const live=document.getElementById('ui-live'); if(live)live.innerText=T('live');
     const histTitle=document.getElementById('ui-history-title'); if(histTitle)histTitle.innerText=T('priceHistory');
-    const ticker=document.getElementById('insights-ticker'); if(ticker)ticker.title=t('facts_hint');
+    const ticker=document.getElementById('insights-ticker'); if(ticker)ticker.title=T('facts_hint');
     const phMap={target_price:currentLang==='et'?'Sihthind (EUR)':currentLang==='ru'?'Целевая цена (EUR)':currentLang==='es'?'Precio objetivo (EUR)':'Target price (EUR)',investment_amount:currentLang==='et'?'100 EUR':'100 EUR'};
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.getAttribute('data-i18n-placeholder');if(phMap[k])el.placeholder=phMap[k];});
     document.querySelectorAll('.mid-btn').forEach((el,i)=>{const titles=[T('priceHistoryTitle'),translations[currentLang].ants_title,translations[currentLang].whatif_title,translations[currentLang].alerts_title,translations[currentLang].watch_title];if(titles[i])el.title=titles[i];});
@@ -1011,8 +1011,9 @@ function refreshActionLabels(){
 function setLang(l){
     currentLang=['en','et','es','ru'].includes(l)?l:'en';
     factIndex=0;
-    localStorage.setItem('lang',l);
+    localStorage.setItem('lang',currentLang);
     applyLang();
+    if(typeof renderCryptoFacts==='function')renderCryptoFacts();
     renderUI();
 }
 const mainWrapper=document.getElementById('main-wrapper');
