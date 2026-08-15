@@ -120,7 +120,7 @@ background:var(--card);border:1px solid var(--border);border-radius:6px;overflow
 width:100%;overflow:hidden;white-space:nowrap;position:relative;
 height:100%;display:flex;align-items:center
 }
-.ticker{display:inline-flex;white-space:nowrap;font-size:9px;font-weight:bold;min-width:max-content;animation:marquee 68s linear infinite;cursor:pointer;will-change:transform}.ticker.paused{animation-play-state:paused}@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker{display:inline-flex;white-space:nowrap;font-size:9px;font-weight:bold;min-width:max-content;animation:marquee 75s linear infinite;cursor:pointer;will-change:transform}.ticker.paused{animation-play-state:paused}@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .fact-chip{display:inline-flex;align-items:center;gap:8px;margin-right:34px}.fact-dot{width:5px;height:5px;border-radius:50%;background:var(--title);display:inline-block;box-shadow:0 0 7px var(--title)}
 .market-chip{gap:7px}.market-chip strong{color:var(--title);font-size:8px}.market-chip .up{color:var(--up)!important}.market-chip .down{color:var(--down)!important}
 .disclaimer-box{
@@ -915,7 +915,7 @@ let usdToEur=1;
 let fxRates={EUR:1,USD:null,RUB:null};
 try{
     const savedFx=JSON.parse(localStorage.getItem('aplo_fx_rates')||'{}');
-    if(Number.isFinite(savedFx.USD)&&savedFx.USD>0)fxRates.USD=savedFx.USD;
+    if(Number.isFinite(savedFx.USD)&&savedFx.USD>0){fxRates.USD=savedFx.USD;usdToEur=1/savedFx.USD;}
     if(Number.isFinite(savedFx.RUB)&&savedFx.RUB>0)fxRates.RUB=savedFx.RUB;
 }catch(e){}
 let displayCurrency=localStorage.getItem('display_currency')||'EUR';
@@ -2464,66 +2464,172 @@ function renderTop50Ticker(){
 async function updateTop50Ticker(force=false){
     const now=Date.now();
 
-    // Do not hammer the public endpoint on every 30-second portfolio refresh.
     if(!force && top50UpdatedAt && now-top50UpdatedAt<60000){
         renderTop50Ticker();
         return;
     }
 
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),6000);
+    /*
+       TOP-50 market data uses several independent public providers.
+       They are queried in parallel so a slow or unavailable provider
+       does not block the ticker.
 
-    try{
-        const url=
-            'https://api.coingecko.com/api/v3/coins/markets'+
-            '?vs_currency=eur'+
-            '&order=market_cap_desc'+
-            '&per_page=50'+
-            '&page=1'+
-            '&sparkline=false'+
-            '&price_change_percentage=24h';
+       Priority is determined by whichever valid provider responds first:
+       1) CoinPaprika  — EUR prices directly, no conversion needed
+       2) CoinCap      — USD prices, converted to EUR using cached/live FX
+       3) CoinGecko    — EUR prices directly
 
-        const res=await fetch(url,{
-            cache:'no-store',
-            signal:controller.signal
-        });
+       If all live providers fail, the last successful local snapshot
+       remains visible.
+    */
+    const fetchJson=async(url,options={},timeout=5000)=>{
+        const controller=new AbortController();
+        const timer=setTimeout(()=>controller.abort(),timeout);
+        try{
+            const res=await fetch(url,{...options,signal:controller.signal});
+            if(!res.ok)return null;
+            return await res.json();
+        }catch(e){
+            return null;
+        }finally{
+            clearTimeout(timer);
+        }
+    };
 
-        if(!res.ok)throw new Error('TOP50 API '+res.status);
-
-        const data=await res.json();
-
-        if(Array.isArray(data)&&data.length){
-            top50MarketData=data.slice(0,50)
-                .map(c=>({
+    const normalizePaprika=(data)=>{
+        if(!Array.isArray(data))return [];
+        return data
+            .filter(c=>c&&Number(c.rank)>0)
+            .sort((a,b)=>Number(a.rank)-Number(b.rank))
+            .slice(0,50)
+            .map(c=>{
+                const q=c.quotes&&c.quotes.EUR;
+                return {
                     id:c.id,
                     name:c.name||c.symbol||'Coin',
                     symbol:String(c.symbol||'').toUpperCase(),
-                    price_eur:Number(c.current_price),
-                    change_24h:Number(c.price_change_percentage_24h)
-                }))
-                .filter(c=>Number.isFinite(c.price_eur)&&c.price_eur>0);
+                    price_eur:Number(q&&q.price),
+                    change_24h:Number(q&&q.percent_change_24h),
+                    rank:Number(c.rank),
+                    source:'CoinPaprika'
+                };
+            })
+            .filter(c=>Number.isFinite(c.price_eur)&&c.price_eur>0);
+    };
 
-            top50UpdatedAt=Date.now();
-
-            try{
-                localStorage.setItem(
-                    'aplo_top50_snapshot',
-                    JSON.stringify({
-                        updatedAt:top50UpdatedAt,
-                        data:top50MarketData
-                    })
-                );
-            }catch(e){}
-
-            renderTop50Ticker();
+    const normalizeCoinCap=(data)=>{
+        const usdRate=Number(fxRates.USD);
+        if(!Array.isArray(data&&data.data)||!Number.isFinite(usdRate)||usdRate<=0){
+            return [];
         }
+
+        return data.data
+            .filter(c=>c&&Number(c.rank)>0)
+            .sort((a,b)=>Number(a.rank)-Number(b.rank)
+            .slice(0,50))
+            .map(c=>{
+                const priceUsd=Number(c.priceUsd);
+                return {
+                    id:c.id,
+                    name:c.name||c.symbol||'Coin',
+                    symbol:String(c.symbol||'').toUpperCase(),
+                    price_eur:priceUsd/usdRate,
+                    change_24h:Number(c.changePercent24Hr),
+                    rank:Number(c.rank),
+                    source:'CoinCap'
+                };
+            })
+            .filter(c=>Number.isFinite(c.price_eur)&&c.price_eur>0);
+    };
+
+    const normalizeGecko=(data)=>{
+        if(!Array.isArray(data))return [];
+        return data
+            .filter(c=>c&&Number(c.market_cap_rank)>0)
+            .sort((a,b)=>Number(a.market_cap_rank)-Number(b.market_cap_rank))
+            .slice(0,50)
+            .map(c=>({
+                id:c.id,
+                name:c.name||c.symbol||'Coin',
+                symbol:String(c.symbol||'').toUpperCase(),
+                price_eur:Number(c.current_price),
+                change_24h:Number(c.price_change_percentage_24h),
+                rank:Number(c.market_cap_rank),
+                source:'CoinGecko'
+            }))
+            .filter(c=>Number.isFinite(c.price_eur)&&c.price_eur>0);
+    };
+
+    const paprikaPromise=fetchJson(
+        'https://api.coinpaprika.com/v1/tickers?quotes=EUR',
+        {cache:'no-store'},
+        5000
+    ).then(normalizePaprika);
+
+    const coincapPromise=fetchJson(
+        'https://api.coincap.io/v2/assets?limit=50',
+        {cache:'no-store'},
+        5000
+    ).then(normalizeCoinCap);
+
+    const geckoPromise=fetchJson(
+        'https://api.coingecko.com/api/v3/coins/markets'+
+        '?vs_currency=eur'+
+        '&order=market_cap_desc'+
+        '&per_page=50'+
+        '&page=1'+
+        '&sparkline=false'+
+        '&price_change_percentage=24h',
+        {cache:'no-store'},
+        5000
+    ).then(normalizeGecko);
+
+    let winner=null;
+
+    /*
+       Promise.any waits for the first VALID provider, not merely
+       the first HTTP response. Failed/empty providers are ignored.
+    */
+    try{
+        winner=await Promise.any([
+            paprikaPromise.then(data=>{
+                if(!data.length)throw new Error('CoinPaprika empty');
+                return data;
+            }),
+            coincapPromise.then(data=>{
+                if(!data.length)throw new Error('CoinCap empty');
+                return data;
+            }),
+            geckoPromise.then(data=>{
+                if(!data.length)throw new Error('CoinGecko empty');
+                return data;
+            })
+        ]);
     }catch(e){
-        // Keep the cached ticker visible if the live endpoint is unavailable.
+        winner=null;
+    }
+
+    if(Array.isArray(winner)&&winner.length){
+        top50MarketData=winner.slice(0,50);
+        top50UpdatedAt=Date.now();
+
+        try{
+            localStorage.setItem(
+                'aplo_top50_snapshot',
+                JSON.stringify({
+                    updatedAt:top50UpdatedAt,
+                    data:top50MarketData
+                })
+            );
+        }catch(e){}
+
         renderTop50Ticker();
-    }finally{
-        clearTimeout(timeout);
+    }else{
+        // All live providers failed — keep the last known-good snapshot.
+        renderTop50Ticker();
     }
 }
+
 
 function loadTop50Snapshot(){
     try{
