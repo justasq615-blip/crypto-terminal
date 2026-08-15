@@ -227,6 +227,7 @@ margin-bottom:8px;border:1px solid var(--border);font-size:10px;text-transform:u
 width:100%;height:250px;background:#000;border-radius:6px;
 margin-bottom:15px;border:1px solid var(--border);overflow:hidden;position:relative
 }
+.binance-chart-wrap{width:100%;height:100%;display:flex;flex-direction:column;background:#050505}.binance-chart-head{display:flex;justify-content:space-between;align-items:center;padding:7px 9px;font-size:8px;border-bottom:1px solid rgba(255,255,255,.12);opacity:.9}.binance-chart-svg{width:100%;height:calc(100% - 28px);display:block}.binance-chart-empty{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;opacity:.65;padding:20px;text-align:center}.asset-info-box{margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:6px;background:var(--accent);font-size:9px;text-align:center}.asset-info-label{font-size:7px;opacity:.6;text-transform:uppercase;margin-bottom:4px}.asset-info-value{word-break:break-all;line-height:1.4}.binance-source{font-size:7px;opacity:.55}
 .dist-row{margin-bottom:15px}
 .dist-label{
 display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;font-weight:bold
@@ -910,7 +911,6 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     </div>
   </div>
 </div>
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
 const translations={
  en:{title:"🚀 APLO CRYPTO TERMINAL",networth:"Net Worth",assets:"ASSETS",edit:"EDIT",save:"SAVE",news:"📰 NEWS",manage:"MANAGE ASSETS",btn_add:"ADD ASSET",dist_title:"ASSET DISTRIBUTION",no_assets:"No assets.",no_assets_dist:"No assets to display.",remove:"Remove",theme_title:"THEMES",language_title:"LANGUAGE",legal_label:"LEGAL NOTICE",disclaimer_short:"Entertainment / experimental crypto terminal. No financial advice.",info_title:"LEGAL & INFORMATION",info_body:"This website and application are provided strictly for <strong>entertainment and educational purposes</strong>. The creator accepts <strong>no responsibility or liability</strong> for any loss, damage, missed opportunity, trading decision, investment decision, transaction, or other consequence arising from the use of this website, its calculations, displayed prices, scores, alerts, historical data, links, or any other information presented here. Crypto assets are highly volatile and may result in partial or total loss of capital. Nothing on this page constitutes financial, investment, legal, tax, or trading advice. You are solely responsible for your own decisions and for verifying information before acting. By using this website, you acknowledge and accept these conditions.",history_title:"📊 PRICE HISTORY",ants_title:"🧠 ANTS SCORE",whatif_title:"🎯 WHAT IF?",alerts_title:"🔔 PRICE ALERTS",watch_title:"💎 WATCHLIST / TEST",asset:"ASSET",investment:"INVESTMENT (EUR)",target:"TARGET (EUR)",current:"CURRENT",above:"ABOVE ↑",below:"BELOW ↓",add_alert:"ADD ALERT",save_test:"SAVE TEST",delete:"DELETE",baseline:"BASELINE PRICE (EUR)",date:"DATE",score_sub:"Terminal's heuristic trend and momentum signal",whatif_sub:"Calculate the effect of a possible target price",alerts_sub:"Alert is checked on every market update",watch_sub:"Save a hypothetical purchase and track it",distribution:"ASSET DISTRIBUTION",distribution_mix:"PORTFOLIO MIX",distribution_risk:"RISK / CONCENTRATION",distribution_value:"VALUE",distribution_share:"SHARE",distribution_empty:"Add assets and quantities to see the interactive distribution.",largest:"LARGEST POSITION",positions:"POSITIONS",diversification:"DIVERSIFICATION",concentration:"CONCENTRATION",balanced:"Balanced",moderate:"Moderate",high:"High",facts_hint:"Tap the ticker to pause / resume",ticker_speed:"TICKER SPEED",speed_slow:"SLOW",speed_normal:"NORMAL",speed_fast:"FAST",market_ticker_hint:"Tap to switch EUR / USD / RUB",fact_label:"CRYPTO FACT",no_test:"No test positions saved yet.",no_alerts:"No active alerts.",remove_alert:"REMOVE",history_points:"price points",history_empty:"History is collected every hour.",no_buy:"NO BUY",avg_buy:"AVERAGE BUY",current_price:"CURRENT",legal_footer:"This terminal is an entertainment project. Use it entirely at your own risk."},
@@ -990,6 +990,39 @@ let caFullNames={};
 const cryptoFullNames={
     BTC:'Bitcoin',ETH:'Ethereum',SOL:'Solana',BNB:'BNB',XRP:'XRP',ADA:'Cardano',DOGE:'Dogecoin',AVAX:'Avalanche',DOT:'Polkadot',MATIC:'Polygon',POL:'Polygon',LINK:'Chainlink',LTC:'Litecoin',BCH:'Bitcoin Cash',TRX:'TRON',TON:'Toncoin',SHIB:'Shiba Inu',UNI:'Uniswap',ATOM:'Cosmos',XLM:'Stellar',NEAR:'NEAR Protocol',APT:'Aptos',SUI:'Sui',OP:'Optimism',ARB:'Arbitrum',PEPE:'Pepe',FIL:'Filecoin',ICP:'Internet Computer',ETC:'Ethereum Classic',XMR:'Monero',ALGO:'Algorand',VET:'VeChain',EOS:'EOS',AAVE:'Aave',MKR:'Maker',COMP:'Compound',GRT:'The Graph',SAND:'The Sandbox',MANA:'Decentraland',AXS:'Axie Infinity',FLOW:'Flow',HBAR:'Hedera',INJ:'Injective',SEI:'Sei',TIA:'Celestia',FET:'Artificial Superintelligence Alliance',RENDER:'Render',RNDR:'Render',WIF:'dogwifhat',BONK:'Bonk',JUP:'Jupiter',STX:'Stacks',IMX:'Immutable',ENS:'Ethereum Name Service',CRV:'Curve DAO Token',LDO:'Lido DAO',APE:'ApeCoin',QNT:'Quant',EGLD:'MultiversX',KAS:'Kaspa',XTZ:'Tezos',THETA:'Theta Network',RUNE:'THORChain',CAKE:'PancakeSwap',ENA:'Ethena',ONDO:'Ondo',WLD:'Worldcoin',TAO:'Bittensor',PENDLE:'Pendle'
 };
+
+function normalizeBinanceSymbol(value){
+    const raw=String(value||"").trim();
+    if(!raw)return "";
+    if(raw.startsWith("0x"))return raw;
+    let v=raw.toUpperCase().replace(/[\s\/_-]/g,"");
+    if(v.endsWith("USDT")||v.endsWith("USDC")||v.endsWith("BUSD")||v.endsWith("USD"))return v;
+    return v+"USDT";
+}
+function migrateUserSymbols(){
+    try{
+        const raw=localStorage.getItem("user_symbols");
+        if(!raw)return;
+        const parsed=JSON.parse(raw);
+        if(!Array.isArray(parsed))return;
+        const migrated=[];
+        parsed.forEach(item=>{
+            const n=normalizeBinanceSymbol(item);
+            if(n&&!migrated.includes(n))migrated.push(n);
+            const old=String(item||"").toUpperCase();
+            if(!old.startsWith("0X") && n!==old){
+                const q=localStorage.getItem("p_"+item);
+                const a=localStorage.getItem("avg_"+item);
+                const h=localStorage.getItem("crypto_price_history");
+                if(q!==null && localStorage.getItem("p_"+n)===null)localStorage.setItem("p_"+n,q);
+                if(a!==null && localStorage.getItem("avg_"+n)===null)localStorage.setItem("avg_"+n,a);
+                if(h){try{const ph=JSON.parse(h);if(ph[item]&&!ph[n]){ph[n]=ph[item];delete ph[item];localStorage.setItem("crypto_price_history",JSON.stringify(ph));}}catch(e){}}
+            }
+        });
+        if(migrated.length){symbols=migrated;localStorage.setItem("user_symbols",JSON.stringify(symbols));}
+    }catch(e){}
+}
+
 let touchStartY=0;
 let currentPrices={};
 let marketData=[];
@@ -1024,6 +1057,7 @@ try{
     if(savedFullNames)caFullNames=JSON.parse(savedFullNames);
     const savedHistory=localStorage.getItem('crypto_price_history');
     if(savedHistory)priceHistory=JSON.parse(savedHistory);
+    migrateUserSymbols();
 }catch(e){
     priceHistory={};
 }
@@ -1222,7 +1256,7 @@ async function updateMarket(){
         4500
     );
 
-    const binanceSyms=symbols.filter(s=>!s.startsWith('0x')&&s.length<15);
+    const binanceSyms=symbols.filter(s=>!s.startsWith('0x')&&s.length<30).map(normalizeBinanceSymbol);
     const dexAddrs=symbols.filter(s=>s.startsWith('0x')||s.length>=15);
 
     const binancePromise=binanceSyms.length
@@ -1438,7 +1472,7 @@ function renderUI(){
     marketData.forEach(c=>{
         const ticker=c.isDex
             ?(caNames[c.address]||"DEX")
-            :c.symbol.replace(/(USDT|USD)$/,'');
+            :normalizeBinanceSymbol(c.symbol).replace(/(USDT|USD)$/,'');
         const sym=getHomeCoinName(c.isDex?c.address:c.symbol,c.isDex,ticker);
         const rawPrice=parseFloat(c.lastPrice);
         const p=(Number.isFinite(rawPrice)&&rawPrice>0)
@@ -1467,7 +1501,7 @@ function renderUI(){
         card.onclick=()=>
             openInfoModal(
                 sym,
-                c.isDex?c.address:c.symbol,
+                c.isDex?c.address:normalizeBinanceSymbol(c.symbol),
                 c.isDex
             );
         card.innerHTML=
@@ -2042,7 +2076,7 @@ async function addNewAsset(){
         }catch(e){}
         symbols.push(val);
     }else{
-        symbols.push(val.toUpperCase());
+        symbols.push(normalizeBinanceSymbol(val));
     }
     localStorage.setItem(
         'user_symbols',
@@ -2171,54 +2205,78 @@ async function copyCA(el, ca){
         setTimeout(()=>{el.innerHTML=original;},1200);
     }
 }
-function openInfoModal(sym,fullSym,isDex){
-    document.getElementById('info-header').innerText=
-        `${sym} ANALYSIS`;
-    const theme=
-        document.body.getAttribute('data-theme')===
-        'white-black'
-        ?'light'
-        :'dark';
-    document.getElementById('info-content').innerHTML=
-        isDex
-        ?`<div class="ca-copy-box" title="${T('clickCopy')}" onclick="copyCA(this, '${fullSym}')" style="margin-top:10px;padding:10px;
-        background:var(--accent);font-size:9px;text-align:center;cursor:pointer;user-select:none">
-            CA: <span class="ca-copy-value">${fullSym}</span>
-         </div>
-         <a href="https://dexscreener.com/search?q=${encodeURIComponent(fullSym)}"
-            target="_blank"
-            class="news-btn"
-            style="background:var(--title);color:#000;border:none;margin-top:10px">
-            ${T('dexScanner')}IS
-         </a>`
-        :`<div id="chart-container">
-            <div id="tv-medium-widget"></div>
-          </div>
-          <a href="https://www.binance.com/en/trade/${fullSym}"
-             target="_blank"
-             class="news-btn"
-             style="background:#F3BA2F;color:#000;border:none">
-             ${T('tradeBinance')}
-          </a>`;
-    if(!isDex){
-        setTimeout(()=>{
-            new TradingView.MediumWidget({
-                container_id:"tv-medium-widget",
-                symbols:[["BINANCE:"+fullSym+"|1H"]],
-                chartOnly:true,
-                width:"100%",
-                height:"100%",
-                locale:"en",
-                colorTheme:theme,
-                gridLineColor:"transparent",
-                fontColor:"var(--text)",
-                trendLineColor:"var(--title)"
-            });
-        },100);
+async function fetchBinanceKlines(symbol, limit=48){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),5500);
+    try{
+        const url=`https://api.binance.com/api/v3/klines?symbol=${encodeURIComponent(normalizeBinanceSymbol(symbol))}&interval=1h&limit=${limit}`;
+        const res=await fetch(url,{cache:'no-store',signal:controller.signal});
+        if(!res.ok)return null;
+        const data=await res.json();
+        if(!Array.isArray(data)||!data.length)return null;
+        return data.map(k=>({time:Number(k[0]),close:Number(k[4])})).filter(x=>Number.isFinite(x.close)&&x.close>0);
+    }catch(e){return null;}finally{clearTimeout(timer);}
+}
+function drawBinanceChart(container, symbol, points){
+    if(!container)return;
+    if(!points||points.length<2){
+        container.innerHTML='<div class="binance-chart-empty">Binance chart data is temporarily unavailable.</div>';
+        return;
     }
-    document.getElementById(
-        'info-overlay'
-    ).style.display='flex';
+    const W=720,H=245,padL=42,padR=10,padT=22,padB=24;
+    const vals=points.map(p=>p.close);
+    const min=Math.min(...vals),max=Math.max(...vals);
+    const range=max-min||max*0.01||1;
+    const x=i=>padL+(i/(points.length-1))*(W-padL-padR);
+    const y=v=>padT+(1-(v-min)/range)*(H-padT-padB);
+    const path=points.map((p,i)=>`${i?'L':'M'} ${x(i).toFixed(2)} ${y(p.close).toFixed(2)}`).join(' ');
+    const grid=[0.25,0.5,0.75].map(f=>{
+        const yy=padT+f*(H-padT-padB);
+        return `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="currentColor" opacity=".12"/><text x="4" y="${yy+3}" fill="currentColor" opacity=".5" font-size="10">${formatChartPrice(max-(max-min)*f)}</text>`;
+    }).join('');
+    const last=points[points.length-1].close;
+    const first=points[0].close;
+    const pct=((last-first)/first)*100;
+    const sign=pct>=0?'+':'';
+    container.innerHTML=`<div class="binance-chart-wrap">
+      <div class="binance-chart-head"><span>BINANCE · ${normalizeBinanceSymbol(symbol)} · 1H</span><span class="${pct>=0?'up':'down'}">${sign}${pct.toFixed(2)}%</span></div>
+      <svg class="binance-chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Binance price chart">
+        ${grid}<path d="${path}" fill="none" stroke="var(--title)" stroke-width="2.5" vector-effect="non-scaling-stroke"/><circle cx="${x(points.length-1)}" cy="${y(last)}" r="4" fill="var(--title)"/>
+        <text x="${padL}" y="${H-6}" fill="currentColor" opacity=".45" font-size="9">${new Date(points[0].time).toLocaleDateString()}</text>
+        <text x="${W-padR-70}" y="${H-6}" fill="currentColor" opacity=".45" font-size="9">${new Date(points[points.length-1].time).toLocaleDateString()}</text>
+      </svg></div>`;
+}
+function formatChartPrice(v){
+    if(v>=1000)return v.toLocaleString('en-US',{maximumFractionDigits:0});
+    if(v>=1)return v.toLocaleString('en-US',{maximumFractionDigits:4});
+    if(v>=0.01)return v.toLocaleString('en-US',{maximumFractionDigits:6});
+    return v.toLocaleString('en-US',{maximumFractionDigits:10});
+}
+function openInfoModal(sym,fullSym,isDex){
+    const modal=document.getElementById('info-modal');
+    const content=document.getElementById('info-content');
+    document.getElementById('info-header').innerText=`${sym} ANALYSIS`;
+    const theme=document.body.getAttribute('data-theme')==='white-black'?'light':'dark';
+    if(isDex){
+        content.innerHTML=`<div class="asset-info-box" title="${T('clickCopy')}" onclick="copyCA(this, '${fullSym}')" style="cursor:pointer;user-select:none">
+            <div class="asset-info-label">CA / CONTRACT ADDRESS</div><div class="asset-info-value">${fullSym}</div>
+        </div>
+        <a href="https://dexscreener.com/search?q=${encodeURIComponent(fullSym)}" target="_blank" class="news-btn" style="background:var(--title);color:#000;border:none;margin-top:10px">${T('dexScanner')}</a>`;
+    }else{
+        const pair=normalizeBinanceSymbol(fullSym);
+        const native=!['BTC','ETH','SOL','BNB'].includes(pair.replace(/USDT$/,''));
+        const ticker=pair.replace(/USDT$/,'');
+        const caText={BTC:'Native asset — no contract address',ETH:'Native asset — no contract address',SOL:'Native asset — no contract address',BNB:'Native asset — no contract address'}[ticker]||'Binance spot asset — no CA stored by this Terminal';
+        content.innerHTML=`<div class="asset-info-box">
+            <div class="asset-info-label">CA / CONTRACT ADDRESS</div><div class="asset-info-value">${caText}</div>
+            <div class="binance-source" style="margin-top:5px">${pair}</div>
+        </div>
+        <div id="chart-container" style="margin-top:10px"><div class="binance-chart-empty">Loading Binance chart…</div></div>
+        <a href="https://www.binance.com/en/trade/${ticker}_USDT?type=spot" target="_blank" rel="noopener" class="news-btn" style="background:#F3BA2F;color:#000;border:none">${T('tradeBinance')}</a>`;
+        fetchBinanceKlines(pair,48).then(points=>drawBinanceChart(document.getElementById('chart-container'),pair,points));
+    }
+    if(modal){modal.classList.remove('guide-modal','legal-modal');}
+    document.getElementById('info-overlay').style.display='flex';
 }
 function getTicker(s,isDex=false){
     if(isDex||String(s).startsWith('0x')||String(s).length>=15)
