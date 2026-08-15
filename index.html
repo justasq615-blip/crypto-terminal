@@ -902,6 +902,14 @@ const cryptoFullNames={
 let touchStartY=0;
 let currentPrices={};
 let marketData=[];
+let marketSnapshotAt=0;
+try{
+    const cachedMarket=JSON.parse(localStorage.getItem('aplo_market_snapshot')||'{}');
+    if(Array.isArray(cachedMarket.data)&&cachedMarket.data.length){
+        marketData=cachedMarket.data;
+        marketSnapshotAt=Number(cachedMarket.updatedAt)||0;
+    }
+}catch(e){}
 let usdToEur=1;
 let fxRates={EUR:1,USD:null,RUB:null};
 try{
@@ -980,6 +988,34 @@ function ensureHistoryForExistingAssets(){
     });
     savePriceHistory();
 }
+function seedMarketDataImmediately(){
+    /*
+       First paint: use the most recent locally stored price/history.
+       This means the user sees the portfolio cards immediately, even
+       before the live APIs answer for the first time.
+    */
+    marketData=symbols.map(s=>{
+        const isDex=s.startsWith('0x')||s.length>=15;
+        const history=priceHistory[s];
+        const points=history&&Array.isArray(history.points)?history.points:[];
+        const last=points.length?points[points.length-1]:null;
+        const eur=Number(last&&last.price);
+        const hasLocal=Number.isFinite(eur)&&eur>0;
+        return {
+            symbol:isDex?(caNames[s]||'DEX'):s,
+            isDex,
+            address:isDex?s:undefined,
+            lastPrice:isDex
+                ?(hasLocal?eur:0)
+                :(hasLocal&&Number.isFinite(usdToEur)&&usdToEur>0
+                    ?eur/usdToEur
+                    :0),
+            priceChangePercent:0,
+            priceAvailable:false,
+            stalePrice:hasLocal
+        };
+    });
+}
 function applyLang(){
     const t=translations[currentLang]||translations.et;
     const ids={
@@ -1054,131 +1090,174 @@ function setTheme(t){
     }
 async function updateMarket(){
     const statusEl=document.getElementById('status');
-    if(statusEl)
-        statusEl.classList.add('status-refreshing');
-    try{
-        const fxRes=await fetch(
-            'https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT'
-        );
-        if(fxRes.ok){
-            const fxData=await fxRes.json();
-            const eurUsdt=parseFloat(fxData.price);
-            if(eurUsdt>0)
-                usdToEur=1/eurUsdt;
+    if(statusEl) statusEl.classList.add('status-refreshing');
+
+    /*
+       Fast refresh strategy:
+       1) The last successful market snapshot is rendered immediately on startup.
+       2) FX and market endpoints are requested in parallel.
+       3) DEX assets are requested in parallel instead of one-by-one.
+       4) A slow API cannot keep the terminal waiting forever.
+    */
+    const fetchJson=async(url,options={},timeout=6500)=>{
+        const controller=new AbortController();
+        const timer=setTimeout(()=>controller.abort(),timeout);
+        try{
+            const res=await fetch(url,{...options,signal:controller.signal});
+            if(!res.ok) return null;
+            return await res.json();
+        }catch(e){
+            return null;
+        }finally{
+            clearTimeout(timer);
         }
-    }catch(e){}
-    let fxLoaded=false;
-    try{
-        const fx=await fetch(
-            'https://api.frankfurter.app/latest?from=EUR&to=USD,RUB',
-            {cache:'no-store'}
+    };
+
+    const fxBinancePromise=fetchJson(
+        'https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT',
+        {},
+        4500
+    );
+    const fxFrankfurterPromise=fetchJson(
+        'https://api.frankfurter.app/latest?from=EUR&to=USD,RUB',
+        {cache:'no-store'},
+        4500
+    );
+
+    const binanceSyms=symbols.filter(s=>!s.startsWith('0x')&&s.length<15);
+    const dexAddrs=symbols.filter(s=>s.startsWith('0x')||s.length>=15);
+
+    const binancePromise=binanceSyms.length
+        ?fetchJson(
+            'https://api.binance.com/api/v3/ticker/24hr?symbols='+
+            JSON.stringify(binanceSyms),
+            {cache:'no-store'},
+            5500
+        )
+        :Promise.resolve([]);
+
+    async function fetchDexAsset(addr){
+        const tokenUrl=
+            `https://api.dexscreener.com/latest/dex/tokens/${encodeURIComponent(addr)}`;
+        const tokenData=await fetchJson(tokenUrl,{cache:'no-store'},5500);
+        let pairs=Array.isArray(tokenData&&tokenData.pairs)
+            ?tokenData.pairs
+            :[];
+
+        if(!pairs.length){
+            const searchData=await fetchJson(
+                `https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(addr)}`,
+                {cache:'no-store'},
+                4500
+            );
+            if(searchData&&Array.isArray(searchData.pairs)){
+                pairs=searchData.pairs.filter(p=>
+                    String(p.baseToken&&p.baseToken.address||'').toLowerCase()===String(addr).toLowerCase() ||
+                    String(p.quoteToken&&p.quoteToken.address||'').toLowerCase()===String(addr).toLowerCase()
+                );
+            }
+        }
+
+        const valid=pairs.filter(p=>
+            p&&p.baseToken&&p.priceUsd&&
+            Number.isFinite(parseFloat(p.priceUsd))
         );
-        if(fx.ok){
-            const data=await fx.json();
-            const usd=parseFloat(data.rates&&data.rates.USD);
-            const rub=parseFloat(data.rates&&data.rates.RUB);
+        if(!valid.length)return null;
+
+        valid.sort((a,b)=>{
+            const la=parseFloat(a.liquidity&&a.liquidity.usd)||0;
+            const lb=parseFloat(b.liquidity&&b.liquidity.usd)||0;
+            return lb-la;
+        });
+
+        const p=valid[0];
+        const baseAddress=String(p.baseToken.address||'').toLowerCase();
+        const tokenIsBase=baseAddress===String(addr).toLowerCase();
+        const symbol=tokenIsBase
+            ?(p.baseToken.symbol||'DEX')
+            :(p.quoteToken&&p.quoteToken.symbol||p.baseToken.symbol||'DEX');
+        const fullName=tokenIsBase
+            ?(p.baseToken.name||symbol)
+            :(p.quoteToken&&p.quoteToken.name||p.baseToken.name||symbol);
+        const priceUsd=parseFloat(p.priceUsd);
+        const h24=parseFloat(p.priceChange&&p.priceChange.h24);
+
+        caNames[addr]=symbol;
+        caFullNames[addr]=fullName;
+
+        return {
+            symbol,
+            isDex:true,
+            address:addr,
+            fullName,
+            lastPrice:priceUsd*usdToEur,
+            priceChangePercent:Number.isFinite(h24)?h24:0
+        };
+    }
+
+    /*
+       All independent requests run together. This removes the long
+       serial wait that previously happened before the home screen
+       could be populated.
+    */
+    const [fxBinance,fxFrankfurter,binanceData,dexResults]=
+        await Promise.all([
+            fxBinancePromise,
+            fxFrankfurterPromise,
+            binancePromise,
+            Promise.all(dexAddrs.map(fetchDexAsset))
+        ]);
+
+    if(fxBinance&&fxBinance.price){
+        const eurUsdt=parseFloat(fxBinance.price);
+        if(eurUsdt>0)usdToEur=1/eurUsdt;
+    }
+
+    let fxLoaded=false;
+    if(fxFrankfurter&&fxFrankfurter.rates){
+        const usd=parseFloat(fxFrankfurter.rates.USD);
+        const rub=parseFloat(fxFrankfurter.rates.RUB);
+        if(Number.isFinite(usd)&&usd>0)fxRates.USD=usd;
+        if(Number.isFinite(rub)&&rub>0)fxRates.RUB=rub;
+        fxLoaded=Number.isFinite(fxRates.USD)&&Number.isFinite(fxRates.RUB);
+    }
+
+    if(!fxLoaded&&(!Number.isFinite(fxRates.USD)||!Number.isFinite(fxRates.RUB))){
+        const fallbackFx=await fetchJson(
+            'https://open.er-api.com/v6/latest/EUR',
+            {cache:'no-store'},
+            4500
+        );
+        if(fallbackFx&&fallbackFx.rates){
+            const usd=parseFloat(fallbackFx.rates.USD);
+            const rub=parseFloat(fallbackFx.rates.RUB);
             if(Number.isFinite(usd)&&usd>0)fxRates.USD=usd;
             if(Number.isFinite(rub)&&rub>0)fxRates.RUB=rub;
-            fxLoaded=Number.isFinite(fxRates.USD)&&Number.isFinite(fxRates.RUB);
         }
-    }catch(e){}
-    if(!fxLoaded){
+    }
+
+    if(Number.isFinite(fxRates.USD)&&fxRates.USD>0&&
+       Number.isFinite(fxRates.RUB)&&fxRates.RUB>0){
         try{
-            const fx=await fetch(
-                'https://open.er-api.com/v6/latest/EUR',
-                {cache:'no-store'}
+            localStorage.setItem(
+                'aplo_fx_rates',
+                JSON.stringify({
+                    USD:fxRates.USD,
+                    RUB:fxRates.RUB,
+                    updatedAt:Date.now()
+                })
             );
-            if(fx.ok){
-                const data=await fx.json();
-                const usd=parseFloat(data.rates&&data.rates.USD);
-                const rub=parseFloat(data.rates&&data.rates.RUB);
-                if(Number.isFinite(usd)&&usd>0)fxRates.USD=usd;
-                if(Number.isFinite(rub)&&rub>0)fxRates.RUB=rub;
-            }
         }catch(e){}
     }
-    if(Number.isFinite(fxRates.USD)&&fxRates.USD>0&&Number.isFinite(fxRates.RUB)&&fxRates.RUB>0){
-        try{localStorage.setItem('aplo_fx_rates',JSON.stringify({USD:fxRates.USD,RUB:fxRates.RUB,updatedAt:Date.now()}));}catch(e){}
-    }
-    const binanceSyms=
-        symbols.filter(s=>!s.startsWith('0x')&&s.length<15);
-    const dexAddrs=
-        symbols.filter(s=>s.startsWith('0x')||s.length>=15);
-    let combinedData=[];
-    if(binanceSyms.length>0){
-        try{
-            const priceRes=await fetch(
-                'https://api.binance.com/api/v3/ticker/24hr?symbols='+
-                JSON.stringify(binanceSyms)
-            );
-            if(priceRes.ok)
-                combinedData=await priceRes.json();
-        }catch(e){}
-    }
-    async function fetchDexAsset(addr){
-        try{
-            let pairs=[];
-            const res=await fetch(
-                `https://api.dexscreener.com/latest/dex/tokens/${encodeURIComponent(addr)}`,
-                {cache:'no-store'}
-            );
-            if(res.ok){
-                const data=await res.json();
-                if(Array.isArray(data.pairs))pairs=data.pairs;
-            }
-            if(!pairs.length){
-                const search=await fetch(
-                    `https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(addr)}`,
-                    {cache:'no-store'}
-                );
-                if(search.ok){
-                    const data=await search.json();
-                    if(Array.isArray(data.pairs))pairs=data.pairs.filter(p=>
-                        String(p.baseToken&&p.baseToken.address||'').toLowerCase()===String(addr).toLowerCase() ||
-                        String(p.quoteToken&&p.quoteToken.address||'').toLowerCase()===String(addr).toLowerCase()
-                    );
-                }
-            }
-            if(!pairs.length)return null;
-            const valid=pairs.filter(p=>p && p.baseToken && p.priceUsd && Number.isFinite(parseFloat(p.priceUsd)));
-            if(!valid.length)return null;
-            valid.sort((a,b)=>{
-                const la=parseFloat(a.liquidity&&a.liquidity.usd)||0;
-                const lb=parseFloat(b.liquidity&&b.liquidity.usd)||0;
-                return lb-la;
-            });
-            const p=valid[0];
-            const baseAddress=String(p.baseToken.address||'').toLowerCase();
-            const tokenIsBase=baseAddress===String(addr).toLowerCase();
-            const symbol=tokenIsBase?(p.baseToken.symbol||'DEX'):(p.quoteToken&&p.quoteToken.symbol||p.baseToken.symbol||'DEX');
-            const fullName=tokenIsBase
-                ?(p.baseToken.name||symbol)
-                :(p.quoteToken&&p.quoteToken.name||p.baseToken.name||symbol);
-            const priceUsd=parseFloat(p.priceUsd);
-            const h24=parseFloat(p.priceChange&&p.priceChange.h24);
-            caNames[addr]=symbol;
-            caFullNames[addr]=fullName;
-            return {symbol,isDex:true,address:addr,fullName,lastPrice:priceUsd*usdToEur,priceChangePercent:Number.isFinite(h24)?h24:0};
-        }catch(e){return null;}
-    }
-    for(const addr of dexAddrs){
-        const item=await fetchDexAsset(addr);
+
+    let combinedData=Array.isArray(binanceData)?binanceData:[];
+    (Array.isArray(dexResults)?dexResults:[]).forEach(item=>{
         if(item)combinedData.push(item);
-    }
-    localStorage.setItem(
-        'ca_names',
-        JSON.stringify(caNames)
-    );
-    localStorage.setItem(
-        'ca_full_names',
-        JSON.stringify(caFullNames)
-    );
-    /*
-       IMPORTANT: every asset saved in `symbols` must remain visible.
-       An API/DexScreener miss must never make a user's asset disappear
-       from the terminal.  Use the latest locally stored price when
-       possible; otherwise keep the card visible with a `—` price.
-    */
+    });
+
+    localStorage.setItem('ca_names',JSON.stringify(caNames));
+    localStorage.setItem('ca_full_names',JSON.stringify(caFullNames));
+
     const apiByKey={};
     combinedData.forEach(item=>{
         const key=item.isDex?item.address:item.symbol;
@@ -1188,6 +1267,7 @@ async function updateMarket(){
     const completeData=symbols.map(s=>{
         const key=String(s).toLowerCase();
         const live=apiByKey[key];
+
         if(live){
             live.priceAvailable=true;
             if(live.isDex&&live.address&&live.fullName)
@@ -1197,13 +1277,15 @@ async function updateMarket(){
 
         const isDex=s.startsWith('0x')||s.length>=15;
         const history=priceHistory[s];
-        const points=history&&Array.isArray(history.points)?history.points:[];
-        const lastPoint=points.length?points[points.length-1]:null;
+        const points=history&&Array.isArray(history.points)
+            ?history.points:[];
+        const lastPoint=points.length
+            ?points[points.length-1]
+            :null;
         let fallbackEur=Number(lastPoint&&lastPoint.price);
 
-        if(!Number.isFinite(fallbackEur)||fallbackEur<=0){
+        if(!Number.isFinite(fallbackEur)||fallbackEur<=0)
             fallbackEur=0;
-        }
 
         const fallbackLastPrice=isDex
             ?fallbackEur
@@ -1225,14 +1307,32 @@ async function updateMarket(){
     marketData=completeData.sort((a,b)=>{
         if(a.priceAvailable!==b.priceAvailable)
             return a.priceAvailable?-1:1;
-        return parseFloat(b.priceChangePercent||0)-parseFloat(a.priceChangePercent||0);
+        return parseFloat(b.priceChangePercent||0)-
+               parseFloat(a.priceChangePercent||0);
     });
+
+    /*
+       Save the successful result so the next visit never starts
+       from an empty screen.
+    */
+    try{
+        localStorage.setItem(
+            'aplo_market_snapshot',
+            JSON.stringify({
+                updatedAt:Date.now(),
+                data:marketData
+            })
+        );
+        marketSnapshotAt=Date.now();
+    }catch(e){}
 
     renderUI();
     recordHourlyPrices();
+
     if(statusEl)
         statusEl.classList.remove('status-refreshing');
 }
+
 function renderUI(){
     const wrapper=document.getElementById('main-wrapper');
     if(!wrapper)return;
@@ -2281,6 +2381,7 @@ window.addEventListener('load',()=>{
     const savedTheme=localStorage.getItem('theme');
     if(savedTheme)document.body.setAttribute('data-theme',savedTheme);
     ensureHistoryForExistingAssets();
+    seedMarketDataImmediately();
     renderHourlyPerformance();
 });
 const tickerEl=
@@ -2362,6 +2463,8 @@ setInterval(()=>{
     renderHourlyPerformance();
 },60000);
 applyLang();
+/* Paint cached market data immediately; live refresh follows in parallel. */
+if(marketData.length)renderUI();
 updateMarket();
 </script>
 </body>
