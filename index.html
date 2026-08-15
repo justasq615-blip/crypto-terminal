@@ -1712,14 +1712,14 @@ function openHistoryDetail(symbol,name){
         html+=
         `<div class="history-buy">
             ${T('averageBuy')}:
-            <strong>${formatMoney(avgBuy)}</strong>
+            <strong>${formatCryptoMoney(avgBuy)}</strong>
          </div>`;
     }
     if(current>0){
         html+=
         `<div class="history-pnl ${pnl!==null?(pnl>=0?'up':'down'):''}">
             CURRENT:
-            ${formatMoney(current)}
+            ${formatCryptoMoney(current)}
             ${pnl!==null
             ?` • ${pnl>=0?'+':''}${pnl.toFixed(1)}%`
             :''}
@@ -1764,7 +1764,7 @@ function openHistoryDetail(symbol,name){
             `<div class="history-row">
                 <span class="history-date">${date}</span>
                 <span class="history-price">
-                    ${formatMoney(point.price)}
+                    ${formatCryptoMoney(point.price)}
                 </span>
                 ${change}
              </div>`;
@@ -1883,14 +1883,14 @@ function drawHistoryChart(points,avgBuy,current){
            fill="currentColor"
            opacity=".55"
            font-size="8">
-        ${formatMoney(max)}
+        ${formatCryptoMoney(max)}
      </text>`;
     markup+=
     `<text x="${pad}" y="${H-4}"
            fill="currentColor"
            opacity=".55"
            font-size="8">
-        ${formatMoney(min)}
+        ${formatCryptoMoney(min)}
      </text>`;
     svg.innerHTML=markup;
 }
