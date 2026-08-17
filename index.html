@@ -3656,7 +3656,7 @@ setInterval(()=>{
         '<span class="live-dot"></span> '+T('live')+' - '+
         new Date().toLocaleTimeString();
 },1000);
-setInterval(updateMarket,30000);
+setInterval(updateMarket,120000);
 setInterval(()=>updateTop50Ticker(false),60000);
 setInterval(()=>{
     captureHourlySnapshot();
@@ -3841,12 +3841,6 @@ updateMarket();
     lastUseTick=now;
   }
   setInterval(tickUse,1000);
-
-  /* Home-screen support box; Legal & Disclaimer lives at the end of the Guide. */
-  function updateAdSlot(){
-    const ad=document.getElementById('aplo-ad-slot');
-    if(ad)ad.classList.toggle('aplo-hidden',isPro());
-  }
 
   /* Refresh language/UI without replacing existing translation data. */
   const originalSetLang=window.setLang;
