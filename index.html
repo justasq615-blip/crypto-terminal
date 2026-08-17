@@ -385,7 +385,21 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 }
 
 /* Price-history/chart surface: white background, black graph/labels */
-[data-theme="white-black"] #chart-container,
+[data-theme="white-black"] .history-period-btn.active,
+[data-theme="white-black"] .ticker-speed-options button.active,
+[data-theme="white-black"] .theme-btn.active,
+[data-theme="white-black"] .news-btn.active,
+[data-theme="white-black"] .dist-tab.active,
+[data-theme="white-black"] .action-btn.active,
+[data-theme="white-black"] .mini-btn.active,
+[data-theme="white-black"] .selected,
+[data-theme="white-black"] .active{
+    background:#fff !important;
+    color:#000 !important;
+    border-color:#000 !important;
+    border-width:2px !important;
+    box-shadow:none !important;
+}[data-theme="white-black"] #chart-container,
 [data-theme="white-black"] .history-chart {
     background:#fff !important;
     border-color:#000 !important;
