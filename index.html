@@ -913,6 +913,32 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 .whatif-history-row-head{display:flex;justify-content:space-between;align-items:center;gap:6px}
 .whatif-history-result{font-size:11px;font-weight:800}.whatif-history-meta{margin-top:3px;opacity:.72}.whatif-history-delete{flex:0 0 auto}
 .whatif-pro-hint{font-size:8px;line-height:1.4;opacity:.7;text-align:center;margin-top:5px}
+
+.crypto-news-modal{padding-bottom:8px}
+.crypto-hub-tabs{display:flex;gap:6px;margin-bottom:9px}
+.crypto-hub-tab{flex:1;border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:5px;padding:7px 4px;font-size:8px;font-weight:800;cursor:pointer}
+.crypto-hub-tab.active{background:var(--accent);color:var(--text)}
+.crypto-hub-links{display:flex;flex-direction:column;gap:7px}
+.academy-intro{font-size:8px;line-height:1.5;opacity:.78;margin-bottom:9px;text-align:center}
+.academy-level{margin-bottom:9px}
+.academy-level-title{font-size:8px;font-weight:900;letter-spacing:.5px;margin-bottom:5px;opacity:.82}
+.academy-topic{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:5px;padding:7px 8px;margin-bottom:4px;font-size:8px;cursor:pointer}
+.academy-topic:hover{border-color:var(--accent)}
+.academy-sources{margin-top:10px;border-top:1px solid var(--border);padding-top:8px}
+.academy-source{display:flex;justify-content:space-between;align-items:center;text-decoration:none;border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:5px;padding:7px 8px;margin-bottom:4px;font-size:8px}
+.academy-source:hover{border-color:var(--accent)}
+.academy-locked{text-align:center;padding:22px 8px}
+.academy-lock-icon{font-size:20px;margin-bottom:7px}
+.academy-lock-title{font-size:11px;font-weight:900;margin-bottom:6px}
+.academy-lock-text{font-size:8px;line-height:1.5;opacity:.75;margin-bottom:10px}
+.academy-back{width:100%;text-align:left;border:0;background:none;color:var(--text);font-size:8px;padding:4px 0 9px;cursor:pointer}
+.academy-topic-detail{border:1px solid var(--border);border-radius:6px;background:var(--panel);padding:12px}
+.academy-topic-title{font-size:11px;font-weight:900;margin-bottom:9px}
+.academy-topic-text{font-size:9px;line-height:1.7;opacity:.88}
+[data-theme="white-black"] .crypto-hub-tab,
+[data-theme="white-black"] .academy-topic,
+[data-theme="white-black"] .academy-source,
+[data-theme="white-black"] .academy-topic-detail{background:#fff;color:#000}
 </style>
 
 <style id="aplo-1-0-additions">
@@ -1183,7 +1209,7 @@ const uiText={
     crypto:"CRYPTO",qty:"QTY",avgBuy:"AVG BUY",price:"PRICE",value:"VALUE",share:"SHARE",total:"TOTAL",
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"price points",buy:"BUY",noBuy:"NO BUY",history:"HISTORY",
     priceHistory:"PRICE HISTORY",assetsTitle:"ASSETS",averageBuy:"AVERAGE BUY",current:"CURRENT",noAssets:"No assets.",
-    editAssetData:"EDIT ASSET DATA",globalNews:"GLOBAL CRYPTO NEWS",copy:"COPIED ✓",copyFailed:"COPY FAILED",
+    editAssetData:"EDIT ASSET DATA",globalNews:"GLOBAL CRYPTO NEWS",cryptoNewsTab:"NEWS",cryptoAcademyTab:"CRYPTO ABC",cryptoAcademyTitle:"APLO CRYPTO ABC",cryptoAcademyPro:"PRO — Learn crypto basics and build your knowledge step by step.",learnLevel1:"LEVEL 1 — BEGINNER",learnLevel2:"LEVEL 2 — MARKET",learnLevel3:"LEVEL 3 — ADVANCED",learnSources:"LEARN MORE",learnOpen:"OPEN",academyProOnly:"PRO FEATURE — Crypto ABC is available in APLO PRO.",abcBitcoin:"What is Bitcoin?",abcBlockchain:"What is a blockchain?",abcWallet:"What is a crypto wallet?",abcCoinToken:"Coin vs token",abcMarketCap:"What is market cap?",abcSupply:"Circulating / total / max supply",abcLiquidity:"What is liquidity?",abcVolume:"What is trading volume?",abcAthAtl:"ATH / ATL",abcRoi:"What is ROI?",abcCexDex:"CEX vs DEX",abcStaking:"What is staking?",abcStablecoin:"What is a stablecoin?",abcGas:"What is a gas fee?",abcSeed:"Seed phrase and private key",abcSmart:"What is a smart contract?",abcRug:"What is a rug pull?",abcLp:"What is a liquidity pool?",abcSlippage:"What is slippage?",abcFdv:"What is FDV?",abcHalving:"What is a halving?",copy:"COPIED ✓",copyFailed:"COPY FAILED",
     clickCopy:"Click to copy CA",tradeBinance:"TRADE ON BINANCE",dexScanner:"📊 OPEN DEXSCREENER",
     strong:"STRONG",positive:"POSITIVE",neutral:"NEUTRAL",weak:"WEAK",highRisk:"HIGH RISK",
     momentum24:"24H MOMENTUM",historyTrend:"HISTORY TREND",buyPosition:"BUY POSITION",dataDepth:"DATA DEPTH",
@@ -1194,12 +1220,12 @@ const uiText={
     testSaved:"No test positions saved yet.",initializing:"Initializing terminal data...",live:"LIVE",
     priceHistoryTitle:"PRICE HISTORY",watch_ca:"CA / CONTRACT ADDRESS (OPTIONAL)",watch_ca_hint:"Use a CA to track an asset that is not in your terminal.",watch_added:"CA added to watchlist.",watch_not_found:"CA could not be found on Dexscreener.",
     historyLive:"LIVE",history1d:"1D",history1w:"1W",history1m:"1M",history3m:"3M",historyCustom:"CUSTOM",historyApply:"SHOW",historyProOnly:"PRO FEATURE — Extended price history is available in APLO PRO.",historyLoading:"Loading historical data…",historyUnavailable:"Historical data is unavailable for this asset.",historyInvalidRange:"Choose a valid date range.",
-  whatifSave:"SAVE TO HISTORY",whatifHistory:"WHAT IF HISTORY",whatifClearAll:"CLEAR ALL",whatifSaved:"SAVED",whatifEmpty:"No WHAT IF observations saved yet.",whatifDelete:"DELETE",whatifProSave:"PRO — Save unlimited WHAT IF observations.",whatifDate:"DATE",whatifTarget:"TARGET",whatifInvestment:"INVESTMENT",whatifResult:"RESULT",whatifConfirmClear:"Delete all saved WHAT IF observations?"},
+  whatifSave:"SAVE TO HISTORY",whatifHistory:"WHAT IF HISTORY",whatifClearAll:"CLEAR ALL",whatifSaved:"SAVED",whatifEmpty:"No WHAT IF observations saved yet.",whatifDelete:"DELETE",whatifProSave:"PRO — Save unlimited WHAT IF observations.",whatifDate:"DATE",whatifTarget:"TARGET",whatifInvestment:"INVESTMENT",whatifResult:"RESULT",whatifConfirmClear:"Delete all saved WHAT IF observations?",abcBitcoinDesc:"Bitcoin is a digital currency and network that lets users transfer value directly without a central intermediary.",abcBlockchainDesc:"A blockchain is a distributed ledger where transactions are recorded in linked blocks.",abcWalletDesc:"A crypto wallet manages the keys used to control assets and sign transactions.",abcCoinTokenDesc:"A coin has its own blockchain; a token normally runs on an existing blockchain.",abcMarketCapDesc:"Market cap = price × circulating supply. It is a common way to compare the market value of crypto assets.",abcSupplyDesc:"Circulating supply is currently in circulation; total supply is the amount created; max supply is the maximum defined by the project, if one exists.",abcLiquidityDesc:"Liquidity describes how easily an asset can be bought or sold without moving its price heavily.",abcVolumeDesc:"Trading volume shows how much of an asset was traded during a chosen period.",abcAthAtlDesc:"ATH means all-time high; ATL means all-time low.",abcRoiDesc:"ROI shows the relative return of an investment as a percentage.",abcCexDexDesc:"A CEX is a centralized exchange; a DEX enables trading through decentralized protocols.",abcStakingDesc:"Staking generally means locking or delegating assets to support a network under its protocol rules.",abcStablecoinDesc:"A stablecoin aims to keep its value linked to another asset, such as the US dollar.",abcGasDesc:"A gas fee is a network fee paid for a blockchain transaction or smart-contract execution.",abcSeedDesc:"A seed phrase can restore a wallet. A private key controls an address and must remain secret.",abcSmartDesc:"A smart contract is a program on a blockchain that executes predefined rules.",abcRugDesc:"A rug pull is a scam where project operators remove liquidity or funds and leave users with losses.",abcLpDesc:"A liquidity pool is a pool of assets used by protocols such as DEXs to facilitate trading.",abcSlippageDesc:"Slippage is the difference between the expected and actual execution price.",abcFdvDesc:"FDV estimates a project's value if the full possible token supply were in circulation.",abcHalvingDesc:"A Bitcoin halving cuts the block reward for miners by half."},
   et:{
     crypto:"KRÜPTO",qty:"KOGUS",avgBuy:"KESKMINE OST",price:"HIND",value:"VÄÄRTUS",share:"OSAKAAL",total:"KOKKU",
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"hinnapunkti",buy:"OST",noBuy:"OSTUHIND PUUDUB",history:"AJALUGU",
     priceHistory:"HINNAAJALUGU",assetsTitle:"VARAD",averageBuy:"KESKMINE OST",current:"PRAEGU",noAssets:"Varad puuduvad.",
-    editAssetData:"MUUDA VARADE ANDMEID",globalNews:"KRÜPTOMAAILMA UUDISED",copy:"KOPEERITUD ✓",copyFailed:"KOPEERIMINE EBAÕNNESTUS",
+    editAssetData:"MUUDA VARADE ANDMEID",globalNews:"KRÜPTOMAAILMA UUDISED",cryptoNewsTab:"UUDISED",cryptoAcademyTab:"KRÜPTO ABC",cryptoAcademyTitle:"APLO KRÜPTO ABC",cryptoAcademyPro:"PRO — Õpi krüpto põhitõdesid ja ehita oma teadmisi samm-sammult.",learnLevel1:"TASE 1 — ALGUS",learnLevel2:"TASE 2 — TURG",learnLevel3:"TASE 3 — EDASIJÕUDNUD",learnSources:"KUST EDASI ÕPPIDA",learnOpen:"AVA",academyProOnly:"PRO-FUNKTSIOON — Krüpto ABC on saadaval APLO PRO-s.",abcBitcoin:"Mis on Bitcoin?",abcBlockchain:"Mis on blockchain?",abcWallet:"Mis on krüptorahakott?",abcCoinToken:"Coin ja token",abcMarketCap:"Mis on market cap?",abcSupply:"Ringluses / kogu- / maksimaalne pakkumine",abcLiquidity:"Mis on likviidsus?",abcVolume:"Mis on kauplemismaht?",abcAthAtl:"ATH / ATL",abcRoi:"Mis on ROI?",abcCexDex:"CEX ja DEX",abcStaking:"Mis on staking?",abcStablecoin:"Mis on stablecoin?",abcGas:"Mis on gas fee?",abcSeed:"Seed phrase ja private key",abcSmart:"Mis on smart contract?",abcRug:"Mis on rug pull?",abcLp:"Mis on liquidity pool?",abcSlippage:"Mis on slippage?",abcFdv:"Mis on FDV?",abcHalving:"Mis on halving?",copy:"KOPEERITUD ✓",copyFailed:"KOPEERIMINE EBAÕNNESTUS",
     clickCopy:"Vajuta CA kopeerimiseks",tradeBinance:"KAUPLE BINANCE'IS",dexScanner:"📊 AVA DEXSCREENER",
     strong:"TUGEV",positive:"POSITIIVNE",neutral:"NEUTRAALNE",weak:"NÕRK",highRisk:"KÕRGE RISK",
     momentum24:"24H MOMENTUM",historyTrend:"AJALOOTREND",buyPosition:"OSTUPOSITSIOON",dataDepth:"ANDMETE SÜGAVUS",
@@ -1209,12 +1235,12 @@ const uiText={
     validTarget:"Sisesta kehtiv sihthind.",validTest:"Sisesta vara, investeering ja alghind.",base:"ALUS",test:"TEST",
     testSaved:"Testpositsioone pole veel salvestatud.",initializing:"Terminali andmete laadimine...",live:"OTSE",
     priceHistoryTitle:"HINNAAJALUGU",watch_ca:"CA / KONTRAKTIAADRESS (VALIKULINE)",watch_ca_hint:"Kasuta CA-d, et jälgida vara, mida terminalis ei ole.",watch_added:"CA lisati vaatlusesse.",watch_not_found:"CA-d ei leitud Dexscreenerist.",
-  whatifSave:"SALVESTA AJALUKKU",whatifHistory:"MIS SIIS, KUI AJALUGU",whatifClearAll:"KUSTUTA KÕIK",whatifSaved:"SALVESTATUD",whatifEmpty:"MIS SIIS, KUI vaatlusi pole veel salvestatud.",whatifDelete:"KUSTUTA",whatifProSave:"PRO — Salvesta piiramatult MIS SIIS, KUI vaatlusi.",whatifDate:"KUUPÄEV",whatifTarget:"SIHT",whatifInvestment:"INVESTEERING",whatifResult:"TULEMUS",whatifConfirmClear:"Kustutada kõik salvestatud MIS SIIS, KUI vaatlused?"},
+  whatifSave:"SALVESTA AJALUKKU",whatifHistory:"MIS SIIS, KUI AJALUGU",whatifClearAll:"KUSTUTA KÕIK",whatifSaved:"SALVESTATUD",whatifEmpty:"MIS SIIS, KUI vaatlusi pole veel salvestatud.",whatifDelete:"KUSTUTA",whatifProSave:"PRO — Salvesta piiramatult MIS SIIS, KUI vaatlusi.",whatifDate:"KUUPÄEV",whatifTarget:"SIHT",whatifInvestment:"INVESTEERING",whatifResult:"TULEMUS",whatifConfirmClear:"Kustutada kõik salvestatud MIS SIIS, KUI vaatlused?",abcBitcoinDesc:"Bitcoin on digitaalne raha ja võrk, mis võimaldab kasutajatel väärtust otse üle kanda ilma keskse vahendajata.",abcBlockchainDesc:"Blockchain on hajutatud pearaamat, kus tehingud salvestatakse omavahel seotud plokkidesse.",abcWalletDesc:"Krüptorahakott haldab võtmeid, millega kasutaja oma varasid kontrollib ja tehinguid allkirjastab.",abcCoinTokenDesc:"Coinil on oma plokiahel; token töötab tavaliselt olemasoleva plokiahela peal.",abcMarketCapDesc:"Market cap = hind × ringluses olev kogus. Seda kasutatakse krüptovarade turuväärtuse võrdlemiseks.",abcSupplyDesc:"Circulating supply on ringluses olev kogus; total supply loodud kogus; max supply projekti määratud maksimaalne kogus, kui see on olemas.",abcLiquidityDesc:"Likviidsus näitab, kui lihtsalt saab vara osta või müüa ilma hinda tugevalt liigutamata.",abcVolumeDesc:"Kauplemismaht näitab, kui palju vara valitud ajavahemikul kaubeldi.",abcAthAtlDesc:"ATH tähendab kõigi aegade kõrgeimat hinda; ATL kõigi aegade madalaimat hinda.",abcRoiDesc:"ROI näitab investeeringu suhtelist tootlust protsendina.",abcCexDexDesc:"CEX on tsentraliseeritud börs; DEX võimaldab kauplemist detsentraliseeritud protokollide kaudu.",abcStakingDesc:"Staking tähendab üldiselt vara lukustamist või delegeerimist võrgu toetamiseks vastavalt protokolli reeglitele.",abcStablecoinDesc:"Stablecoin püüab hoida väärtust seotud mõne teise varaga, näiteks USA dollariga.",abcGasDesc:"Gas fee on võrgutasu, mida makstakse plokiahela tehingu või nutilepingu täitmise eest.",abcSeedDesc:"Seed phrase võimaldab rahakotti taastada. Private key kontrollib aadressi ja peab jääma salajaseks.",abcSmartDesc:"Smart contract on plokiahelas töötav programm, mis täidab ette määratud reegleid.",abcRugDesc:"Rug pull on pettus, kus projekti loojad eemaldavad likviidsuse või vahendid ja jätavad kasutajad kahjumisse.",abcLpDesc:"Liquidity pool on varade kogum, mida kasutavad näiteks DEX-id kauplemise võimaldamiseks.",abcSlippageDesc:"Slippage on erinevus oodatud ja tegeliku tehingu täitmishinna vahel.",abcFdvDesc:"FDV hindab projekti väärtust juhul, kui kogu võimalik tokenite kogus oleks ringluses.",abcHalvingDesc:"Bitcoini halving vähendab kaevandajate plokipreemiat poole võrra."},
   es:{
     crypto:"ACTIVO",qty:"CANT.",avgBuy:"COMPRA MEDIA",price:"PRECIO",value:"VALOR",share:"CUOTA",total:"TOTAL",
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"puntos de precio",buy:"COMPRA",noBuy:"SIN COMPRA",history:"HISTORIAL",
     priceHistory:"HISTORIAL DE PRECIOS",assetsTitle:"ACTIVOS",averageBuy:"COMPRA MEDIA",current:"ACTUAL",noAssets:"Sin activos.",
-    editAssetData:"EDITAR DATOS DE ACTIVOS",globalNews:"NOTICIAS CRIPTO GLOBALES",copy:"COPIADO ✓",copyFailed:"ERROR AL COPIAR",
+    editAssetData:"EDITAR DATOS DE ACTIVOS",globalNews:"NOTICIAS CRIPTO GLOBALES",cryptoNewsTab:"NOTICIAS",cryptoAcademyTab:"CRYPTO ABC",cryptoAcademyTitle:"APLO CRYPTO ABC",cryptoAcademyPro:"PRO — Aprende los conceptos básicos de las criptomonedas paso a paso.",learnLevel1:"NIVEL 1 — INICIO",learnLevel2:"NIVEL 2 — MERCADO",learnLevel3:"NIVEL 3 — AVANZADO",learnSources:"APRENDER MÁS",learnOpen:"ABRIR",academyProOnly:"FUNCIÓN PRO — Crypto ABC está disponible en APLO PRO.",abcBitcoin:"¿Qué es Bitcoin?",abcBlockchain:"¿Qué es una blockchain?",abcWallet:"¿Qué es una wallet de criptomonedas?",abcCoinToken:"Coin y token",abcMarketCap:"¿Qué es la capitalización de mercado?",abcSupply:"Suministro circulante / total / máximo",abcLiquidity:"¿Qué es la liquidez?",abcVolume:"¿Qué es el volumen de negociación?",abcAthAtl:"ATH / ATL",abcRoi:"¿Qué es el ROI?",abcCexDex:"CEX vs DEX",abcStaking:"¿Qué es el staking?",abcStablecoin:"¿Qué es una stablecoin?",abcGas:"¿Qué es una gas fee?",abcSeed:"Seed phrase y private key",abcSmart:"¿Qué es un smart contract?",abcRug:"¿Qué es un rug pull?",abcLp:"¿Qué es un liquidity pool?",abcSlippage:"¿Qué es el slippage?",abcFdv:"¿Qué es el FDV?",abcHalving:"¿Qué es un halving?",copy:"COPIADO ✓",copyFailed:"ERROR AL COPIAR",
     clickCopy:"Pulsa para copiar CA",tradeBinance:"OPERAR EN BINANCE",dexScanner:"📊 ABRIR DEXSCREENER",
     strong:"FUERTE",positive:"POSITIVO",neutral:"NEUTRAL",weak:"DÉBIL",highRisk:"ALTO RIESGO",
     momentum24:"MOMENTO 24H",historyTrend:"TENDENCIA HISTÓRICA",buyPosition:"POSICIÓN DE COMPRA",dataDepth:"PROFUNDIDAD DE DATOS",
@@ -1224,12 +1250,12 @@ const uiText={
     validTarget:"Introduce un precio objetivo válido.",validTest:"Introduce el activo, la inversión y el precio base.",base:"BASE",test:"PRUEBA",
     testSaved:"No hay posiciones de prueba guardadas.",initializing:"Cargando datos del terminal...",live:"EN VIVO",
     priceHistoryTitle:"HISTORIAL DE PRECIOS",watch_ca:"CA / DIRECCIÓN DEL CONTRATO (OPCIONAL)",watch_ca_hint:"Usa una CA para seguir un activo que no está en tu terminal.",watch_added:"CA añadida a la lista.",watch_not_found:"No se encontró la CA en Dexscreener.",
-  whatifSave:"GUARDAR EN HISTORIAL",whatifHistory:"HISTORIAL DE ¿Y SI?",whatifClearAll:"BORRAR TODO",whatifSaved:"GUARDADO",whatifEmpty:"Aún no hay observaciones de ¿Y SI? guardadas.",whatifDelete:"ELIMINAR",whatifProSave:"PRO — Guarda observaciones ilimitadas de ¿Y SI?.",whatifDate:"FECHA",whatifTarget:"OBJETIVO",whatifInvestment:"INVERSIÓN",whatifResult:"RESULTADO",whatifConfirmClear:"¿Eliminar todas las observaciones de ¿Y SI? guardadas?"},
+  whatifSave:"GUARDAR EN HISTORIAL",whatifHistory:"HISTORIAL DE ¿Y SI?",whatifClearAll:"BORRAR TODO",whatifSaved:"GUARDADO",whatifEmpty:"Aún no hay observaciones de ¿Y SI? guardadas.",whatifDelete:"ELIMINAR",whatifProSave:"PRO — Guarda observaciones ilimitadas de ¿Y SI?.",whatifDate:"FECHA",whatifTarget:"OBJETIVO",whatifInvestment:"INVERSIÓN",whatifResult:"RESULTADO",whatifConfirmClear:"¿Eliminar todas las observaciones de ¿Y SI? guardadas?",abcBitcoinDesc:"Bitcoin es una moneda y red digital que permite transferir valor directamente sin un intermediario central.",abcBlockchainDesc:"Una blockchain es un registro distribuido donde las transacciones se guardan en bloques enlazados.",abcWalletDesc:"Una wallet de criptomonedas gestiona las claves que permiten controlar activos y firmar transacciones.",abcCoinTokenDesc:"Una coin tiene su propia blockchain; un token normalmente funciona sobre una blockchain existente.",abcMarketCapDesc:"Market cap = precio × suministro circulante. Es una forma habitual de comparar el valor de mercado.",abcSupplyDesc:"El suministro circulante está en circulación; el suministro total es la cantidad creada; el máximo es el límite definido por el proyecto, si existe.",abcLiquidityDesc:"La liquidez indica lo fácil que es comprar o vender un activo sin mover mucho su precio.",abcVolumeDesc:"El volumen muestra cuánto de un activo se negoció durante un periodo.",abcAthAtlDesc:"ATH significa máximo histórico; ATL significa mínimo histórico.",abcRoiDesc:"ROI muestra el rendimiento relativo de una inversión en porcentaje.",abcCexDexDesc:"Un CEX es un exchange centralizado; un DEX permite operar mediante protocolos descentralizados.",abcStakingDesc:"El staking normalmente consiste en bloquear o delegar activos para apoyar una red según sus reglas.",abcStablecoinDesc:"Una stablecoin busca mantener su valor vinculado a otro activo, como el dólar estadounidense.",abcGasDesc:"Una gas fee es la comisión de red de una transacción blockchain o de ejecutar un smart contract.",abcSeedDesc:"Una seed phrase puede restaurar una wallet. Una private key controla una dirección y debe mantenerse secreta.",abcSmartDesc:"Un smart contract es un programa en una blockchain que ejecuta reglas predefinidas.",abcRugDesc:"Un rug pull es una estafa en la que los operadores retiran liquidez o fondos y dejan pérdidas a los usuarios.",abcLpDesc:"Un liquidity pool es un conjunto de activos usado por protocolos como los DEX para facilitar operaciones.",abcSlippageDesc:"El slippage es la diferencia entre el precio esperado y el precio real de ejecución.",abcFdvDesc:"FDV estima el valor de un proyecto si todo el suministro posible de tokens estuviera en circulación.",abcHalvingDesc:"El halving de Bitcoin reduce a la mitad la recompensa por bloque de los mineros."},
   ru:{
     crypto:"АКТИВ",qty:"КОЛ-ВО",avgBuy:"СРЕДНЯЯ ПОКУПКА",price:"ЦЕНА",value:"СТОИМОСТЬ",share:"ДОЛЯ",total:"ИТОГО",
     spot:"СПОТ",caDex:"CA / DEX",pricePoints:"ценовых точек",buy:"ПОКУПКА",noBuy:"НЕТ ПОКУПКИ",history:"ИСТОРИЯ",
     priceHistory:"ИСТОРИЯ ЦЕН",assetsTitle:"АКТИВЫ",averageBuy:"СРЕДНЯЯ ПОКУПКА",current:"ТЕКУЩАЯ",noAssets:"Нет активов.",
-    editAssetData:"ИЗМЕНЕНИЕ ДАННЫХ АКТИВОВ",globalNews:"ГЛОБАЛЬНЫЕ КРИПТОНОВОСТИ",copy:"СКОПИРОВАНО ✓",copyFailed:"НЕ УДАЛОСЬ СКОПИРОВАТЬ",
+    editAssetData:"ИЗМЕНЕНИЕ ДАННЫХ АКТИВОВ",globalNews:"ГЛОБАЛЬНЫЕ КРИПТОНОВОСТИ",cryptoNewsTab:"НОВОСТИ",cryptoAcademyTab:"КРИПТО ABC",cryptoAcademyTitle:"APLO КРИПТО ABC",cryptoAcademyPro:"PRO — Изучайте основы криптовалют шаг за шагом.",learnLevel1:"УРОВЕНЬ 1 — НАЧАЛО",learnLevel2:"УРОВЕНЬ 2 — РЫНОК",learnLevel3:"УРОВЕНЬ 3 — ПРОДВИНУТЫЙ",learnSources:"УЗНАТЬ БОЛЬШЕ",learnOpen:"ОТКРЫТЬ",academyProOnly:"ФУНКЦИЯ PRO — Крипто ABC доступна в APLO PRO.",abcBitcoin:"Что такое Bitcoin?",abcBlockchain:"Что такое blockchain?",abcWallet:"Что такое криптокошелёк?",abcCoinToken:"Coin и token",abcMarketCap:"Что такое рыночная капитализация?",abcSupply:"Оборотное / общее / максимальное предложение",abcLiquidity:"Что такое ликвидность?",abcVolume:"Что такое торговый объём?",abcAthAtl:"ATH / ATL",abcRoi:"Что такое ROI?",abcCexDex:"CEX и DEX",abcStaking:"Что такое staking?",abcStablecoin:"Что такое stablecoin?",abcGas:"Что такое gas fee?",abcSeed:"Seed phrase и private key",abcSmart:"Что такое smart contract?",abcRug:"Что такое rug pull?",abcLp:"Что такое liquidity pool?",abcSlippage:"Что такое slippage?",abcFdv:"Что такое FDV?",abcHalving:"Что такое halving?",copy:"СКОПИРОВАНО ✓",copyFailed:"НЕ УДАЛОСЬ СКОПИРОВАТЬ",
     clickCopy:"Нажмите, чтобы скопировать CA",tradeBinance:"ТОРГОВАТЬ НА BINANCE",dexScanner:"📊 ОТКРЫТЬ DEXSCREENER",
     strong:"СИЛЬНЫЙ",positive:"ПОЗИТИВНЫЙ",neutral:"НЕЙТРАЛЬНЫЙ",weak:"СЛАБЫЙ",highRisk:"ВЫСОКИЙ РИСК",
     momentum24:"ИМПУЛЬС 24Ч",historyTrend:"ТРЕНД ИСТОРИИ",buyPosition:"ПОЗИЦИЯ ПОКУПКИ",dataDepth:"ГЛУБИНА ДАННЫХ",
@@ -1239,7 +1265,7 @@ const uiText={
     validTarget:"Введите корректную целевую цену.",validTest:"Введите актив, сумму инвестиции и базовую цену.",base:"БАЗА",test:"ТЕСТ",
     testSaved:"Тестовых позиций пока нет.",initializing:"Загрузка данных терминала...",live:"В ЭФИРЕ",
     priceHistoryTitle:"ИСТОРИЯ ЦЕН",watch_ca:"CA / АДРЕС КОНТРАКТА (НЕОБЯЗАТЕЛЬНО)",watch_ca_hint:"Используйте CA для отслеживания актива, которого нет в терминале.",watch_added:"CA добавлен в список.",watch_not_found:"CA не найден в Dexscreener.",
-  whatifSave:"СОХРАНИТЬ В ИСТОРИЮ",whatifHistory:"ИСТОРИЯ «ЧТО ЕСЛИ?»",whatifClearAll:"УДАЛИТЬ ВСЁ",whatifSaved:"СОХРАНЕНО",whatifEmpty:"Сохранённых расчётов «Что если?» пока нет.",whatifDelete:"УДАЛИТЬ",whatifProSave:"PRO — Сохраняйте неограниченное количество расчётов «Что если?».",whatifDate:"ДАТА",whatifTarget:"ЦЕЛЬ",whatifInvestment:"ИНВЕСТИЦИЯ",whatifResult:"РЕЗУЛЬТАТ",whatifConfirmClear:"Удалить все сохранённые расчёты «Что если?»?"}
+  whatifSave:"СОХРАНИТЬ В ИСТОРИЮ",whatifHistory:"ИСТОРИЯ «ЧТО ЕСЛИ?»",whatifClearAll:"УДАЛИТЬ ВСЁ",whatifSaved:"СОХРАНЕНО",whatifEmpty:"Сохранённых расчётов «Что если?» пока нет.",whatifDelete:"УДАЛИТЬ",whatifProSave:"PRO — Сохраняйте неограниченное количество расчётов «Что если?».",whatifDate:"ДАТА",whatifTarget:"ЦЕЛЬ",whatifInvestment:"ИНВЕСТИЦИЯ",whatifResult:"РЕЗУЛЬТАТ",whatifConfirmClear:"Удалить все сохранённые расчёты «Что если?»?",abcBitcoinDesc:"Bitcoin — цифровая валюта и сеть, позволяющая напрямую передавать стоимость без центрального посредника.",abcBlockchainDesc:"Blockchain — распределённый реестр, где транзакции записываются в связанные блоки.",abcWalletDesc:"Криптокошелёк управляет ключами, с помощью которых контролируются активы и подписываются транзакции.",abcCoinTokenDesc:"Coin имеет собственный блокчейн; token обычно работает поверх существующего блокчейна.",abcMarketCapDesc:"Market cap = цена × оборотное предложение. Это распространённый способ сравнивать рыночную стоимость активов.",abcSupplyDesc:"Оборотное предложение находится в обращении; общее — созданное количество; максимальное — установленный предел, если он существует.",abcLiquidityDesc:"Ликвидность показывает, насколько легко купить или продать актив без сильного изменения его цены.",abcVolumeDesc:"Объём торгов показывает, сколько актива было проторговано за выбранный период.",abcAthAtlDesc:"ATH — исторический максимум; ATL — исторический минимум.",abcRoiDesc:"ROI показывает относительную доходность инвестиции в процентах.",abcCexDexDesc:"CEX — централизованная биржа; DEX позволяет торговать через децентрализованные протоколы.",abcStakingDesc:"Staking обычно означает блокировку или делегирование активов для поддержки сети по правилам протокола.",abcStablecoinDesc:"Stablecoin стремится сохранять стоимость, привязанную к другому активу, например к доллару США.",abcGasDesc:"Gas fee — сетовая комиссия за блокчейн-транзакцию или выполнение smart contract.",abcSeedDesc:"Seed phrase позволяет восстановить кошелёк. Private key управляет адресом и должен оставаться секретным.",abcSmartDesc:"Smart contract — программа в блокчейне, выполняющая заранее заданные правила.",abcRugDesc:"Rug pull — мошенничество, при котором создатели забирают ликвидность или средства, оставляя пользователей в убытке.",abcLpDesc:"Liquidity pool — пул активов, используемый, например, DEX для обеспечения торговли.",abcSlippageDesc:"Slippage — разница между ожидаемой и фактической ценой исполнения сделки.",abcFdvDesc:"FDV оценивает стоимость проекта, если всё потенциальное предложение токенов находилось бы в обращении.",abcHalvingDesc:"Halving Bitcoin уменьшает награду майнера за блок вдвое."}
 };
 const T=k=>(uiText[currentLang]||uiText.et)[k]??(uiText.en[k]||k);
 
@@ -2534,26 +2560,104 @@ function openGeneralNews(){
     const modal=document.getElementById('info-modal');
     const content=document.getElementById('info-content');
     if(modal)modal.classList.remove('guide-modal','legal-modal');
-    if(content)content.className='';
-    document.getElementById('info-header').innerText=
-        T('globalNews');
-    document.getElementById('info-content').innerHTML=
-    `<a href="https://cryptopanic.com"
-        target="_blank"
-        class="news-btn">CRYPTOPANIC</a>
-     <a href="https://www.coindesk.com"
-        target="_blank"
-        class="news-btn">COINDESK</a>
-     <a href="https://cointelegraph.com"
-        target="_blank"
-        class="news-btn">COINTELEGRAPH</a>
-     <a href="https://decrypt.co"
-        target="_blank"
-        class="news-btn">DECRYPT</a>`;
-    document.getElementById(
-        'info-overlay'
-    ).style.display='flex';
+    if(content)content.className='crypto-news-modal';
+    document.getElementById('info-header').innerText=T('globalNews');
+    renderCryptoNewsHub('news');
+    document.getElementById('info-overlay').style.display='flex';
 }
+
+function isAploProForAcademy(){
+    return typeof window.aploIsPro==='function' && window.aploIsPro();
+}
+
+function requestAcademyPro(){
+    if(typeof window.aploRequestPro==='function')return window.aploRequestPro('crypto-academy');
+    return false;
+}
+
+const apoloAcademyTopics={
+  level1:[
+    ['abcBitcoin','Bitcoin on digitaalne raha ja võrk, mis võimaldab väärtust otse kasutajate vahel üle kanda ilma keskse vahendajata.'],
+    ['abcBlockchain','Blockchain on hajutatud andmebaas, kus tehingud salvestatakse järjestikustesse plokkidesse.'],
+    ['abcWallet','Krüptorahakott hoiab sinu võtmeid, millega saad oma varasid kontrollida ja tehinguid allkirjastada.'],
+    ['abcCoinToken','Coinil on oma plokiahel; token töötab tavaliselt olemasoleva plokiahela peal.'],
+  ],
+  level2:[
+    ['abcMarketCap','Market cap = hind × ringluses olevate müntide või tokenite kogus. See aitab hinnata vara turuväärtust.'],
+    ['abcSupply','Circulating supply on ringluses olev kogus; total supply on olemasolev kogus; max supply on protokolliga lubatud maksimaalne kogus, kui see on määratud.'],
+    ['abcLiquidity','Likviidsus näitab, kui palju saab vara osta või müüa ilma hinda tugevalt liigutamata.'],
+    ['abcVolume','Kauplemismaht näitab, kui palju vara teatud ajavahemikul kaubeldi.'],
+    ['abcAthAtl','ATH on kõigi aegade kõrgeim hind ja ATL kõigi aegade madalaim hind.'],
+    ['abcRoi','ROI näitab investeeringu suhtelist tootlust protsendina.'],
+    ['abcCexDex','CEX on tsentraliseeritud börs; DEX võimaldab kauplemist detsentraliseeritud protokolli kaudu.'],
+    ['abcStaking','Staking tähendab vara lukustamist või delegeerimist võrgu toetamiseks vastavalt konkreetse protokolli reeglitele.'],
+    ['abcStablecoin','Stablecoin on token, mille eesmärk on hoida väärtus seotud mõne teise varaga, näiteks USA dollariga.'],
+    ['abcGas','Gas fee on plokiahela tehingu või nutilepingu täitmise eest makstav võrgutasu.'],
+  ],
+  level3:[
+    ['abcSeed','Seed phrase on taastamisfraas, millega saab rahakoti võtmeid taastada. Private key on salajane võti, mida ei tohi teistega jagada.'],
+    ['abcSmart','Smart contract on plokiahelas töötav programm, mis täidab ette määratud reegleid.'],
+    ['abcRug','Rug pull on pettus, kus projekti loojad võtavad likviidsuse või vahendid ära ja jätavad kasutajad kahjumisse.'],
+    ['abcLp','Liquidity pool on nutilepingus olev varade kogum, mida kasutatakse näiteks DEX-is kauplemise võimaldamiseks.'],
+    ['abcSlippage','Slippage on erinevus oodatud ja tegeliku tehinguhinna vahel.'],
+    ['abcFdv','FDV ehk fully diluted valuation hindab projekti väärtust, kui kogu võimalik tokenite hulk oleks turul.'],
+    ['abcHalving','Halving on sündmus, mille käigus Bitcoini ploki preemia väheneb poole võrra.'],
+  ]
+};
+
+const apoloAcademySources=[
+  ['BITCOIN.ORG','https://bitcoin.org/'],
+  ['ETHEREUM.ORG','https://ethereum.org/'],
+  ['BINANCE ACADEMY','https://academy.binance.com/'],
+  ['COINMARKETCAP ACADEMY','https://coinmarketcap.com/academy/']
+];
+
+function academyEsc(s){
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderCryptoNewsHub(tab){
+    const content=document.getElementById('info-content');
+    if(!content)return;
+    const pro=isAploProForAcademy();
+    const newsTab=`<button class="crypto-hub-tab ${tab==='news'?'active':''}" onclick="renderCryptoNewsHub('news')">${T('cryptoNewsTab')}</button>`;
+    const academyTab=`<button class="crypto-hub-tab ${tab==='academy'?'active':''}" onclick="renderCryptoNewsHub('academy')">${T('cryptoAcademyTab')}</button>`;
+    let body='';
+
+    if(tab==='news'){
+      body=`<div class="crypto-hub-links">
+        <a href="https://cryptopanic.com" target="_blank" rel="noopener" class="news-btn">CRYPTOPANIC</a>
+        <a href="https://www.coindesk.com" target="_blank" rel="noopener" class="news-btn">COINDESK</a>
+        <a href="https://cointelegraph.com" target="_blank" rel="noopener" class="news-btn">COINTELEGRAPH</a>
+        <a href="https://decrypt.co" target="_blank" rel="noopener" class="news-btn">DECRYPT</a>
+      </div>`;
+    }else if(!pro){
+      body=`<div class="academy-locked">
+        <div class="academy-lock-icon">🔒</div>
+        <div class="academy-lock-title">${T('cryptoAcademyTitle')}</div>
+        <div class="academy-lock-text">${T('academyProOnly')}</div>
+        <button class="action-btn primary" onclick="requestAcademyPro()">${T('proTitle')||'PRO'}</button>
+      </div>`;
+    }else{
+      const level=(title,arr)=>`<div class="academy-level"><div class="academy-level-title">${title}</div>${arr.map(([key,desc])=>`<button class="academy-topic" onclick="openAcademyTopic('${key}')"><span>${T(key)}</span><span>›</span></button>`).join('')}</div>`;
+      body=`<div class="academy-intro">${T('cryptoAcademyPro')}</div>
+        ${level(T('learnLevel1'),apoloAcademyTopics.level1)}
+        ${level(T('learnLevel2'),apoloAcademyTopics.level2)}
+        ${level(T('learnLevel3'),apoloAcademyTopics.level3)}
+        <div class="academy-sources"><div class="academy-level-title">${T('learnSources')}</div>
+        ${apoloAcademySources.map(([name,url])=>`<a href="${url}" target="_blank" rel="noopener" class="academy-source"><span>${name}</span><span>${T('learnOpen')} ↗</span></a>`).join('')}
+        </div>`;
+    }
+    content.innerHTML=`<div class="crypto-hub-tabs">${newsTab}${academyTab}</div>${body}`;
+}
+
+function openAcademyTopic(key){
+    const content=document.getElementById('info-content');
+    if(!content)return;
+    content.innerHTML=`<button class="academy-back" onclick="renderCryptoNewsHub('academy')">‹ ${T('cryptoAcademyTab')}</button>
+      <div class="academy-topic-detail"><div class="academy-topic-title">${T(key)}</div><div class="academy-topic-text">${academyEsc(T(key+"Desc"))}</div></div>`;
+}
+
 function openAppInfo(){
     renderGuide();
     document.getElementById('info-overlay').style.display='flex';
