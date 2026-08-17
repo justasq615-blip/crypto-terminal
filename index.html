@@ -865,6 +865,19 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
   flex-direction:column;
   gap:10px;
 }
+
+.aplo-legal-nav{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.aplo-legal-nav button{flex:1 1 30%;min-width:110px;padding:8px 7px;border:1px solid var(--border);border-radius:5px;background:var(--accent);color:var(--text);font-size:7px;font-weight:800;cursor:pointer}
+.aplo-legal-nav button.active{border-width:2px;background:var(--bg);color:var(--text)}
+.aplo-legal-doc{font-size:8px;line-height:1.55}
+.aplo-legal-doc h3{margin:0 0 6px;font-size:10px;color:var(--title);text-transform:uppercase;letter-spacing:.3px}
+.aplo-legal-doc h4{margin:12px 0 4px;font-size:9px;color:var(--title)}
+.aplo-legal-doc p{margin:0 0 7px}
+.aplo-legal-doc ul{margin:4px 0 8px 17px;padding:0}
+.aplo-legal-doc li{margin:0 0 4px}
+.aplo-legal-meta{font-size:7px;opacity:.7;margin-bottom:12px}
+[data-theme="white-black"] .aplo-legal-nav button{background:#fff!important;color:#000!important;border-color:#000!important}
+[data-theme="white-black"] .aplo-legal-nav button.active{background:#fff!important;color:#000!important;border-width:2px!important}
 .guide-extra-box{
   border:1px solid var(--border);
   border-radius:7px;
@@ -3182,6 +3195,161 @@ const GUIDE_CONTENT = {
   }
 };
 
+
+const LEGAL_CONTENT = {
+  et:{
+    privacyTitle:"PRIVAATSUSPOLIITIKA",
+    termsTitle:"KASUTUSTINGIMUSED",
+    disclaimerTitle:"VASTUTUSVABASTUS JA FINANTSDISCLAIMER",
+    updated:"Versioon 1.0 — koostatud APLO v1.0 arenduse jaoks. Enne Google Play avaldamist tuleb dokument üle vaadata ja avaldada ametlikul veebilehel.",
+    nav:{privacy:"PRIVAATSUS",terms:"TINGIMUSED",disclaimer:"DISCLAIMER"},
+    privacy:[
+      ["1. Vastutav töötleja","APLO Crypto Terminali käitaja on rakenduse omanik/operaator. Kontakt: a.ploom@live.com. Kui rakenduse avaldamisel kasutatakse eraldi juriidilist isikut või ametlikku veebidomeeni, tuleb käesolev dokument enne avaldamist vastavate andmetega uuendada."],
+      ["2. Milliseid andmeid APLO praegu kasutab","Praegune APLO veebiversioon ei nõua kasutajakontot, parooli ega API-võtit. Portfelliandmed, seadistused, hinnahoiatused, WHAT IF vaatlused, vaatluse/testi andmed ja muud kohalikud rakenduse seaded võivad olla salvestatud kasutaja seadme brauseri või rakenduse localStorage'i. APLO ei küsi kasutajalt privaatvõtit ega seed phrase'i."],
+      ["3. Turuhinna ja muu välise info päringud","APLO kasutab turu-, hinna-, tokeni- ja valuutainfo saamiseks kolmandate osapoolte teenuseid, sealhulgas sõltuvalt funktsioonist Binance'i, CoinGecko, CoinCapi, CoinPaprika, DexScreeneri ja valuutakursi teenuseid. Need teenused võivad töödelda tehnilisi andmeid, näiteks IP-aadressi, vastavalt omaenda tingimustele ja privaatsuspoliitikatele."],
+      ["4. Reklaamid","FREE-versioon võib sisaldada reklaame. Android-versioonis võib reklaamide näitamiseks kasutada reklaamiteenust, näiteks Google AdMob'i. Reklaamiteenuse tegelik andmekäitlus sõltub lõplikust Androidi integratsioonist ning avaldatakse enne Google Play väljalaset nii käesolevas poliitikas kui ka Play Console'i Data Safety deklaratsioonis."],
+      ["5. Google Play ostud","APLO PRO ostu korral kasutatakse Google Play Billingut. APLO ei saa kasutaja maksekaardi numbrit, kui makset töötleb Google Play otse. APLO võib saada ostu oleku või muu vajaliku teabe, mida kasutatakse PRO õiguse kinnitamiseks ja taastamiseks."],
+      ["6. Andmete säilitamine","Kohalikud andmed jäävad kasutaja seadmesse seni, kuni need kustutatakse, rakenduse andmed tühjendatakse või rakenduse tehniline loogika need eemaldab. Praegune v1.0 veebiversioon ei kasuta APLO enda pilvekontot ega pilvesünkroonimist. Tulevase konto- või pilvesünkroonimise lisamisel uuendatakse seda poliitikat enne selle funktsiooni kasutuselevõttu."],
+      ["7. Andmete jagamine","APLO praegune veebiversioon ei müü kasutaja portfelliandmeid ega loo nende põhjal reklaamiprofiili. Välistele API-dele tehakse päringuid nende teenuste kasutamiseks. Androidi reklaami- ja makseteenuste kasutamisel võib vastav teenusepakkuja töödelda andmeid vastavalt oma tingimustele."],
+      ["8. Kasutaja õigused","Kui APLO töötleb sinu isikuandmeid, on sul GDPR-i alusel muu hulgas õigus saada teavet töötlemise kohta, taotleda juurdepääsu, parandamist, kustutamist, piiramist, andmete ülekantavust ja teatud juhtudel esitada vastuväiteid või kaebus järelevalveasutusele. Õiguste kasutamiseks kirjuta: a.ploom@live.com."],
+      ["9. Küpsised ja kohalik salvestus","Praegune terminal kasutab rakenduse funktsioonide jaoks localStorage'i. See ei ole sama mis serveripoolne kasutajakonto. Veebilehel või reklaamiteenustes võivad tulevikus olla eraldi küpsised või sarnased tehnoloogiad; nende kasutamine kirjeldatakse vastavas veebiprivaatsuspoliitikas."],
+      ["10. Turvalisus","APLO ei küsi ega säilita kasutaja krüptorahakoti privaatvõtit ega seed phrase'i. Kasutaja vastutab oma seadme, rakenduse andmete ja võimalike kolmandate osapoolte kontode turvalisuse eest."],
+      ["11. Muudatused","Privaatsuspoliitikat võidakse muuta, kui APLO funktsioonid, teenusepakkujad või õiguslikud nõuded muutuvad. Olulised muudatused avaldatakse enne nende rakendamist või koos vastava funktsiooni kasutuselevõtuga."]
+    ],
+    terms:[
+      ["1. Teenuse olemus","APLO Crypto Terminal on krüptovaluutade turuandmete, portfelli jälgimise, hinnajaloo, hoiatuste ja haridusliku info tööriist."],
+      ["2. Lubatud kasutus","Kasutaja võib APLO-t kasutada isiklikuks analüüsiks, jälgimiseks ja hariduslikel eesmärkidel. Rakendust ei tohi kasutada ebaseaduslikuks tegevuseks ega viisil, mis kahjustab teenust või selle kasutajaid."],
+      ["3. Andmete täpsus","Turuhinnad ja muud välised andmed pärinevad kolmandatelt teenusepakkujatelt. APLO ei garanteeri, et andmed on alati täielikud, täpsed, viivitusteta või katkematult kättesaadavad."],
+      ["4. Investeerimisotsused","APLO tööriistad, sealhulgas ANTS Score, WHAT IF, hinnahoiatused ja hinnalugu, ei ole individuaalne investeerimis-, finants-, maksu- ega juriidiline nõuanne."],
+      ["5. PRO","PRO annab juurdepääsu rakenduses märgitud tasulistele funktsioonidele. Ostude, maksete, taastamise ja tagasimaksete tehniline töötlemine toimub Google Play Billingu kaudu vastavalt Google'i tingimustele."],
+      ["6. Kolmandad teenused","APLO kasutab kolmandate osapoolte API-sid ja teenuseid. Nende teenuste töökindlust, kättesaadavust ega muutumatust APLO ei kontrolli."],
+      ["7. Vastutus","Kasutaja teeb kõik finants- ja krüptovaluutadega seotud otsused omal vastutusel. APLO ei vastuta turukahjude, saamata jäänud tulu ega kolmandate teenuste katkestuste eest ulatuses, milles seadus sellise vastutuse välistamist lubab."],
+      ["8. Tingimuste muutmine","APLO tingimusi võib muuta, kui teenus või selle funktsioonid muutuvad. Rakenduse jätkuv kasutamine pärast muudatuste jõustumist tähendab, et kasutaja kasutab teenust uuendatud tingimustel."]
+    ],
+    disclaimer:[
+      ["Oluline","APLO Crypto Terminal ei ole pank, börs, krüptorahakott ega finantsnõustaja. APLO ei hoia kasutaja raha ega krüptovara ega tee kasutaja eest tehinguid."],
+      ["Finants- ja investeerimisrisk","Krüptovaluutade väärtus võib kiiresti ja oluliselt muutuda ning kasutaja võib kaotada osa või kogu investeeritud kapitali. Varasem hinnaliikumine ei taga tulevast tulemust."],
+      ["ANTS Score ja WHAT IF","ANTS Score on rakenduse sisemine analüütiline näitaja ning WHAT IF on hüpoteetiline kalkulaator. Need ei ennusta tulevast hinda ega garanteeri kasumit."],
+      ["Hinnahoiatused","Hinnahoiatused sõltuvad turuandmete kättesaadavusest ja rakenduse töötamisest. Hoiatus ei ole garantii, et kasutaja saab turul soovitud hinnaga tehingu teha."],
+      ["Kasutaja vastutus","Enne finantsotsuste tegemist kontrolli olulist infot sõltumatutest ja usaldusväärsetest allikatest ning vajadusel konsulteeri litsentseeritud nõustajaga."]
+    ]
+  },
+  en:{
+    privacyTitle:"PRIVACY POLICY",termsTitle:"TERMS OF USE",disclaimerTitle:"DISCLAIMER",updated:"Version 1.0 — prepared for the APLO v1.0 app development. Before Google Play publication, this document must be reviewed and published on the official website.",
+    nav:{privacy:"PRIVACY",terms:"TERMS",disclaimer:"DISCLAIMER"},
+    privacy:[
+      ["1. Data controller","The operator of APLO Crypto Terminal is the app owner/operator. Contact: a.ploom@live.com. If a separate legal entity or official domain is used for publication, this document must be updated with the final legal details before release."],
+      ["2. Data APLO currently uses","The current APLO web version does not require an account, password or API key. Portfolio data, settings, price alerts, WHAT IF observations, watch/test data and other local app settings may be stored in the user's browser or app localStorage. APLO does not request a private key or seed phrase."],
+      ["3. Market and external data requests","APLO uses third-party services for market, price, token and exchange-rate information, including, depending on the feature, Binance, CoinGecko, CoinCap, CoinPaprika, DexScreener and exchange-rate services. Those services may process technical data such as an IP address under their own terms and privacy policies."],
+      ["4. Advertising","The FREE version may contain advertising. The Android version may use an advertising service such as Google AdMob. The actual data handling depends on the final Android integration and will be documented here and in the Play Console Data Safety declaration before release."],
+      ["5. Google Play purchases","APLO PRO purchases use Google Play Billing. APLO does not receive the user's payment-card number when Google Play processes the payment directly. APLO may receive purchase status or other information needed to verify and restore PRO access."],
+      ["6. Data retention","Local data remains on the user's device until it is deleted, app data is cleared, or the app removes it. The current v1.0 web version does not use an APLO cloud account or cloud sync. If account or cloud-sync functionality is introduced later, this policy will be updated before that feature is enabled."],
+      ["7. Sharing","The current APLO web version does not sell users' portfolio data or create advertising profiles from it. Requests are made to external APIs to provide their services. Android advertising and payment providers may process data according to their own terms."],
+      ["8. Your rights","Where APLO processes personal data, GDPR may give you rights including information, access, rectification, erasure, restriction, portability and, where applicable, objection and complaint rights. Contact: a.ploom@live.com."],
+      ["9. Cookies and local storage","The current terminal uses localStorage for app functionality. This is not the same as a server-side user account. A website or advertising service may use cookies or similar technologies; their use will be described in the applicable web privacy policy."],
+      ["10. Security","APLO does not request or store a cryptocurrency wallet private key or seed phrase. Users are responsible for securing their device, app data and any third-party accounts."],
+      ["11. Changes","This policy may change when APLO features, providers or legal requirements change. Material changes will be published before they apply or when the related feature is introduced."]
+    ],
+    terms:[
+      ["1. Service","APLO Crypto Terminal is a tool for cryptocurrency market data, portfolio tracking, price history, alerts and educational information."],
+      ["2. Acceptable use","You may use APLO for personal analysis, monitoring and educational purposes. You must not use it for unlawful activity or in a way that harms the service or other users."],
+      ["3. Data accuracy","Market prices and other external data come from third-party providers. APLO does not guarantee that data is always complete, accurate, current or continuously available."],
+      ["4. Investment decisions","APLO tools, including ANTS Score, WHAT IF, price alerts and price history, are not personalised investment, financial, tax or legal advice."],
+      ["5. PRO","PRO provides access to paid features identified in the app. Payment, purchase restoration and refunds are technically handled through Google Play Billing and applicable Google terms."],
+      ["6. Third-party services","APLO relies on third-party APIs and services. APLO does not control their availability, reliability or future changes."],
+      ["7. Liability","Users make all financial and cryptocurrency decisions at their own risk. APLO is not responsible for market losses, lost profits or third-party service interruptions to the extent permitted by law."],
+      ["8. Changes","These terms may change when the service or its features change. Continued use after changes take effect means use of the service under the updated terms."]
+    ],
+    disclaimer:[
+      ["Important","APLO Crypto Terminal is not a bank, exchange, cryptocurrency wallet or financial adviser. APLO does not hold users' money or crypto assets and does not execute transactions for users."],
+      ["Financial and investment risk","Cryptocurrency values can change rapidly and substantially, and users may lose part or all of their invested capital. Past performance does not guarantee future results."],
+      ["ANTS Score and WHAT IF","ANTS Score is an internal analytical indicator and WHAT IF is a hypothetical calculator. Neither predicts future prices nor guarantees profit."],
+      ["Price alerts","Price alerts depend on market-data availability and app operation. An alert does not guarantee that a user can execute a transaction at the target price."],
+      ["User responsibility","Before making financial decisions, verify important information independently using reliable sources and, where appropriate, consult a licensed adviser."]
+    ]
+  },
+  es:{
+    privacyTitle:"POLÍTICA DE PRIVACIDAD",termsTitle:"TÉRMINOS DE USO",disclaimerTitle:"DESCARGO DE RESPONSABILIDAD",updated:"Versión 1.0 — preparada para el desarrollo de APLO v1.0. Antes de publicar en Google Play, este documento debe revisarse y publicarse en el sitio web oficial.",
+    nav:{privacy:"PRIVACIDAD",terms:"TÉRMINOS",disclaimer:"DISCLAIMER"},
+    privacy:[
+      ["1. Responsable del tratamiento","El operador de APLO Crypto Terminal es el propietario/operador de la aplicación. Contacto: a.ploom@live.com. Si para la publicación se utiliza una entidad jurídica o dominio oficial distinto, este documento deberá actualizarse con los datos definitivos antes del lanzamiento."],
+      ["2. Datos que APLO utiliza actualmente","La versión web actual de APLO no requiere cuenta, contraseña ni clave API. Los datos de cartera, ajustes, alertas de precio, observaciones WHAT IF, datos de seguimiento/prueba y otros ajustes locales pueden almacenarse en el localStorage del navegador o de la aplicación. APLO no solicita claves privadas ni frases semilla."],
+      ["3. Peticiones de mercado y datos externos","APLO utiliza servicios de terceros para datos de mercado, precios, tokens y tipos de cambio, incluidos, según la función, Binance, CoinGecko, CoinCap, CoinPaprika, DexScreener y servicios de tipos de cambio. Estos servicios pueden procesar datos técnicos como la dirección IP según sus propias condiciones y políticas de privacidad."],
+      ["4. Publicidad","La versión FREE puede mostrar publicidad. La versión Android puede utilizar un servicio publicitario como Google AdMob. El tratamiento real de datos dependerá de la integración Android final y se documentará aquí y en la declaración Data Safety de Play Console antes del lanzamiento."],
+      ["5. Compras de Google Play","Las compras de APLO PRO utilizan Google Play Billing. APLO no recibe el número de tarjeta del usuario cuando Google Play procesa directamente el pago. APLO puede recibir el estado de la compra u otra información necesaria para verificar y restaurar el acceso PRO."],
+      ["6. Conservación de datos","Los datos locales permanecen en el dispositivo hasta que se eliminan, se borran los datos de la aplicación o la aplicación los elimina. La versión web v1.0 actual no utiliza una cuenta en la nube ni sincronización. Si se añade esta función, esta política se actualizará antes de activarla."],
+      ["7. Compartición","La versión web actual de APLO no vende datos de cartera ni crea perfiles publicitarios a partir de ellos. Se realizan peticiones a APIs externas para prestar sus servicios. Los proveedores de publicidad y pagos de Android pueden tratar datos conforme a sus propias condiciones."],
+      ["8. Derechos","Cuando APLO trate datos personales, el RGPD puede otorgar derechos de información, acceso, rectificación, supresión, limitación, portabilidad y, cuando proceda, oposición y reclamación. Contacto: a.ploom@live.com."],
+      ["9. Cookies y almacenamiento local","El terminal utiliza localStorage para su funcionamiento. Esto no equivale a una cuenta de usuario en un servidor. Un sitio web o servicio publicitario puede utilizar cookies o tecnologías similares; su uso se describirá en la política de privacidad web correspondiente."],
+      ["10. Seguridad","APLO no solicita ni almacena claves privadas ni frases semilla de carteras de criptomonedas. El usuario es responsable de proteger su dispositivo, sus datos locales y sus cuentas de terceros."],
+      ["11. Cambios","Esta política puede cambiar cuando cambien las funciones, proveedores o requisitos legales de APLO. Los cambios importantes se publicarán antes de aplicarse o al introducirse la función correspondiente."]
+    ],
+    terms:[
+      ["1. Servicio","APLO Crypto Terminal es una herramienta para datos del mercado de criptomonedas, seguimiento de cartera, historial de precios, alertas e información educativa."],
+      ["2. Uso permitido","Puedes utilizar APLO para análisis personal, seguimiento y fines educativos. No debes utilizarlo para actividades ilegales ni de forma que perjudique al servicio o a otros usuarios."],
+      ["3. Exactitud de los datos","Los precios y otros datos externos proceden de terceros. APLO no garantiza que los datos sean siempre completos, exactos, actuales o estén disponibles sin interrupciones."],
+      ["4. Decisiones de inversión","Las herramientas de APLO, incluido ANTS Score, WHAT IF, las alertas y el historial de precios, no constituyen asesoramiento personalizado de inversión, financiero, fiscal o jurídico."],
+      ["5. PRO","PRO da acceso a las funciones de pago indicadas en la aplicación. El pago, la restauración de compras y los reembolsos se gestionan técnicamente mediante Google Play Billing y las condiciones aplicables de Google."],
+      ["6. Servicios de terceros","APLO depende de APIs y servicios de terceros y no controla su disponibilidad, fiabilidad ni cambios futuros."],
+      ["7. Responsabilidad","El usuario toma todas las decisiones financieras y relacionadas con criptomonedas bajo su propia responsabilidad. APLO no responde por pérdidas de mercado, lucro cesante o interrupciones de terceros en la medida permitida por la ley."],
+      ["8. Cambios","Estos términos pueden cambiar cuando cambien el servicio o sus funciones. El uso continuado después de la entrada en vigor de los cambios implica el uso conforme a los términos actualizados."]
+    ],
+    disclaimer:[
+      ["Importante","APLO Crypto Terminal no es un banco, exchange, cartera de criptomonedas ni asesor financiero. APLO no custodia dinero o criptoactivos de los usuarios ni ejecuta operaciones por ellos."],
+      ["Riesgo financiero y de inversión","El valor de las criptomonedas puede cambiar rápida y considerablemente y el usuario puede perder parte o todo el capital invertido. El rendimiento pasado no garantiza resultados futuros."],
+      ["ANTS Score y WHAT IF","ANTS Score es un indicador analítico interno y WHAT IF es una calculadora hipotética. Ninguno predice precios futuros ni garantiza beneficios."],
+      ["Alertas de precio","Las alertas dependen de la disponibilidad de datos de mercado y del funcionamiento de la aplicación. Una alerta no garantiza que pueda ejecutarse una operación al precio objetivo."],
+      ["Responsabilidad del usuario","Antes de tomar decisiones financieras, verifica la información importante de forma independiente y, cuando corresponda, consulta a un asesor autorizado."]
+    ]
+  },
+  ru:{
+    privacyTitle:"ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ",termsTitle:"УСЛОВИЯ ИСПОЛЬЗОВАНИЯ",disclaimerTitle:"ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ",updated:"Версия 1.0 — подготовлена для разработки APLO v1.0. Перед публикацией в Google Play документ необходимо проверить и разместить на официальном сайте.",
+    nav:{privacy:"ПРИВАТНОСТЬ",terms:"УСЛОВИЯ",disclaimer:"ДИСКЛЕЙМЕР"},
+    privacy:[
+      ["1. Ответственный за обработку","Оператор APLO Crypto Terminal — владелец/оператор приложения. Контакт: a.ploom@live.com. Если для публикации будет использоваться отдельное юридическое лицо или официальный домен, документ необходимо обновить окончательными реквизитами до выпуска."],
+      ["2. Какие данные APLO использует сейчас","Текущая веб-версия APLO не требует учётной записи, пароля или API-ключа. Данные портфеля, настройки, ценовые уведомления, наблюдения WHAT IF, данные наблюдения/тестов и другие локальные настройки могут храниться в localStorage браузера или приложения. APLO не запрашивает приватные ключи или seed-фразы."],
+      ["3. Запросы рыночных и внешних данных","APLO использует сторонние сервисы для рыночных данных, цен, токенов и курсов валют, включая, в зависимости от функции, Binance, CoinGecko, CoinCap, CoinPaprika, DexScreener и сервисы курсов валют. Эти сервисы могут обрабатывать технические данные, например IP-адрес, в соответствии со своими условиями и политиками конфиденциальности."],
+      ["4. Реклама","В FREE-версии может отображаться реклама. Android-версия может использовать рекламный сервис, например Google AdMob. Фактическая обработка данных зависит от финальной Android-интеграции и будет описана здесь и в разделе Data Safety Play Console до выпуска."],
+      ["5. Покупки Google Play","Покупка APLO PRO осуществляется через Google Play Billing. APLO не получает номер платёжной карты, если платёж непосредственно обрабатывает Google Play. APLO может получать статус покупки или другую необходимую информацию для проверки и восстановления PRO."],
+      ["6. Хранение данных","Локальные данные остаются на устройстве пользователя, пока не будут удалены, пока не будут очищены данные приложения или пока приложение не удалит их. Текущая веб-версия v1.0 не использует облачную учётную запись APLO или синхронизацию. При добавлении таких функций политика будет обновлена до их включения."],
+      ["7. Передача данных","Текущая веб-версия APLO не продаёт данные портфеля пользователей и не создаёт на их основе рекламные профили. Запросы направляются внешним API для предоставления их услуг. Рекламные и платёжные провайдеры Android могут обрабатывать данные согласно своим условиям."],
+      ["8. Права пользователя","Если APLO обрабатывает персональные данные, GDPR может предоставлять права на информацию, доступ, исправление, удаление, ограничение, переносимость и, где применимо, возражение и жалобу. Контакт: a.ploom@live.com."],
+      ["9. Cookies и локальное хранилище","Терминал использует localStorage для работы приложения. Это не является серверной учётной записью. Сайт или рекламный сервис может использовать cookies или аналогичные технологии; их использование будет описано в соответствующей веб-политике конфиденциальности."],
+      ["10. Безопасность","APLO не запрашивает и не хранит приватные ключи или seed-фразы криптовалютных кошельков. Пользователь отвечает за безопасность своего устройства, локальных данных и сторонних аккаунтов."],
+      ["11. Изменения","Политика может изменяться при изменении функций APLO, поставщиков или правовых требований. Существенные изменения будут опубликованы до их применения или при введении соответствующей функции."]
+    ],
+    terms:[
+      ["1. Сервис","APLO Crypto Terminal — инструмент для рыночных данных криптовалют, отслеживания портфеля, истории цен, уведомлений и образовательной информации."],
+      ["2. Допустимое использование","APLO можно использовать для личного анализа, наблюдения и образовательных целей. Нельзя использовать сервис для незаконной деятельности или способом, наносящим вред сервису или другим пользователям."],
+      ["3. Точность данных","Рыночные цены и другие внешние данные поступают от сторонних поставщиков. APLO не гарантирует их полноту, точность, актуальность или постоянную доступность."],
+      ["4. Инвестиционные решения","Инструменты APLO, включая ANTS Score, WHAT IF, ценовые уведомления и историю цен, не являются персональной инвестиционной, финансовой, налоговой или юридической консультацией."],
+      ["5. PRO","PRO предоставляет доступ к платным функциям, указанным в приложении. Платежи, восстановление покупок и возвраты технически обрабатываются через Google Play Billing и применимые условия Google."],
+      ["6. Сторонние сервисы","APLO зависит от сторонних API и сервисов и не контролирует их доступность, надёжность или будущие изменения."],
+      ["7. Ответственность","Пользователь самостоятельно принимает все финансовые решения и решения, связанные с криптовалютами. APLO не отвечает за рыночные убытки, упущенную прибыль или перебои сторонних сервисов в пределах, допускаемых законом."],
+      ["8. Изменения","Условия могут изменяться при изменении сервиса или его функций. Продолжение использования после вступления изменений в силу означает использование сервиса на обновлённых условиях."]
+    ],
+    disclaimer:[
+      ["Важно","APLO Crypto Terminal не является банком, биржей, криптовалютным кошельком или финансовым консультантом. APLO не хранит деньги или криптоактивы пользователей и не совершает сделки от их имени."],
+      ["Финансовый и инвестиционный риск","Стоимость криптовалют может быстро и значительно меняться, и пользователь может потерять часть или весь вложенный капитал. Прошлые результаты не гарантируют будущих результатов."],
+      ["ANTS Score и WHAT IF","ANTS Score — внутренний аналитический показатель, а WHAT IF — гипотетический калькулятор. Ни один из них не прогнозирует будущую цену и не гарантирует прибыль."],
+      ["Ценовые уведомления","Уведомления зависят от доступности рыночных данных и работы приложения. Уведомление не гарантирует возможность совершить сделку по целевой цене."],
+      ["Ответственность пользователя","Перед принятием финансовых решений самостоятельно проверяйте важную информацию по надёжным источникам и при необходимости обращайтесь к лицензированному консультанту."]
+    ]
+  }
+};
+
+function renderLegalDocument(type){
+  const t=LEGAL_CONTENT[currentLang]||LEGAL_CONTENT.et;
+  const title=type==='privacy'?t.privacyTitle:type==='terms'?t.termsTitle:t.disclaimerTitle;
+  const rows=type==='privacy'?t.privacy:type==='terms'?t.terms:t.disclaimer;
+  const nav=['privacy','terms','disclaimer'].map(k=>`<button type="button" class="${k===type?'active':''}" onclick="renderLegalDocument('${k}')">${t.nav[k]}</button>`).join('');
+  const body=rows.map(([h,p])=>`<section class="guide-section"><h3>${h}</h3><p>${p}</p></section>`).join('');
+  document.getElementById('info-header').innerText=title;
+  document.getElementById('info-content').className='guide-scroll';
+  document.getElementById('info-content').innerHTML=`<div class="guide-modal-body"><div class="aplo-legal-meta">${t.updated}</div><div class="aplo-legal-nav">${nav}</div><div class="aplo-legal-doc">${body}</div><button type="button" class="guide-exit" onclick="renderGuide()">BACK TO GUIDE</button></div>`;
+  const modal=document.getElementById('info-modal');
+  if(modal){modal.classList.add('guide-modal');modal.classList.remove('legal-modal');}
+}
 function renderGuide(){
     const t=GUIDE_CONTENT[currentLang]||GUIDE_CONTENT.et;
     const alt = currentLang==='et'?'Terminali ekraanipilt':currentLang==='es'?'Captura del terminal':currentLang==='ru'?'Снимок терминала':'Terminal screenshot';
@@ -3193,7 +3361,7 @@ function renderGuide(){
       `<div class="guide-shot"><img src="${GUIDE_IMAGES.lower}" alt="${alt} — lower"></div>`,
       `<div class="guide-caption">${t.lowerCaption}</div>`,
       ...t.sections.slice(5).map(s=>`<section class="guide-section"><h3>${s.h}</h3><p>${s.p}</p></section>`),
-      `<section class="guide-section guide-extra-section"><div class="guide-extra-box feedback-box"><h3>💬 <span data-feedback-heading>FEEDBACK</span></h3><p data-feedback-copy></p><a href="mailto:a.ploom@live.com">a.ploom@live.com</a></div><div class="guide-extra-box legal-guide-box"><h3>⚖️ <span data-legal-heading>LEGAL &amp; DISCLAIMER</span></h3><div id="guide-legal-copy"></div></div></section>`,
+      `<section class="guide-section guide-extra-section"><div class="guide-extra-box feedback-box"><h3>💬 <span data-feedback-heading>FEEDBACK</span></h3><p data-feedback-copy></p><a href="mailto:a.ploom@live.com">a.ploom@live.com</a></div><div class="guide-extra-box legal-guide-box"><h3>⚖️ <span data-legal-heading>LEGAL &amp; PRIVACY</span></h3><div id="guide-legal-copy"></div><div class="aplo-legal-nav"><button type="button" onclick="renderLegalDocument('privacy')">PRIVACY</button><button type="button" onclick="renderLegalDocument('terms')">TERMS</button><button type="button" onclick="renderLegalDocument('disclaimer')">DISCLAIMER</button></div></div></section>`,
       `<button type="button" class="guide-exit" onclick="document.getElementById('info-overlay').style.display='none'">${t.exit}</button>`
     ].join('');
     document.getElementById('info-header').innerText=t.title;
@@ -3208,10 +3376,7 @@ function openLegalNotice(){
     const t=translations[currentLang]||translations.et;
     document.getElementById('info-header').innerText=t.legal_label||'LEGAL NOTICE';
     document.getElementById('info-content').className='';
-    document.getElementById('info-content').innerHTML=`<div class="legal-copy">${t.info_body}<div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
-      <div class="aplo-ad-label">ADVERTISEMENT</div>
-      <div class="aplo-ad-native-slot" id="aplo-ad-watchlist-slot"></div>
-    </div>
+    document.getElementById('info-content').innerHTML=`\1</div>
     </div><div style="margin-top:14px;padding:10px;border:1px solid var(--accent);border-radius:5px;font-size:8px;line-height:1.5;text-align:center">${t.legal_footer}</div>`;
     const modal=document.getElementById('info-modal');
     if(modal){modal.classList.remove('guide-modal');modal.classList.add('legal-modal');}
