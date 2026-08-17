@@ -235,6 +235,22 @@ display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;font
 .dist-bar-bg{height:8px;background:var(--accent);border-radius:4px;overflow:hidden}
 .dist-bar-fill{height:100%;background:var(--title);border-radius:4px;transition:width 1s ease-out}
 .dist-dashboard{display:flex;flex-direction:column;gap:12px}.dist-hero{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center}.donut-wrap{position:relative;width:150px;height:150px}.donut-svg{width:150px;height:150px;transform:rotate(-90deg)}.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}.donut-total{font-size:16px;font-weight:900}.donut-label{font-size:7px;opacity:.55;text-transform:uppercase}.dist-summary{display:flex;flex-direction:column;gap:7px}.dist-stat{padding:8px;border:1px solid var(--accent);border-radius:5px;background:rgba(0,0,0,.12)}.dist-stat small{display:block;font-size:7px;opacity:.55;text-transform:uppercase}.dist-stat b{font-size:11px}.dist-tabs{display:flex;gap:4px}.dist-tab{flex:1;padding:7px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:4px;font-size:8px;font-weight:bold;cursor:pointer}.dist-tab.active{background:var(--title);color:#000!important}.dist-panel{display:none}.dist-panel.active{display:block}.dist-holding{padding:8px;border:1px solid var(--accent);border-radius:5px;margin-bottom:5px}.dist-holding-top{display:flex;justify-content:space-between;font-size:9px;font-weight:bold}.dist-holding-bar{height:6px;background:var(--accent);border-radius:4px;overflow:hidden;margin-top:6px}.dist-holding-fill{height:100%;background:var(--title);border-radius:4px}.dist-heat{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}.dist-heat-item{padding:10px;border:1px solid var(--accent);border-radius:5px;text-align:center}.dist-heat-item b{display:block;font-size:12px}.dist-heat-item span{font-size:7px;opacity:.55}.dist-note{font-size:7px;opacity:.55;text-align:center;line-height:1.4}.legal-copy{font-size:9px;line-height:1.65;opacity:.9}.legal-copy strong{color:var(--title)}
+.history-back-btn{
+  width:42px;
+  min-width:42px;
+  height:44px;
+  border:0;
+  border-right:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  font:inherit;
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+}
+.history-back-btn:active{
+  background:var(--accent);
+}
 .legal-notice-box{cursor:pointer;transition:background .15s ease,border-color .15s ease,transform .08s ease}
 .legal-notice-box:active{transform:scale(.995);background:var(--accent)}
 .legal-notice-box .disclaimer-text{display:flex;flex-direction:column;gap:3px}
@@ -811,12 +827,15 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 }
 .guide-extra-box h3{
   margin:0 0 7px;
-  font-size:11px;
+  font-size:10px !important;
+  font-weight:700;
+  line-height:1.3;
   color:var(--title);
 }
-.guide-extra-box p{
+.guide-extra-box p,
+.legal-guide-box div{
   margin:0 0 7px;
-  font-size:10px;
+  font-size:10px !important;
   line-height:1.45;
   color:var(--text);
 }
@@ -977,9 +996,13 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <div id="history-assets-list" style="padding:8px;overflow-y:auto;max-height:60vh"></div>
     </div>
 </div>
-<div id="history-detail-overlay" class="modal-overlay" onclick="this.style.display='none'">
+<div id="history-detail-overlay" class="modal-overlay" onclick="closeHistoryDetail()">
     <div class="modal" onclick="event.stopPropagation()">
-        <div id="history-detail-header" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;font-size:11px"></div>
+        <div style="display:flex;align-items:center;border-bottom:1px solid var(--border);min-height:44px">
+            <button type="button" class="history-back-btn" onclick="closeHistoryDetail()" aria-label="Back">←</button>
+            <div id="history-detail-header" style="flex:1;padding:12px 10px;font-weight:bold;text-align:center;font-size:11px"></div>
+            <div style="width:42px"></div>
+        </div>
         <div id="history-detail-content" style="padding:15px;overflow-y:auto;max-height:75vh"></div>
     </div>
 </div>
@@ -2022,6 +2045,16 @@ function openHistoryAssets(){
         'history-assets-overlay'
     ).style.display='flex';
 }
+function closeHistoryDetail(){
+    const detail=document.getElementById('history-detail-overlay');
+    if(detail) detail.style.display='none';
+
+    // Going back from a coin chart returns to the History coin list,
+    // not all the way out of the History feature.
+    const history=document.getElementById('history-assets-overlay');
+    if(history) history.style.display='flex';
+}
+
 function openHistoryDetail(symbol,name){
     document.getElementById(
         'history-assets-overlay'
