@@ -845,6 +845,31 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
   text-decoration:none;
   word-break:break-word;
 }
+
+/* APLO FREE banner ad slots — reserved space for native AdMob */
+.aplo-inline-ad-slot{
+  margin:12px 8px 4px;
+  padding:7px 6px 4px;
+  border-top:1px solid var(--border);
+  text-align:center;
+  min-height:58px;
+  box-sizing:border-box;
+  background:var(--panel);
+}
+.aplo-ad-label{
+  font-size:7px;
+  line-height:10px;
+  letter-spacing:.8px;
+  color:var(--muted);
+  user-select:none;
+}
+.aplo-ad-native-slot{
+  width:100%;
+  min-height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 </style>
 
 <style id="aplo-1-0-additions">
@@ -981,7 +1006,11 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <div id="info-content" style="padding:20px">
 </div>
     </div>
-</div>
+
+<div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+  <div class="aplo-ad-label">ADVERTISEMENT</div>
+  <div class="aplo-ad-native-slot" id="aplo-ad-guide-slot"></div>
+</div></div>
 <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'">
     <div class="modal" onclick="event.stopPropagation()">
         <div id="ui-dist-title" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;text-transform:uppercase;font-size:11px;color:var(--title)">VARADE JAOTUS</div>
@@ -995,7 +1024,11 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         </div>
         <div id="history-assets-list" style="padding:8px;overflow-y:auto;max-height:60vh"></div>
     </div>
-</div>
+
+<div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+  <div class="aplo-ad-label">ADVERTISEMENT</div>
+  <div class="aplo-ad-native-slot" id="aplo-ad-history-slot"></div>
+</div></div>
 <div id="history-detail-overlay" class="modal-overlay" onclick="closeHistoryDetail()">
     <div class="modal" onclick="event.stopPropagation()">
         <div style="display:flex;align-items:center;border-bottom:1px solid var(--border);min-height:44px">
@@ -1014,7 +1047,11 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
       <select id="ants-symbol" class="action-select" onchange="renderAntsScore()"></select>
       <div id="ants-content"></div>
     </div>
-  </div>
+  
+<div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+  <div class="aplo-ad-label">ADVERTISEMENT</div>
+  <div class="aplo-ad-native-slot" id="aplo-ad-ants-slot"></div>
+</div></div>
 </div>
 <div id="whatif-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
@@ -1031,7 +1068,11 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
       </div>
       <div id="whatif-content"></div>
     </div>
-  </div>
+  
+<div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+  <div class="aplo-ad-label">ADVERTISEMENT</div>
+  <div class="aplo-ad-native-slot" id="aplo-ad-whatif-slot"></div>
+</div></div>
 </div>
 <div id="alerts-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
@@ -1048,7 +1089,11 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
       </div>
       <div id="alerts-content"></div>
     </div>
-  </div>
+  
+<div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+  <div class="aplo-ad-label">ADVERTISEMENT</div>
+  <div class="aplo-ad-native-slot" id="aplo-ad-alerts-slot"></div>
+</div></div>
 </div>
 <div id="watchlist-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
@@ -1066,6 +1111,10 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
       </div>
       <button class="action-btn primary" onclick="addTestCase()" data-i18n="save_test">SAVE TEST</button>
       <div id="watchlist-content" style="margin-top:10px"></div>
+      <div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+        <div class="aplo-ad-label">ADVERTISEMENT</div>
+        <div class="aplo-ad-native-slot" id="aplo-ad-watchlist-slot"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1360,6 +1409,18 @@ function seedMarketDataImmediately(){
     });
 }
 
+function updateAdSlot(){
+    const free = !isPro();
+    document.querySelectorAll('[data-aplo-ad-slot="action"]').forEach(slot=>{
+      slot.style.display=free?'block':'none';
+    });
+    const slot=document.getElementById('aplo-ad-slot');
+    if(slot)slot.style.display=free?'block':'none';
+    if(free && typeof window.AploAndroid !== 'undefined' &&
+       typeof window.AploAndroid.showBannerAd === 'function'){
+      try{ window.AploAndroid.showBannerAd('action'); }catch(e){}
+    }
+}
 function updateAploSupportAndGuide(){
   const lang = currentLang || 'et';
   const s = supportCopy[lang] || supportCopy.et;
@@ -3597,5 +3658,26 @@ updateMarket();
 })();
 </script>
 
+
+<!--
+APLO AD ARCHITECTURE:
+- FREE only: inline adaptive banner slots in major content windows.
+- PRO: all banner slots hidden.
+- Real AdMob rendering is Android-native; HTML only reserves/controls the slot.
+- Slots are separated from interactive content and never overlap navigation.
+-->
+
+<script>
+(function(){
+  document.addEventListener('click', function(e){
+    const target=e.target.closest && e.target.closest('[onclick]');
+    if(!target) return;
+    const fn=target.getAttribute('onclick')||'';
+    if(/open(History|WhatIf|Ants|Watch|Alert|Info|Guide)/i.test(fn)){
+      setTimeout(updateAdSlot,0);
+    }
+  }, true);
+})();
+</script>
 </body>
     </html>
