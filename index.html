@@ -852,7 +852,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 }
 
 /* APLO FREE banner ad slots — reserved space for native AdMob */
-.aplo-inline-ad-slot{
+.modal-overlay #info-content + .aplo-inline-ad-slot{width:100% !important;max-width:none !important;align-self:stretch !important;margin-left:0 !important;margin-right:0 !important;box-sizing:border-box}.modal-overlay #info-content + .aplo-inline-ad-slot .aplo-ad-native-slot{width:100% !important;max-width:none !important;box-sizing:border-box}.aplo-inline-ad-slot{
   margin:12px 8px 4px;
   padding:7px 6px 4px;
   border-top:1px solid var(--border);
@@ -878,7 +878,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 
 .history-period-wrap{margin:0 0 10px;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--card)}
 .history-period-buttons{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
-.history-period-btn{min-width:0;padding:7px 3px;border:1px solid var(--border);border-radius:4px;background:var(--accent);color:var(--text);font-size:8px;font-weight:800;cursor:pointer}
+.history-period-btn{min-width:0;padding:7px 2px;border:1px solid var(--border);border-radius:4px;background:var(--accent);color:var(--text);font-size:7px;font-weight:800;cursor:pointer;white-space:nowrap;overflow:hidden}.history-period-btn.history-custom-btn{font-size:6px;letter-spacing:0}
 .history-period-btn.active{background:var(--title);color:#000!important}
 .history-period-btn.locked{opacity:.65}
 .history-custom-row{display:none;grid-template-columns:1fr 1fr auto;gap:5px;margin-top:6px;align-items:center}
@@ -2254,7 +2254,7 @@ function historySafeName(name){return String(name).replace(/\\/g,'\\\\').replace
 function historyPeriodButtons(symbol,name,active,locked){
     const n=historySafeName(name);
     const p=[['live','historyLive'],['1d','history1d'],['1w','history1w'],['1m','history1m'],['3m','history3m'],['custom','historyCustom']];
-    return p.map(([id,key])=>`<button class="history-period-btn ${active===id?'active':''} ${locked&&id!=='live'?'locked':''}" onclick="selectHistoryPeriod('${symbol}','${n}','${id}')">${T(key)}${locked&&id!=='live'?' 🔒':''}</button>`).join('');
+    return p.map(([id,key])=>`<button class="history-period-btn ${id==='custom'?'history-custom-btn ':''}${active===id?'active':''} ${locked&&id!=='live'?'locked':''}" onclick="selectHistoryPeriod('${symbol}','${n}','${id}')">${T(key)}${locked&&id!=='live'?' 🔒':''}</button>`).join('');
 }
 function historyCustomRow(symbol,name,show){
     const n=historySafeName(name);
