@@ -186,7 +186,7 @@ align-items:center;justify-content:center;opacity:.7
 .disclaimer-text{font-size:7px;text-align:center;text-transform:uppercase;line-height:1.3}
 .modal-overlay{
 display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;
-justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(8px)
+justify-content:center;align-items:center;flex-direction:column;padding:20px;backdrop-filter:blur(8px)
 }
 .modal{
 background:var(--bg);border:2px solid var(--border);width:100%;max-width:360px;
@@ -848,13 +848,15 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 
 /* APLO FREE banner ad slots — reserved space for native AdMob */
 .aplo-inline-ad-slot{
-  margin:12px 8px 4px;
-  padding:7px 6px 4px;
-  border-top:1px solid var(--border);
-  text-align:center;
+  width:min(360px,100%);
   min-height:58px;
+  margin:8px 0 0;
+  padding:5px 6px 3px;
   box-sizing:border-box;
-  background:var(--panel);
+  text-align:center;
+  background:transparent;
+  border:0;
+  flex:0 0 auto;
 }
 .aplo-ad-label{
   font-size:7px;
@@ -1107,6 +1109,10 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
       <button class="action-btn primary" onclick="addTestCase()" data-i18n="save_test">SAVE TEST</button>
       <div id="watchlist-content" style="margin-top:10px"></div>
     </div>
+  </div>
+  <div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+    <div class="aplo-ad-label">ADVERTISEMENT</div>
+    <div class="aplo-ad-native-slot" id="aplo-ad-watchlist-slot"></div>
   </div>
 </div>
 <script>
@@ -2062,10 +2068,7 @@ function openDistribution(){
     let offset=0;
     const segments=holdings.map((h,i)=>{const pct=h.val/total*100;const dash=(pct/100)*circumference;const seg=`<circle cx="75" cy="75" r="${radius}" fill="none" stroke="hsl(${(i*47)%360} 75% 60%)" stroke-width="20" stroke-dasharray="${dash} ${circumference-dash}" stroke-dashoffset="${-offset}"/>`;offset+=dash;return seg;}).join('');
     const rows=holdings.map((h,i)=>{const pct=h.val/total*100;return `<div class="dist-holding"><div class="dist-holding-top"><span><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:hsl(${(i*47)%360} 75% 60%);margin-right:5px"></i>${h.name}</span><span>${formatMoney(h.val)} • ${pct.toFixed(1)}%</span></div><div class="dist-holding-bar"><div class="dist-holding-fill" style="width:${pct}%;background:hsl(${(i*47)%360} 75% 60%)"></div></div></div>`}).join('');
-    container.innerHTML=`<div class="dist-dashboard"><div class="dist-hero"><div class="donut-wrap"><svg class="donut-svg" viewBox="0 0 150 150"><circle cx="75" cy="75" r="54" fill="none" stroke="var(--accent)" stroke-width="20"/>${segments}</svg><div class="donut-center"><div class="donut-total">${formatMoney(total)}</div><div class="donut-label">${t.distribution_value}</div></div></div><div class="dist-summary"><div class="dist-stat"><small>${t.positions}</small><b>${holdings.length}</b></div><div class="dist-stat"><small>${t.largest}</small><b>${holdings[0].name} ${share.toFixed(1)}%</b></div><div class="dist-stat"><small>${t.concentration}</small><b>${concentration}</b></div></div></div><div class="dist-tabs"><button class="dist-tab active">${t.distribution_mix}</button><div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
-  <div class="aplo-ad-label">ADVERTISEMENT</div>
-  <div class="aplo-ad-native-slot" id="aplo-ad-watchlist-slot"></div>
-</div>
+    container.innerHTML=`<div class="dist-dashboard"><div class="dist-hero"><div class="donut-wrap"><svg class="donut-svg" viewBox="0 0 150 150"><circle cx="75" cy="75" r="54" fill="none" stroke="var(--accent)" stroke-width="20"/>${segments}</svg><div class="donut-center"><div class="donut-total">${formatMoney(total)}</div><div class="donut-label">${t.distribution_value}</div></div></div><div class="dist-summary"><div class="dist-stat"><small>${t.positions}</small><b>${holdings.length}</b></div><div class="dist-stat"><small>${t.largest}</small><b>${holdings[0].name} ${share.toFixed(1)}%</b></div><div class="dist-stat"><small>${t.concentration}</small><b>${concentration}</b></div></div></div><div class="dist-tabs"><button class="dist-tab active">${t.distribution_mix}</button>
     </div><div id="dist-mix" class="dist-panel active">${rows}</div></div>`;
     document.getElementById('dist-overlay').style.display='flex';
 }
