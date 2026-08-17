@@ -775,6 +775,57 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 .disclaimer-box.legal-notice-box .legal-notice-title{
   line-height:1.1 !important;
 }
+
+/* APLO 1.0: Support / Feedback / Legal moved into Guide */
+#aplo-support-box{
+  cursor:default !important;
+  padding:5px 8px !important;
+  min-height:0 !important;
+  height:auto !important;
+  line-height:1.15 !important;
+  box-sizing:border-box !important;
+}
+#aplo-support-box .support-title{
+  font-size:10px;
+  font-weight:900;
+  line-height:1.15;
+  color:var(--title);
+}
+#aplo-support-box .support-text{
+  margin-top:2px;
+  font-size:8px;
+  line-height:1.2;
+  color:var(--muted);
+}
+.guide-extra-section{
+  margin-top:22px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.guide-extra-box{
+  border:1px solid var(--border);
+  border-radius:7px;
+  padding:12px;
+  background:var(--panel);
+}
+.guide-extra-box h3{
+  margin:0 0 7px;
+  font-size:11px;
+  color:var(--title);
+}
+.guide-extra-box p{
+  margin:0 0 7px;
+  font-size:10px;
+  line-height:1.45;
+  color:var(--text);
+}
+.guide-extra-box a{
+  font-size:10px;
+  color:var(--accent);
+  text-decoration:none;
+  word-break:break-word;
+}
 </style>
 
 <style id="aplo-1-0-additions">
@@ -868,8 +919,9 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 </div>
 
 
-<div class="disclaimer-box legal-notice-box" onclick="openLegalNotice()" role="button" tabindex="0">
-    <div id="ui-disclaimer" class="disclaimer-text"></div>
+<div class="disclaimer-box legal-notice-box" id="aplo-support-box">
+    <div class="support-title">❤️ <span data-support-title>TOETA APLO-T</span></div>
+    <div class="support-text" data-support-text>Soeta PRO ja toeta APLO edasist arengut.</div>
 </div>
 <div id="aplo-ad-slot" class="aplo-ad-slot" aria-label="Advertisement">ADVERTISEMENT</div>
 
@@ -907,7 +959,20 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 <div id="info-overlay" class="modal-overlay" onclick="this.style.display='none'">
     <div class="modal" id="info-modal" onclick="event.stopPropagation()">
         <div id="info-header" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;text-transform:uppercase;font-size:11px"></div>
-        <div id="info-content" style="padding:20px"></div>
+        <div id="info-content" style="padding:20px">
+<section class="guide-extra-section">
+  <div class="guide-extra-box feedback-box">
+    <h3>💬 <span data-feedback-heading>FEEDBACK</span></h3>
+    <p data-feedback-copy>Have thoughts, suggestions or feedback? Feel free to share them.</p>
+    <a href="mailto:a.ploom@live.com">a.ploom@live.com</a>
+  </div>
+
+  <div class="guide-extra-box legal-guide-box">
+    <h3>⚖️ <span data-legal-heading>LEGAL &amp; DISCLAIMER</span></h3>
+    <div id="guide-legal-copy"></div>
+  </div>
+</section>
+</div>
     </div>
 </div>
 <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'">
@@ -1001,6 +1066,12 @@ const translations={
  ru:{title:"🚀 КРИПТО ТЕРМИНАЛ APLO",networth:"Чистая стоимость",assets:"АКТИВЫ",edit:"ИЗМЕНИТЬ",save:"СОХРАНИТЬ",news:"📰 НОВОСТИ",manage:"УПРАВЛЕНИЕ АКТИВАМИ",btn_add:"ДОБАВИТЬ АКТИВ",dist_title:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",no_assets:"Нет активов.",no_assets_dist:"Нет активов для отображения.",remove:"Удалить",theme_title:"ТЕМЫ",language_title:"ЯЗЫК",legal_label:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ",disclaimer_short:"Развлекательный / экспериментальный крипто-терминал. Не является финансовым советом.",info_title:"ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ И ОТВЕТСТВЕННОСТЬ",info_body:"Этот сайт и приложение созданы исключительно в <strong>развлекательных и образовательных целях</strong>. Создатель <strong>не несёт никакой ответственности</strong> за убытки, ущерб, упущенные возможности, сделки, инвестиционные или торговые решения и любые другие последствия использования сайта, его расчётов, цен, оценок, предупреждений, исторических данных, ссылок или иной информации. Криптоактивы крайне волатильны и могут привести к частичной или полной потере капитала. Ничто на этой странице не является финансовой, инвестиционной, юридической, налоговой или торговой рекомендацией. Вы самостоятельно отвечаете за свои решения и обязаны проверять информацию перед действиями. Используя сайт, вы подтверждаете принятие этих условий.",history_title:"📊 ИСТОРИЯ ЦЕН",ants_title:"🧠 ОЦЕНКА ANTS",whatif_title:"🎯 ЧТО, ЕСЛИ?",alerts_title:"🔔 ЦЕНОВЫЕ АЛЕРТЫ",watch_title:"💎 СПИСОК / ТЕСТ",asset:"АКТИВ",investment:"ИНВЕСТИЦИЯ (EUR)",target:"ЦЕЛЬ (EUR)",current:"ТЕКУЩАЯ",above:"ВЫШЕ ↑",below:"НИЖЕ ↓",add_alert:"ДОБАВИТЬ АЛЕРТ",save_test:"СОХРАНИТЬ ТЕСТ",delete:"УДАЛИТЬ",baseline:"БАЗОВАЯ ЦЕНА (EUR)",date:"ДАТА",score_sub:"Эвристический сигнал тренда и импульса терминала",whatif_sub:"Рассчитайте влияние возможной целевой цены",alerts_sub:"Алерт проверяется при каждом обновлении рынка",watch_sub:"Сохраните гипотетическую покупку и следите за ней",distribution:"РАСПРЕДЕЛЕНИЕ АКТИВОВ",distribution_mix:"СОСТАВ ПОРТФЕЛЯ",distribution_risk:"РИСК / КОНЦЕНТРАЦИЯ",distribution_value:"СТОИМОСТЬ",distribution_share:"ДОЛЯ",distribution_empty:"Добавьте количества активов для интерактивного распределения.",largest:"КРУПНЕЙШАЯ ПОЗИЦИЯ",positions:"ПОЗИЦИИ",diversification:"ДИВЕРСИФИКАЦИЯ",concentration:"КОНЦЕНТРАЦИЯ",balanced:"Сбалансировано",moderate:"Умеренная",high:"Высокая",facts_hint:"Нажмите на тикер, чтобы поставить на паузу / продолжить",ticker_speed:"СКОРОСТЬ БЕГУЩЕЙ СТРОКИ",speed_slow:"МЕДЛЕННО",speed_normal:"НОРМАЛЬНО",speed_fast:"БЫСТРО",market_ticker_hint:"Нажмите, чтобы сменить EUR / USD / RUB",fact_label:"КРИПТО ФАКТ",no_test:"Тестовых позиций пока нет.",no_alerts:"Активных алертов нет.",remove_alert:"УДАЛИТЬ",history_points:"ценовых точек",history_empty:"История собирается каждый час.",no_buy:"НЕТ ПОКУПКИ",avg_buy:"СРЕДНЯЯ ПОКУПКА",current_price:"ТЕКУЩАЯ",legal_footer:"Этот терминал создан в развлекательных целях. Используйте его полностью на свой страх и риск."}
 };
 
+const supportCopy={
+  en:{freeTitle:"SUPPORT APLO",freeText:"Purchase PRO and support the continued development of APLO.",proTitle:"THANK YOU FOR SUPPORTING APLO ❤️",proText:"Have thoughts, suggestions or feedback? Feel free to share them — they help shape the direction of APLO.",feedback:"FEEDBACK",email:"a.ploom@live.com"},
+  et:{freeTitle:"TOETA APLO-T",freeText:"Soeta PRO ja toeta APLO edasist arengut.",proTitle:"AITÄH, ET TOETAD APLO-T ❤️",proText:"Sul on mõtteid, soovitusi või tagasisidet? Anna neist julgelt teada — need aitavad APLO suunda kujundada.",feedback:"TAGASISIDE",email:"a.ploom@live.com"},
+  es:{freeTitle:"APOYA APLO",freeText:"Adquiere PRO y apoya el desarrollo continuo de APLO.",proTitle:"GRACIAS POR APOYAR APLO ❤️",proText:"¿Tienes ideas, sugerencias o comentarios? Compártelos con confianza — ayudan a definir el rumbo de APLO.",feedback:"COMENTARIOS",email:"a.ploom@live.com"},
+  ru:{freeTitle:"ПОДДЕРЖИТЕ APLO",freeText:"Приобретите PRO и поддержите дальнейшее развитие APLO.",proTitle:"СПАСИБО ЗА ПОДДЕРЖКУ APLO ❤️",proText:"Есть мысли, предложения или отзывы? Поделитесь ими — они помогают определять направление APLO.",feedback:"ОБРАТНАЯ СВЯЗЬ",email:"a.ploom@live.com"}
+};
 const uiText={
   en:{
     crypto:"CRYPTO",qty:"QTY",avgBuy:"AVG BUY",price:"PRICE",value:"VALUE",share:"SHARE",total:"TOTAL",
@@ -1277,6 +1348,36 @@ function seedMarketDataImmediately(){
         };
     });
 }
+
+function updateAploSupportAndGuide(){
+  const lang = currentLang || 'et';
+  const s = supportCopy[lang] || supportCopy.et;
+  const pro = (typeof isPro === 'function') ? !!isPro() : false;
+
+  const title = document.querySelector('[data-support-title]');
+  const text = document.querySelector('[data-support-text]');
+  if(title) title.textContent = pro ? s.proTitle : s.freeTitle;
+  if(text) text.textContent = pro ? s.proText : s.freeText;
+
+  const fh = document.querySelector('[data-feedback-heading]');
+  const fc = document.querySelector('[data-feedback-copy]');
+  if(fh) fh.textContent = s.feedback;
+  if(fc) fc.textContent = s.proText;
+
+  const lh = document.querySelector('[data-legal-heading]');
+  if(lh){
+    lh.textContent = lang==='et' ? 'ÕIGUSLIK TEAVE JA VASTUTUS' :
+                     lang==='es' ? 'INFORMACIÓN LEGAL Y RESPONSABILIDAD' :
+                     lang==='ru' ? 'ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ И ОТВЕТСТВЕННОСТЬ' :
+                     'LEGAL & DISCLAIMER';
+  }
+  const lc = document.getElementById('guide-legal-copy');
+  const t = translations[lang] || translations.et;
+  if(lc) lc.innerHTML = t.info_body || '';
+
+  const email = document.querySelector('.feedback-box a[href^="mailto:"]');
+  if(email) email.textContent = s.email;
+}
 function applyLang(){
     const t=translations[currentLang]||translations.et;
     const ids={
@@ -1289,6 +1390,7 @@ function applyLang(){
     const add=document.getElementById('new-asset-input'); if(add)add.placeholder=currentLang==='et'?'TICKER VÕI CA (0x...)':currentLang==='ru'?'ТИКЕР ИЛИ CA (0x...)':currentLang==='es'?'TICKER O CA (0x...)':'TICKER OR CA (0x...)';
     const live=document.getElementById('ui-live'); if(live)live.innerText=T('live');
     const legalBox=document.getElementById('ui-disclaimer'); if(legalBox)legalBox.innerHTML=`<span class="legal-notice-title">${t.legal_label||'LEGAL NOTICE'}</span>`;
+    updateAploSupportAndGuide();
     const guideIcon=document.getElementById('ui-guide-icon'); if(guideIcon)guideIcon.title=(currentLang==='et'?'Kasutusjuhend':currentLang==='es'?'Guía de uso':currentLang==='ru'?'Руководство по использованию':'User guide');
     const histTitle=document.getElementById('ui-history-title'); if(histTitle)histTitle.innerText=T('priceHistory');
     const ticker=document.getElementById('insights-ticker'); if(ticker)ticker.title=T('market_ticker_hint');
