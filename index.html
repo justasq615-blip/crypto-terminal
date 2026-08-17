@@ -728,6 +728,20 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 [data-theme="nando-gray"] .edit-save{background:#404040!important;color:#fff!important;border-color:#505050!important}
 
 </style>
+
+<style id="aplo-1-0-additions">
+.aplo-refresh-bar{display:flex;align-items:center;gap:8px;padding:7px 9px;margin:6px 0;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:7px;letter-spacing:.15px}
+.aplo-refresh-btn{margin-left:auto;border:1px solid var(--accent);background:var(--card);color:var(--text);border-radius:5px;padding:6px 10px;font-size:8px;font-weight:900;cursor:pointer}
+.aplo-refresh-btn:active{transform:scale(.98)}
+.aplo-refresh-state{opacity:.7;text-transform:uppercase;white-space:nowrap}
+.aplo-pro-badge{font-size:7px;font-weight:900;letter-spacing:.5px;padding:3px 5px;border:1px solid var(--accent);border-radius:4px;color:var(--title)}
+.aplo-theme-locked{position:relative;opacity:.72}
+.aplo-theme-locked::after{content:'🔒 PRO';position:absolute;right:4px;bottom:3px;font-size:6px;font-weight:900}
+.aplo-pro-panel{border:1px solid var(--accent);border-radius:6px;padding:10px;margin:8px 0;background:var(--card);font-size:8px;line-height:1.5}
+.aplo-ad-slot{min-height:44px;margin-top:6px;border:1px dashed var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:7px;opacity:.55;text-transform:uppercase;letter-spacing:1px}
+.aplo-hidden{display:none!important}
+</style>
+
 </head>
 <body data-theme="nando-gray">
 <div class="header">
@@ -788,9 +802,18 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         </div>
     </div>
 </div>
+
+<div id="aplo-refresh-bar" class="aplo-refresh-bar">
+  <span id="aplo-refresh-hint">↻ Tap to refresh • Swipe down to refresh</span>
+  <span id="aplo-refresh-state" class="aplo-refresh-state">LIVE</span>
+  <button id="aplo-refresh-btn" class="aplo-refresh-btn" type="button" onclick="requestMarketRefresh(true)">↻ REFRESH</button>
+</div>
+
 <div class="disclaimer-box legal-notice-box" onclick="openLegalNotice()" role="button" tabindex="0">
     <div id="ui-disclaimer" class="disclaimer-text"></div>
 </div>
+<div id="aplo-ad-slot" class="aplo-ad-slot" aria-label="Advertisement">ADVERTISEMENT</div>
+
 <div id="settings-overlay" class="modal-overlay" onclick="this.style.display='none'">
     <div class="modal" onclick="event.stopPropagation()">
         <div class="modal-scroll">
@@ -3164,5 +3187,204 @@ if(marketData.length)renderUI();
 updateTop50Ticker(true);
 updateMarket();
 </script>
+
+<script id="aplo-1-0-layer">
+/* APLO 1.0 compatibility/additive layer. Existing Terminal functions are kept intact. */
+(function(){
+  const FREE_THEMES=new Set(['white-black','black-white','nando-gray','copper']);
+  const WATCH_LIMIT=3;
+  const ALERT_LIMIT=2;
+  let refreshBusy=false;
+  let refreshTimer=0;
+  let lastForeground=Date.now();
+  let activeUseSeconds=0;
+  let lastUseTick=Date.now();
+
+  const native=()=>window.AploNative||window.AndroidAPLO||null;
+  function isPro(){
+    try{
+      const n=native();
+      if(n && typeof n.isPro==='function') return !!n.isPro();
+      if(n && typeof n.getProStatus==='function') return !!n.getProStatus();
+    }catch(e){}
+    return false;
+  }
+  window.aploIsPro=isPro;
+  window.aploRequestPro=function(reason){
+    try{
+      const n=native();
+      if(n && typeof n.openPro==='function'){n.openPro(reason||'feature');return true;}
+    }catch(e){}
+    const labels={et:'APLO PRO on saadaval Androidi äpis.',en:'APLO PRO is available in the Android app.',es:'APLO PRO está disponible en la aplicación Android.',ru:'APLO PRO доступен в приложении Android.'};
+    alert(labels[currentLang]||labels.en);
+    return false;
+  };
+
+  const txt={
+    et:{hint:'↻ Puuduta värskendamiseks • tõmba alla värskendamiseks',refresh:'↻ VÄRSKENDA',live:'LIVE',offline:'OFFLINE',stale:'STALE',refreshing:'VÄRSKENDAN…',watchLimit:'Tasuta versioon lubab 3 vaatluspositsiooni.',alertLimit:'Tasuta versioon lubab 2 aktiivset hoiatust.',pro:'PRO',unlock:'AVA PRO',duplicate:'VARA ON JUBA LISATUD',validQty:'Kogus peab olema 0 või suurem.',validAvg:'Keskmine ostuhind peab olema 0 või suurem.',ad:'REKLAAM'},
+    en:{hint:'↻ Tap to refresh • swipe down to refresh',refresh:'↻ REFRESH',live:'LIVE',offline:'OFFLINE',stale:'STALE',refreshing:'REFRESHING…',watchLimit:'Free version allows 3 watchlist positions.',alertLimit:'Free version allows 2 active alerts.',pro:'PRO',unlock:'UNLOCK PRO',duplicate:'ASSET ALREADY ADDED',validQty:'Quantity must be 0 or greater.',validAvg:'Average buy must be 0 or greater.',ad:'ADVERTISEMENT'},
+    es:{hint:'↻ Toca para actualizar • desliza hacia abajo',refresh:'↻ ACTUALIZAR',live:'EN VIVO',offline:'SIN CONEXIÓN',stale:'ANTIGUO',refreshing:'ACTUALIZANDO…',watchLimit:'La versión gratuita permite 3 posiciones.',alertLimit:'La versión gratuita permite 2 alertas activas.',pro:'PRO',unlock:'DESBLOQUEAR PRO',duplicate:'ACTIVO YA AÑADIDO',validQty:'La cantidad debe ser 0 o mayor.',validAvg:'La compra media debe ser 0 o mayor.',ad:'PUBLICIDAD'},
+    ru:{hint:'↻ Нажмите для обновления • потяните вниз',refresh:'↻ ОБНОВИТЬ',live:'LIVE',offline:'ОФЛАЙН',stale:'УСТАРЕЛО',refreshing:'ОБНОВЛЕНИЕ…',watchLimit:'Бесплатная версия позволяет 3 позиции.',alertLimit:'Бесплатная версия позволяет 2 активных алерта.',pro:'PRO',unlock:'ОТКРЫТЬ PRO',duplicate:'АКТИВ УЖЕ ДОБАВЛЕН',validQty:'Количество должно быть 0 или больше.',validAvg:'Средняя цена покупки должна быть 0 или больше.',ad:'РЕКЛАМА'}
+  };
+  const A=()=>txt[currentLang]||txt.et;
+
+  function updateRefreshUI(state){
+    const h=document.getElementById('aplo-refresh-hint');
+    const b=document.getElementById('aplo-refresh-btn');
+    const st=document.getElementById('aplo-refresh-state');
+    if(h)h.textContent=A().hint;
+    if(b)b.textContent=A().refresh;
+    if(st)st.textContent=state||A().live;
+  }
+
+  async function requestMarketRefresh(manual){
+    if(refreshBusy)return;
+    refreshBusy=true;
+    updateRefreshUI(A().refreshing);
+    try{
+      await window.__aploOriginalUpdateMarket();
+      updateRefreshUI(navigator.onLine===false?A().offline:A().live);
+    }catch(e){
+      updateRefreshUI(navigator.onLine===false?A().offline:A().stale);
+    }finally{
+      refreshBusy=false;
+      lastForeground=Date.now();
+    }
+  }
+  window.requestMarketRefresh=requestMarketRefresh;
+  window.__aploOriginalUpdateMarket=window.updateMarket;
+  window.updateMarket=async function(){return requestMarketRefresh(false);};
+
+  /* Replace the existing swipe handler with the same central refresh path. */
+  const mw=document.getElementById('main-wrapper');
+  if(mw){
+    let sy=0;
+    mw.addEventListener('touchstart',e=>{if(mw.scrollTop===0)sy=e.touches[0].clientY;},{passive:true});
+    mw.addEventListener('touchend',e=>{
+      if(sy>0 && e.changedTouches[0].clientY-sy>60)requestMarketRefresh(true);
+      sy=0;
+    },{passive:true});
+  }
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible'){lastForeground=Date.now();requestMarketRefresh(false);}
+  });
+  window.addEventListener('online',()=>requestMarketRefresh(false));
+  window.addEventListener('offline',()=>updateRefreshUI(A().offline));
+
+  /* Free/Pro theme access: all existing theme CSS remains untouched. */
+  function renderThemeAccess(){
+    const grid=document.getElementById('theme-grid');
+    if(!grid)return;
+    const options=[['black-white','BLACK WHITE'],['white-black','WHITE BLACK'],['terminal','TERMINAL'],['gold','GOLD'],['nando-gray','GRAY'],['forest','FOREST'],['retro','RETRO'],['midnight','MIDNIGHT'],['ocean','OCEAN'],['violet','VIOLET'],['crimson','CRIMSON'],['ice','ICE'],['copper','COPPER'],['matrix','MATRIX']];
+    grid.innerHTML=options.map(([key,label])=>{
+      const free=FREE_THEMES.has(key);
+      const locked=!free&&!isPro();
+      return `<button class="theme-btn ${locked?'aplo-theme-locked':''}" onclick="setTheme('${key}')">${label}${locked?' 🔒':''}</button>`;
+    }).join('');
+    let panel=document.getElementById('aplo-pro-theme-panel');
+    if(!panel){
+      panel=document.createElement('div');panel.id='aplo-pro-theme-panel';panel.className='aplo-pro-panel';
+      grid.parentElement.insertBefore(panel,grid.nextSibling);
+    }
+    panel.innerHTML=isPro()?'<span class="aplo-pro-badge">APLO PRO</span> — All themes unlocked.':`<span class="aplo-pro-badge">PRO</span> — ${A().unlock}: ${options.filter(x=>!FREE_THEMES.has(x[0])).map(x=>x[1]).join(', ')}`;
+  }
+  window.renderThemeAccess=renderThemeAccess;
+  const originalSetTheme=window.setTheme;
+  window.setTheme=function(t){
+    if(!FREE_THEMES.has(t)&&!isPro()){aploRequestPro('theme');return;}
+    originalSetTheme(t);
+    renderThemeAccess();
+  };
+
+  /* Additive duplicate protection for assets. */
+  const originalAddNewAsset=window.addNewAsset;
+  window.addNewAsset=async function(){
+    const el=document.getElementById('new-asset-input');
+    const val=el?el.value.trim():'';
+    if(!val)return;
+    const dex=isContractAddress(val);
+    const norm=dex?val.toLowerCase():normalizeBinanceSymbol(val).toUpperCase();
+    const duplicate=symbols.some(s=>{
+      const sd=isContractAddress(s);
+      return sd===dex && (sd?String(s).toLowerCase()===norm:normalizeBinanceSymbol(s).toUpperCase()===norm);
+    });
+    if(duplicate){alert(A().duplicate);return;}
+    return originalAddNewAsset();
+  };
+
+  /* Stronger validation for existing Edit flow. */
+  const originalSaveP=window.saveP;
+  window.saveP=function(btn){
+    for(const s of symbols){
+      const q=parseFloat(document.getElementById('e-'+s)?.value);
+      const a=parseFloat(document.getElementById('a-'+s)?.value);
+      if(Number.isFinite(q)&&q<0){alert(A().validQty);return;}
+      if(Number.isFinite(a)&&a<0){alert(A().validAvg);return;}
+    }
+    return originalSaveP(btn);
+  };
+
+  /* Watchlist limit: never delete old positions; only block new Free additions. */
+  const originalAddTestCase=window.addTestCase;
+  window.addTestCase=async function(){
+    if(!isPro()&&testCases.length>=WATCH_LIMIT){alert(A().watchLimit);aploRequestPro('watchlist');return;}
+    return originalAddTestCase();
+  };
+
+  /* Alert limit: triggered/inactive alerts do not count as active. */
+  const originalAddAlert=window.addAlert;
+  window.addAlert=function(){
+    const active=priceAlerts.filter(a=>a.active!==false&&!a.triggered);
+    if(!isPro()&&active.length>=ALERT_LIMIT){alert(A().alertLimit);aploRequestPro('alerts');return;}
+    return originalAddAlert();
+  };
+
+  /* Safe localStorage wrappers for the most important existing stores. */
+  const safeSet=(k,v)=>{try{localStorage.setItem(k,v);return true;}catch(e){return false;}};
+  window.aploSafeSet=safeSet;
+
+  /* Simple active-use timer for the future native interstitial integration.
+     No fake ad is shown in Chrome; Android can consume the hook. */
+  function tickUse(){
+    const now=Date.now();
+    if(document.visibilityState==='visible'){
+      activeUseSeconds+=(now-lastUseTick)/1000;
+      if(activeUseSeconds>=300){
+        activeUseSeconds=0;
+        try{
+          const n=native();
+          if(!isPro()&&n&&typeof n.showInterstitial==='function')n.showInterstitial();
+        }catch(e){}
+      }
+    }
+    lastUseTick=now;
+  }
+  setInterval(tickUse,1000);
+
+  /* Keep the Legal Notice exactly where it is; ad slot stays below it. */
+  function updateAdSlot(){
+    const ad=document.getElementById('aplo-ad-slot');
+    if(ad)ad.classList.toggle('aplo-hidden',isPro());
+  }
+
+  /* Refresh language/UI without replacing existing translation data. */
+  const originalSetLang=window.setLang;
+  window.setLang=function(l){
+    const r=originalSetLang(l);
+    updateRefreshUI(navigator.onLine===false?A().offline:A().live);
+    renderThemeAccess();
+    updateAdSlot();
+    return r;
+  };
+
+  function initAdditions(){
+    updateRefreshUI(navigator.onLine===false?A().offline:A().live);
+    renderThemeAccess();
+    updateAdSlot();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAdditions);else initAdditions();
+})();
+</script>
+
 </body>
     </html>
