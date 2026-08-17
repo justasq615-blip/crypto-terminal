@@ -882,6 +882,37 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 .history-custom-row button{padding:7px 8px}
 .history-period-status{margin-top:6px;font-size:7px;line-height:1.3;opacity:.65;text-align:center;min-height:10px}
 .history-chart-loading{padding:16px;text-align:center;font-size:8px;opacity:.7}
+
+/* APLO banner placement:
+   FREE: banner sits OUTSIDE the modal, directly underneath it.
+   PRO: only the banner disappears; the modal keeps its original size. */
+.modal-overlay{
+  flex-direction:column;
+}
+.aplo-inline-ad-slot{
+  width:100%;
+  max-width:360px;
+  margin:8px 0 0;
+  padding:5px 6px 4px;
+  min-height:58px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:var(--panel, var(--bg));
+  text-align:center;
+  box-sizing:border-box;
+  flex:0 0 auto;
+}
+.aplo-inline-ad-slot[style*="display: none"]{
+  margin:0;
+}
+
+.whatif-save-row{margin-top:8px;display:flex;justify-content:center}.whatif-save-row .action-btn{width:100%}
+.whatif-history-section{margin-top:10px;border-top:1px solid var(--border);padding-top:8px}
+.whatif-history-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;font-size:9px;font-weight:700;letter-spacing:.4px}
+.whatif-history-row{border:1px solid var(--border);border-radius:5px;padding:7px;margin-bottom:6px;font-size:8px;line-height:1.45}
+.whatif-history-row-head{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.whatif-history-result{font-size:11px;font-weight:800}.whatif-history-meta{margin-top:3px;opacity:.72}.whatif-history-delete{flex:0 0 auto}
+.whatif-pro-hint{font-size:8px;line-height:1.4;opacity:.7;text-align:center;margin-top:5px}
 </style>
 
 <style id="aplo-1-0-additions">
@@ -1017,7 +1048,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <div id="info-header" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;text-transform:uppercase;font-size:11px"></div>
         <div id="info-content" style="padding:20px">
 </div>
-    <div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+    <div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-guide-slot"></div>
     </div>
@@ -1035,7 +1066,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
             <span id="ui-history-title">HINNAAJALUGU</span>
         </div>
         <div id="history-assets-list" style="padding:8px;overflow-y:auto;max-height:60vh"></div>
-    <div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+    <div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-history-slot"></div>
     </div>
@@ -1058,7 +1089,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
       <div class="action-sub" data-i18n="score_sub">Terminali enda heuristiline momentum / trendisignaal</div>
       <select id="ants-symbol" class="action-select" onchange="renderAntsScore()"></select>
       <div id="ants-content"></div>
-    </div><div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+    </div><div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-ants-slot"></div>
     </div>
@@ -1078,7 +1109,17 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <div><div style="font-size:8px;margin-bottom:4px" data-i18n="current">CURRENT €</div><input id="whatif-current" class="action-input" type="number" step="any" readonly></div>
       </div>
       <div id="whatif-content"></div>
-    </div><div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+      <div class="whatif-save-row">
+        <button id="whatif-save-btn" class="action-btn primary" onclick="saveWhatIfObservation()"></button>
+      </div>
+      <div id="whatif-history-section" class="whatif-history-section">
+        <div class="whatif-history-head">
+          <span data-whatif-history-title></span>
+          <button id="whatif-clear-all" class="mini-btn" onclick="clearWhatIfHistory()"></button>
+        </div>
+        <div id="whatif-history-list"></div>
+      </div>
+    </div><div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-whatif-slot"></div>
     </div>
@@ -1098,7 +1139,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <button class="action-btn primary" onclick="addAlert()" data-i18n="add_alert">ADD ALERT</button>
       </div>
       <div id="alerts-content"></div>
-    </div><div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+    </div><div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-alerts-slot"></div>
     </div>
@@ -1152,8 +1193,8 @@ const uiText={
     validTarget:"Enter a valid target price.",validTest:"Enter asset, investment and baseline price.",base:"BASE",test:"TEST",
     testSaved:"No test positions saved yet.",initializing:"Initializing terminal data...",live:"LIVE",
     priceHistoryTitle:"PRICE HISTORY",watch_ca:"CA / CONTRACT ADDRESS (OPTIONAL)",watch_ca_hint:"Use a CA to track an asset that is not in your terminal.",watch_added:"CA added to watchlist.",watch_not_found:"CA could not be found on Dexscreener.",
-    historyLive:"LIVE",history1d:"1D",history1w:"1W",history1m:"1M",history3m:"3M",historyCustom:"CUSTOM",historyApply:"SHOW",historyProOnly:"PRO FEATURE — Extended price history is available in APLO PRO.",historyLoading:"Loading historical data…",historyUnavailable:"Historical data is unavailable for this asset.",historyInvalidRange:"Choose a valid date range."
-  },
+    historyLive:"LIVE",history1d:"1D",history1w:"1W",history1m:"1M",history3m:"3M",historyCustom:"CUSTOM",historyApply:"SHOW",historyProOnly:"PRO FEATURE — Extended price history is available in APLO PRO.",historyLoading:"Loading historical data…",historyUnavailable:"Historical data is unavailable for this asset.",historyInvalidRange:"Choose a valid date range.",
+  whatifSave:"SAVE TO HISTORY",whatifHistory:"WHAT IF HISTORY",whatifClearAll:"CLEAR ALL",whatifSaved:"SAVED",whatifEmpty:"No WHAT IF observations saved yet.",whatifDelete:"DELETE",whatifProSave:"PRO — Save unlimited WHAT IF observations.",whatifDate:"DATE",whatifTarget:"TARGET",whatifInvestment:"INVESTMENT",whatifResult:"RESULT",whatifConfirmClear:"Delete all saved WHAT IF observations?"},
   et:{
     crypto:"KRÜPTO",qty:"KOGUS",avgBuy:"KESKMINE OST",price:"HIND",value:"VÄÄRTUS",share:"OSAKAAL",total:"KOKKU",
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"hinnapunkti",buy:"OST",noBuy:"OSTUHIND PUUDUB",history:"AJALUGU",
@@ -1167,8 +1208,8 @@ const uiText={
     delete:"KUSTUTA",above:"↑ ÜLE",below:"↓ ALLA",now:"PRAEGU",triggered:"KÄIVITUNUD",ready:"VALMIS KÄIVITUMA",waiting:"OOTAB",
     validTarget:"Sisesta kehtiv sihthind.",validTest:"Sisesta vara, investeering ja alghind.",base:"ALUS",test:"TEST",
     testSaved:"Testpositsioone pole veel salvestatud.",initializing:"Terminali andmete laadimine...",live:"OTSE",
-    priceHistoryTitle:"HINNAAJALUGU",watch_ca:"CA / KONTRAKTIAADRESS (VALIKULINE)",watch_ca_hint:"Kasuta CA-d, et jälgida vara, mida terminalis ei ole.",watch_added:"CA lisati vaatlusesse.",watch_not_found:"CA-d ei leitud Dexscreenerist."
-  },
+    priceHistoryTitle:"HINNAAJALUGU",watch_ca:"CA / KONTRAKTIAADRESS (VALIKULINE)",watch_ca_hint:"Kasuta CA-d, et jälgida vara, mida terminalis ei ole.",watch_added:"CA lisati vaatlusesse.",watch_not_found:"CA-d ei leitud Dexscreenerist.",
+  whatifSave:"SALVESTA AJALUKKU",whatifHistory:"MIS SIIS, KUI AJALUGU",whatifClearAll:"KUSTUTA KÕIK",whatifSaved:"SALVESTATUD",whatifEmpty:"MIS SIIS, KUI vaatlusi pole veel salvestatud.",whatifDelete:"KUSTUTA",whatifProSave:"PRO — Salvesta piiramatult MIS SIIS, KUI vaatlusi.",whatifDate:"KUUPÄEV",whatifTarget:"SIHT",whatifInvestment:"INVESTEERING",whatifResult:"TULEMUS",whatifConfirmClear:"Kustutada kõik salvestatud MIS SIIS, KUI vaatlused?"},
   es:{
     crypto:"ACTIVO",qty:"CANT.",avgBuy:"COMPRA MEDIA",price:"PRECIO",value:"VALOR",share:"CUOTA",total:"TOTAL",
     spot:"SPOT",caDex:"CA / DEX",pricePoints:"puntos de precio",buy:"COMPRA",noBuy:"SIN COMPRA",history:"HISTORIAL",
@@ -1182,8 +1223,8 @@ const uiText={
     delete:"ELIMINAR",above:"↑ POR ENCIMA",below:"↓ POR DEBAJO",now:"AHORA",triggered:"ACTIVADA",ready:"LISTA PARA ACTIVARSE",waiting:"EN ESPERA",
     validTarget:"Introduce un precio objetivo válido.",validTest:"Introduce el activo, la inversión y el precio base.",base:"BASE",test:"PRUEBA",
     testSaved:"No hay posiciones de prueba guardadas.",initializing:"Cargando datos del terminal...",live:"EN VIVO",
-    priceHistoryTitle:"HISTORIAL DE PRECIOS",watch_ca:"CA / DIRECCIÓN DEL CONTRATO (OPCIONAL)",watch_ca_hint:"Usa una CA para seguir un activo que no está en tu terminal.",watch_added:"CA añadida a la lista.",watch_not_found:"No se encontró la CA en Dexscreener."
-  },
+    priceHistoryTitle:"HISTORIAL DE PRECIOS",watch_ca:"CA / DIRECCIÓN DEL CONTRATO (OPCIONAL)",watch_ca_hint:"Usa una CA para seguir un activo que no está en tu terminal.",watch_added:"CA añadida a la lista.",watch_not_found:"No se encontró la CA en Dexscreener.",
+  whatifSave:"GUARDAR EN HISTORIAL",whatifHistory:"HISTORIAL DE ¿Y SI?",whatifClearAll:"BORRAR TODO",whatifSaved:"GUARDADO",whatifEmpty:"Aún no hay observaciones de ¿Y SI? guardadas.",whatifDelete:"ELIMINAR",whatifProSave:"PRO — Guarda observaciones ilimitadas de ¿Y SI?.",whatifDate:"FECHA",whatifTarget:"OBJETIVO",whatifInvestment:"INVERSIÓN",whatifResult:"RESULTADO",whatifConfirmClear:"¿Eliminar todas las observaciones de ¿Y SI? guardadas?"},
   ru:{
     crypto:"АКТИВ",qty:"КОЛ-ВО",avgBuy:"СРЕДНЯЯ ПОКУПКА",price:"ЦЕНА",value:"СТОИМОСТЬ",share:"ДОЛЯ",total:"ИТОГО",
     spot:"СПОТ",caDex:"CA / DEX",pricePoints:"ценовых точек",buy:"ПОКУПКА",noBuy:"НЕТ ПОКУПКИ",history:"ИСТОРИЯ",
@@ -1197,8 +1238,8 @@ const uiText={
     delete:"УДАЛИТЬ",above:"↑ ВЫШЕ",below:"↓ НИЖЕ",now:"СЕЙЧАС",triggered:"СРАБОТАЛО",ready:"ГОТОВО К СРАБАТЫВАНИЮ",waiting:"ОЖИДАНИЕ",
     validTarget:"Введите корректную целевую цену.",validTest:"Введите актив, сумму инвестиции и базовую цену.",base:"БАЗА",test:"ТЕСТ",
     testSaved:"Тестовых позиций пока нет.",initializing:"Загрузка данных терминала...",live:"В ЭФИРЕ",
-    priceHistoryTitle:"ИСТОРИЯ ЦЕН",watch_ca:"CA / АДРЕС КОНТРАКТА (НЕОБЯЗАТЕЛЬНО)",watch_ca_hint:"Используйте CA для отслеживания актива, которого нет в терминале.",watch_added:"CA добавлен в список.",watch_not_found:"CA не найден в Dexscreener."
-  }
+    priceHistoryTitle:"ИСТОРИЯ ЦЕН",watch_ca:"CA / АДРЕС КОНТРАКТА (НЕОБЯЗАТЕЛЬНО)",watch_ca_hint:"Используйте CA для отслеживания актива, которого нет в терминале.",watch_added:"CA добавлен в список.",watch_not_found:"CA не найден в Dexscreener.",
+  whatifSave:"СОХРАНИТЬ В ИСТОРИЮ",whatifHistory:"ИСТОРИЯ «ЧТО ЕСЛИ?»",whatifClearAll:"УДАЛИТЬ ВСЁ",whatifSaved:"СОХРАНЕНО",whatifEmpty:"Сохранённых расчётов «Что если?» пока нет.",whatifDelete:"УДАЛИТЬ",whatifProSave:"PRO — Сохраняйте неограниченное количество расчётов «Что если?».",whatifDate:"ДАТА",whatifTarget:"ЦЕЛЬ",whatifInvestment:"ИНВЕСТИЦИЯ",whatifResult:"РЕЗУЛЬТАТ",whatifConfirmClear:"Удалить все сохранённые расчёты «Что если?»?"}
 };
 const T=k=>(uiText[currentLang]||uiText.et)[k]??(uiText.en[k]||k);
 
@@ -1485,6 +1526,7 @@ function applyLang(){
     const add=document.getElementById('new-asset-input'); if(add)add.placeholder=currentLang==='et'?'TICKER VÕI CA (0x...)':currentLang==='ru'?'ТИКЕР ИЛИ CA (0x...)':currentLang==='es'?'TICKER O CA (0x...)':'TICKER OR CA (0x...)';
     const live=document.getElementById('ui-live'); if(live)live.innerText=T('live');
     updateAploSupportAndGuide();
+    updateWhatIfHistoryUI();
     const guideIcon=document.getElementById('ui-guide-icon'); if(guideIcon)guideIcon.title=(currentLang==='et'?'Kasutusjuhend':currentLang==='es'?'Guía de uso':currentLang==='ru'?'Руководство по использованию':'User guide');
     const histTitle=document.getElementById('ui-history-title'); if(histTitle)histTitle.innerText=T('priceHistory');
     const ticker=document.getElementById('insights-ticker'); if(ticker)ticker.title=T('market_ticker_hint');
@@ -2716,12 +2758,17 @@ function renderAntsScore(){
       </div>
       <div style="font-size:7px;opacity:.5;text-align:center">${T('antsDisclaimer')}</div>`;
 }
+let whatIfHistory=[];
+try{whatIfHistory=JSON.parse(localStorage.getItem('aplo_whatif_history')||'[]');if(!Array.isArray(whatIfHistory))whatIfHistory=[];}catch(e){whatIfHistory=[];}
+function saveWhatIfHistory(){localStorage.setItem('aplo_whatif_history',JSON.stringify(whatIfHistory));}
+function whatIfIsPro(){return typeof window.aploIsPro==='function'&&window.aploIsPro();}
+function requestWhatIfPro(){if(typeof window.aploRequestPro==='function')return window.aploRequestPro('whatif-history');return false;}
 function openWhatIf(){
     populateActionSelect('whatif-symbol');
     const sel=document.getElementById('whatif-symbol');
     if(!sel.value&&symbols[0])sel.value=symbols[0];
     document.getElementById('whatif-overlay').style.display='flex';
-    renderWhatIf();
+    updateWhatIfHistoryUI(); renderWhatIf();
 }
 function renderWhatIf(){
     const s=document.getElementById('whatif-symbol').value;
@@ -2730,17 +2777,35 @@ function renderWhatIf(){
     const investment=parseFloat(document.getElementById('whatif-investment').value)||0;
     document.getElementById('whatif-current').value=current?formatPrice(current):'';
     const box=document.getElementById('whatif-content');
-    if(!current||!target||!investment){box.innerHTML='<div class="history-empty">'+T('enterInvestment')+'</div>';return;}
-    const qty=investment/current;
-    const finalValue=qty*target;
-    const profit=finalValue-investment;
-    const roi=(profit/investment)*100;
-    box.innerHTML=`<div class="whatif-box">
-      <div class="whatif-result ${profit>=0?'up':'down'}">${formatMoney(finalValue)}</div>
-      <div class="whatif-sub">${T('pl')} ${profit>=0?'+':'-'}${formatMoney(Math.abs(profit))} • ${T('roi')} ${roi>=0?'+':''}${roi.toFixed(1)}%</div>
-      <div style="font-size:8px;margin-top:10px;line-height:1.6;opacity:.7">${getDisplayName(s)} • ${formatMoney(current)} → ${formatMoney(target)} • ${qty.toFixed(6)} ${T('units')}</div>
-    </div>`;
+    if(!current||!target||!investment){box.innerHTML='<div class="history-empty">'+T('enterInvestment')+'</div>';updateWhatIfHistoryUI();return;}
+    const qty=investment/current, finalValue=qty*target, profit=finalValue-investment, roi=(profit/investment)*100;
+    box.innerHTML=`<div class="whatif-box"><div class="whatif-result ${profit>=0?'up':'down'}">${formatMoney(finalValue)}</div><div class="whatif-sub">${T('pl')} ${profit>=0?'+':'-'}${formatMoney(Math.abs(profit))} • ${T('roi')} ${roi>=0?'+':''}${roi.toFixed(1)}%</div><div style="font-size:8px;margin-top:10px;line-height:1.6;opacity:.7">${getDisplayName(s)} • ${formatMoney(current)} → ${formatMoney(target)} • ${qty.toFixed(6)} ${T('units')}</div></div>`;
+    updateWhatIfHistoryUI();
 }
+function saveWhatIfObservation(){
+    if(!whatIfIsPro()){requestWhatIfPro();return;}
+    const s=document.getElementById('whatif-symbol').value,current=currentPrices[s]||0,target=parseFloat(document.getElementById('whatif-target').value)||0,investment=parseFloat(document.getElementById('whatif-investment').value)||0;
+    if(!current||!target||!investment){alert(T('enterInvestment'));return;}
+    const qty=investment/current,finalValue=qty*target,profit=finalValue-investment,roi=(profit/investment)*100;
+    whatIfHistory.unshift({id:Date.now()+Math.random(),symbol:s,name:getDisplayName(s),current,target,investment,qty,finalValue,profit,roi,createdAt:Date.now()});
+    saveWhatIfHistory();updateWhatIfHistoryUI();
+}
+function deleteWhatIfObservation(id){whatIfHistory=whatIfHistory.filter(x=>String(x.id)!==String(id));saveWhatIfHistory();updateWhatIfHistoryUI();}
+function clearWhatIfHistory(){if(!whatIfHistory.length)return;if(!confirm(T('whatifConfirmClear')))return;whatIfHistory=[];saveWhatIfHistory();updateWhatIfHistoryUI();}
+function formatWhatIfDate(ts){try{return new Intl.DateTimeFormat(currentLang||'et',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(ts));}catch(e){return new Date(ts).toLocaleString();}}
+function updateWhatIfHistoryUI(){
+    const saveBtn=document.getElementById('whatif-save-btn'),historyTitle=document.querySelector('[data-whatif-history-title]'),clearBtn=document.getElementById('whatif-clear-all'),list=document.getElementById('whatif-history-list'),section=document.getElementById('whatif-history-section');
+    if(!saveBtn||!historyTitle||!clearBtn||!list||!section)return;
+    historyTitle.textContent=T('whatifHistory');
+    if(whatIfIsPro()){
+      saveBtn.textContent=T('whatifSave');clearBtn.textContent=T('whatifClearAll');clearBtn.style.display=whatIfHistory.length?'inline-flex':'none';section.style.display='block';
+      if(!whatIfHistory.length){list.innerHTML=`<div class="history-empty">${T('whatifEmpty')}</div>`;return;}
+      list.innerHTML=whatIfHistory.map(x=>`<div class="whatif-history-row"><div class="whatif-history-row-head"><div><div class="whatif-history-result">${formatMoney(x.finalValue)}</div><div>${getDisplayName(x.symbol)} • ${T('whatifTarget')} ${formatMoney(x.target)}</div></div><button class="mini-btn whatif-history-delete" onclick="deleteWhatIfObservation('${x.id}')">${T('whatifDelete')}</button></div><div class="whatif-history-meta">${T('whatifDate')}: ${formatWhatIfDate(x.createdAt)} • ${T('whatifInvestment')}: ${formatMoney(x.investment)} • ${T('roi')}: ${x.roi>=0?'+':''}${Number(x.roi).toFixed(1)}%</div></div>`).join('');
+    }else{
+      saveBtn.textContent=T('whatifSave')+' 🔒';clearBtn.style.display='none';section.style.display='block';list.innerHTML=`<div class="whatif-pro-hint">${T('whatifProSave')}</div>`;
+    }
+}
+
 let priceAlerts=[];
 try{priceAlerts=JSON.parse(localStorage.getItem('aplo_price_alerts')||'[]');if(!Array.isArray(priceAlerts))priceAlerts=[];}catch(e){priceAlerts=[];}
 function saveAlerts(){localStorage.setItem('aplo_price_alerts',JSON.stringify(priceAlerts));}
@@ -2993,7 +3058,7 @@ function openLegalNotice(){
     const t=translations[currentLang]||translations.et;
     document.getElementById('info-header').innerText=t.legal_label||'LEGAL NOTICE';
     document.getElementById('info-content').className='';
-    document.getElementById('info-content').innerHTML=`<div class="legal-copy">${t.info_body}<div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
+    document.getElementById('info-content').innerHTML=`<div class="legal-copy">${t.info_body}<div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-watchlist-slot"></div>
     </div>
