@@ -3376,7 +3376,7 @@ function openLegalNotice(){
     const t=translations[currentLang]||translations.et;
     document.getElementById('info-header').innerText=t.legal_label||'LEGAL NOTICE';
     document.getElementById('info-content').className='';
-    document.getElementById('info-content').innerHTML=`\1</div>
+    document.getElementById('info-content').innerHTML=`<div class="legal-copy">${t.info_body}</div>
     </div><div style="margin-top:14px;padding:10px;border:1px solid var(--accent);border-radius:5px;font-size:8px;line-height:1.5;text-align:center">${t.legal_footer}</div>`;
     const modal=document.getElementById('info-modal');
     if(modal){modal.classList.remove('guide-modal');modal.classList.add('legal-modal');}
