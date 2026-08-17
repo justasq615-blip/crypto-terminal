@@ -939,7 +939,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 
 
 <div class="disclaimer-box legal-notice-box" id="aplo-support-box">
-    <div class="support-title">❤️ <span data-support-title>TOETA APLO-T</span></div>
+    <div class="support-title">❤️</div>
     <div class="support-text" data-support-text>Soeta PRO ja toeta APLO edasist arengut.</div>
 </div>
 <div id="aplo-ad-slot" class="aplo-ad-slot" aria-label="Advertisement">ADVERTISEMENT</div>
@@ -1078,10 +1078,10 @@ const translations={
 };
 
 const supportCopy={
-  en:{freeTitle:"SUPPORT APLO",freeText:"Purchase PRO and support the continued development of APLO.",proTitle:"THANK YOU FOR SUPPORTING APLO ❤️",proText:"Have thoughts, suggestions or feedback? Feel free to share them — they help shape the direction of APLO.",feedback:"FEEDBACK",email:"a.ploom@live.com"},
-  et:{freeTitle:"TOETA APLO-T",freeText:"Soeta PRO ja toeta APLO edasist arengut.",proTitle:"AITÄH, ET TOETAD APLO-T ❤️",proText:"Sul on mõtteid, soovitusi või tagasisidet? Anna neist julgelt teada — need aitavad APLO suunda kujundada.",feedback:"TAGASISIDE",email:"a.ploom@live.com"},
-  es:{freeTitle:"APOYA APLO",freeText:"Adquiere PRO y apoya el desarrollo continuo de APLO.",proTitle:"GRACIAS POR APOYAR APLO ❤️",proText:"¿Tienes ideas, sugerencias o comentarios? Compártelos con confianza — ayudan a definir el rumbo de APLO.",feedback:"COMENTARIOS",email:"a.ploom@live.com"},
-  ru:{freeTitle:"ПОДДЕРЖИТЕ APLO",freeText:"Приобретите PRO и поддержите дальнейшее развитие APLO.",proTitle:"СПАСИБО ЗА ПОДДЕРЖКУ APLO ❤️",proText:"Есть мысли, предложения или отзывы? Поделитесь ими — они помогают определять направление APLO.",feedback:"ОБРАТНАЯ СВЯЗЬ",email:"a.ploom@live.com"}
+  en:{freeTitle:"SUPPORT APLO",freeText:"Purchase PRO and support the continued development of APLO.",proTitle:"❤️ Thank you for your support. ❤️",proText:"❤️ Thank you for your support. ❤️",feedback:"FEEDBACK",feedbackText:"Have thoughts, suggestions or feedback? Feel free to share them — they help shape the direction of APLO.",email:"a.ploom@live.com"},
+  et:{freeTitle:"TOETA APLO-T",freeText:"Soeta PRO ja toeta edasist arengut.",proTitle:"❤️ Tänan sind toetuse eest. ❤️",proText:"❤️ Tänan sind toetuse eest. ❤️",feedback:"TAGASISIDE",feedbackText:"Sul on mõtteid, soovitusi või tagasisidet? Anna neist julgelt teada — need aitavad APLO suunda kujundada.",email:"a.ploom@live.com"},
+  es:{freeTitle:"APOYA APLO",freeText:"Adquiere PRO y apoya el desarrollo continuo de APLO.",proTitle:"❤️ Gracias por tu apoyo. ❤️",proText:"❤️ Gracias por tu apoyo. ❤️",feedback:"COMENTARIOS",feedbackText:"¿Tienes ideas, sugerencias o comentarios? Compártelos con confianza — ayudan a definir el rumbo de APLO.",email:"a.ploom@live.com"},
+  ru:{freeTitle:"ПОДДЕРЖИТЕ APLO",freeText:"Приобретите PRO и поддержите дальнейшее развитие APLO.",proTitle:"❤️ Спасибо за вашу поддержку. ❤️",proText:"❤️ Спасибо за вашу поддержку. ❤️",feedback:"ОБРАТНАЯ СВЯЗЬ",feedbackText:"Есть мысли, предложения или отзывы? Поделитесь ими — они помогают определять направление APLO.",email:"a.ploom@live.com"}
 };
 const uiText={
   en:{
@@ -1364,16 +1364,33 @@ function updateAploSupportAndGuide(){
   const lang = currentLang || 'et';
   const s = supportCopy[lang] || supportCopy.et;
   const pro = (typeof isPro === 'function') ? !!isPro() : false;
+  const box = document.getElementById('aplo-support-box');
 
-  const title = document.querySelector('[data-support-title]');
-  const text = document.querySelector('[data-support-text]');
-  if(title) title.textContent = pro ? s.proTitle : s.freeTitle;
-  if(text) text.textContent = pro ? s.proText : s.freeText;
+  if(box){
+    if(pro){
+      const count = parseInt(localStorage.getItem('aplo_pro_welcome_open_count') || '0',10) || 0;
+      if(count >= 5){
+        box.style.display='none';
+      }else{
+        box.style.display='';
+        const title = box.querySelector('[data-support-title]');
+        const text = box.querySelector('[data-support-text]');
+        if(title) title.textContent = '';
+        if(text) text.textContent = s.proText;
+      }
+    }else{
+      box.style.display='';
+      const title = box.querySelector('[data-support-title]');
+      const text = box.querySelector('[data-support-text]');
+      if(title) title.textContent = '';
+      if(text) text.textContent = '❤️ ' + s.freeText;
+    }
+  }
 
   const fh = document.querySelector('[data-feedback-heading]');
   const fc = document.querySelector('[data-feedback-copy]');
   if(fh) fh.textContent = s.feedback;
-  if(fc) fc.textContent = s.proText;
+  if(fc) fc.textContent = s.feedbackText || s.proText;
 
   const lh = document.querySelector('[data-legal-heading]');
   if(lh){
@@ -3544,7 +3561,7 @@ updateMarket();
   }
   setInterval(tickUse,1000);
 
-  /* Keep the Legal Notice exactly where it is; ad slot stays below it. */
+  /* Home-screen support box; Legal & Disclaimer lives at the end of the Guide. */
   function updateAdSlot(){
     const ad=document.getElementById('aplo-ad-slot');
     if(ad)ad.classList.toggle('aplo-hidden',isPro());
@@ -3557,6 +3574,7 @@ updateMarket();
     updateRefreshUI(navigator.onLine===false?A().offline:A().live);
     renderThemeAccess();
     updateAdSlot();
+    updateAploSupportAndGuide();
     return r;
   };
 
@@ -3564,6 +3582,16 @@ updateMarket();
     updateRefreshUI(navigator.onLine===false?A().offline:A().live);
     renderThemeAccess();
     updateAdSlot();
+
+    // PRO thank-you: show only during the first 5 app openings after PRO is active.
+    if(isPro()){
+      const key='aplo_pro_welcome_open_count';
+      const current=parseInt(localStorage.getItem(key)||'0',10)||0;
+      if(current<5){
+        localStorage.setItem(key,String(current+1));
+      }
+    }
+    updateAploSupportAndGuide();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAdditions);else initAdditions();
 })();
