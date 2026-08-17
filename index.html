@@ -730,6 +730,21 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 </style>
 
 <style id="aplo-1-0-additions">
+.aplo-header-refresh{
+  cursor:pointer;
+  font-size:17px;
+  line-height:1;
+  font-weight:900;
+  color:var(--title);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  height:20px;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.aplo-header-refresh:active{opacity:.65;transform:scale(.92)}
 .aplo-refresh-bar{display:flex;align-items:center;gap:8px;padding:7px 9px;margin:6px 0;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:7px;letter-spacing:.15px}
 .aplo-refresh-btn{margin-left:auto;border:1px solid var(--accent);background:var(--card);color:var(--text);border-radius:5px;padding:6px 10px;font-size:8px;font-weight:900;cursor:pointer}
 .aplo-refresh-btn:active{transform:scale(.98)}
@@ -748,6 +763,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     <div id="status"><span class="live-dot"></span> <span id="ui-live">OTSE</span> • --:--:--</div>
     <h2 id="ui-title">🚀 APLO KRÜPTO TERMINAL</h2>
     <div style="display:flex;gap:12px;align-items:center;">
+        <span id="aplo-header-refresh" class="aplo-header-refresh" onclick="requestMarketRefresh(true)" aria-label="Refresh">↻</span>
         <span style="cursor:pointer;font-size:18px;font-weight:bold;color:var(--title)" onclick="openManageAssets()">+</span>
         <span style="cursor:pointer;font-size:14px" onclick="document.getElementById('settings-overlay').style.display='flex'">⚙️</span>
     </div>
@@ -803,11 +819,6 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
     </div>
 </div>
 
-<div id="aplo-refresh-bar" class="aplo-refresh-bar">
-  <span id="aplo-refresh-hint">↻ Tap to refresh • Swipe down to refresh</span>
-  <span id="aplo-refresh-state" class="aplo-refresh-state">LIVE</span>
-  <button id="aplo-refresh-btn" class="aplo-refresh-btn" type="button" onclick="requestMarketRefresh(true)">↻ REFRESH</button>
-</div>
 
 <div class="disclaimer-box legal-notice-box" onclick="openLegalNotice()" role="button" tabindex="0">
     <div id="ui-disclaimer" class="disclaimer-text"></div>
