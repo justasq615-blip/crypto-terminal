@@ -186,7 +186,7 @@ align-items:center;justify-content:center;opacity:.7
 .disclaimer-text{font-size:7px;text-align:center;text-transform:uppercase;line-height:1.3}
 .modal-overlay{
 display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;
-justify-content:center;align-items:center;flex-direction:column;padding:20px;backdrop-filter:blur(8px)
+justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(8px)
 }
 .modal{
 background:var(--bg);border:2px solid var(--border);width:100%;max-width:360px;
@@ -848,15 +848,13 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 
 /* APLO FREE banner ad slots — reserved space for native AdMob */
 .aplo-inline-ad-slot{
-  width:min(360px,100%);
-  min-height:58px;
-  margin:8px 0 0;
-  padding:5px 6px 3px;
-  box-sizing:border-box;
+  margin:12px 8px 4px;
+  padding:7px 6px 4px;
+  border-top:1px solid var(--border);
   text-align:center;
-  background:transparent;
-  border:0;
-  flex:0 0 auto;
+  min-height:58px;
+  box-sizing:border-box;
+  background:var(--panel);
 }
 .aplo-ad-label{
   font-size:7px;
@@ -872,6 +870,18 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
   align-items:center;
   justify-content:center;
 }
+
+.history-period-wrap{margin:0 0 10px;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--card)}
+.history-period-buttons{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.history-period-btn{min-width:0;padding:7px 3px;border:1px solid var(--border);border-radius:4px;background:var(--accent);color:var(--text);font-size:8px;font-weight:800;cursor:pointer}
+.history-period-btn.active{background:var(--title);color:#000!important}
+.history-period-btn.locked{opacity:.65}
+.history-custom-row{display:none;grid-template-columns:1fr 1fr auto;gap:5px;margin-top:6px;align-items:center}
+.history-custom-row.show{display:grid}
+.history-custom-row input{width:100%;min-width:0;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:7px 5px;font:inherit;font-size:8px}
+.history-custom-row button{padding:7px 8px}
+.history-period-status{margin-top:6px;font-size:7px;line-height:1.3;opacity:.65;text-align:center;min-height:10px}
+.history-chart-loading{padding:16px;text-align:center;font-size:8px;opacity:.7}
 </style>
 
 <style id="aplo-1-0-additions">
@@ -1110,10 +1120,6 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
       <div id="watchlist-content" style="margin-top:10px"></div>
     </div>
   </div>
-  <div class="aplo-inline-ad-slot" data-aplo-ad-slot="action">
-    <div class="aplo-ad-label">ADVERTISEMENT</div>
-    <div class="aplo-ad-native-slot" id="aplo-ad-watchlist-slot"></div>
-  </div>
 </div>
 <script>
 const translations={
@@ -1143,7 +1149,8 @@ const uiText={
     delete:"DELETE",above:"↑ ABOVE",below:"↓ BELOW",now:"NOW",triggered:"TRIGGERED",ready:"READY TO TRIGGER",waiting:"WAITING",
     validTarget:"Enter a valid target price.",validTest:"Enter asset, investment and baseline price.",base:"BASE",test:"TEST",
     testSaved:"No test positions saved yet.",initializing:"Initializing terminal data...",live:"LIVE",
-    priceHistoryTitle:"PRICE HISTORY",watch_ca:"CA / CONTRACT ADDRESS (OPTIONAL)",watch_ca_hint:"Use a CA to track an asset that is not in your terminal.",watch_added:"CA added to watchlist.",watch_not_found:"CA could not be found on Dexscreener."
+    priceHistoryTitle:"PRICE HISTORY",watch_ca:"CA / CONTRACT ADDRESS (OPTIONAL)",watch_ca_hint:"Use a CA to track an asset that is not in your terminal.",watch_added:"CA added to watchlist.",watch_not_found:"CA could not be found on Dexscreener.",
+    historyLive:"LIVE",history1d:"1D",history1w:"1W",history1m:"1M",history3m:"3M",historyCustom:"CUSTOM",historyApply:"SHOW",historyProOnly:"PRO FEATURE — Extended price history is available in APLO PRO.",historyLoading:"Loading historical data…",historyUnavailable:"Historical data is unavailable for this asset.",historyInvalidRange:"Choose a valid date range."
   },
   et:{
     crypto:"KRÜPTO",qty:"KOGUS",avgBuy:"KESKMINE OST",price:"HIND",value:"VÄÄRTUS",share:"OSAKAAL",total:"KOKKU",
@@ -2131,119 +2138,113 @@ function closeHistoryDetail(){
     if(history) history.style.display='flex';
 }
 
+function historyLocale(){
+    return ({et:'et-EE',en:'en-US',es:'es-ES',ru:'ru-RU'})[currentLang]||'et-EE';
+}
+function historyPeriodConfig(period){
+    const now=Date.now(),day=86400000;
+    if(period==='1d')return {from:now-day,to:now,interval:'1h',label:T('history1d')};
+    if(period==='1w')return {from:now-7*day,to:now,interval:'4h',label:T('history1w')};
+    if(period==='1m')return {from:now-30*day,to:now,interval:'6h',label:T('history1m')};
+    if(period==='3m')return {from:now-90*day,to:now,interval:'1d',label:T('history3m')};
+    return null;
+}
+function historyIntervalForRange(ms){
+    const day=86400000;
+    if(ms<=7*day)return '1h';
+    if(ms<=31*day)return '4h';
+    if(ms<=90*day)return '6h';
+    return '1d';
+}
+async function fetchBinanceHistoryRange(symbol,from,to,interval){
+    if(typeof isContractAddress==='function'&&isContractAddress(symbol))return null;
+    const normalized=normalizeBinanceSymbol(symbol);
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9000);
+    try{
+        const url=`https://api.binance.com/api/v3/klines?symbol=${encodeURIComponent(normalized)}&interval=${encodeURIComponent(interval)}&startTime=${Math.floor(from)}&endTime=${Math.floor(to)}&limit=1000`;
+        const res=await fetch(url,{cache:'no-store',signal:controller.signal});
+        if(!res.ok)return null;
+        const data=await res.json();
+        if(!Array.isArray(data)||!data.length)return null;
+        return data.map(k=>({time:Number(k[0]),price:Number(k[4])})).filter(p=>Number.isFinite(p.time)&&Number.isFinite(p.price)&&p.price>0);
+    }catch(e){return null;}finally{clearTimeout(timer);}
+}
+function historyIsPro(){return typeof window.aploIsPro==='function'&&window.aploIsPro();}
+function historyProRequired(){
+    if(historyIsPro())return false;
+    if(typeof window.aploRequestPro==='function')window.aploRequestPro('history-period');
+    return true;
+}
+function historySafeName(name){return String(name).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+function historyPeriodButtons(symbol,name,active,locked){
+    const n=historySafeName(name);
+    const p=[['live','historyLive'],['1d','history1d'],['1w','history1w'],['1m','history1m'],['3m','history3m'],['custom','historyCustom']];
+    return p.map(([id,key])=>`<button class="history-period-btn ${active===id?'active':''} ${locked&&id!=='live'?'locked':''}" onclick="selectHistoryPeriod('${symbol}','${n}','${id}')">${T(key)}${locked&&id!=='live'?' 🔒':''}</button>`).join('');
+}
+function historyCustomRow(symbol,name,show){
+    const n=historySafeName(name);
+    return `<div class="history-custom-row ${show?'show':''}"><input id="history-from" type="date"><input id="history-to" type="date"><button class="history-period-btn" onclick="applyCustomHistory('${symbol}','${n}')">${T('historyApply')}</button></div>`;
+}
+function renderHistoryRows(points,avgBuy){
+    return points.slice().reverse().map(point=>{
+        const date=new Date(point.time).toLocaleString(historyLocale(),{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+        let change='';
+        if(Number.isFinite(avgBuy)&&avgBuy>0){const cp=((point.price-avgBuy)/avgBuy)*100;change=`<span class="${cp>=0?'up':'down'}">${cp>=0?'+':''}${cp.toFixed(1)}%</span>`;}
+        return `<div class="history-row"><span class="history-date">${date}</span><span class="history-price">${formatCryptoMoney(point.price)}</span>${change}</div>`;
+    }).join('');
+}
+function renderHistoryLive(symbol,name){
+    const avgBuy=parseFloat(localStorage.getItem('avg_'+symbol)),history=priceHistory[symbol]||{started:Date.now(),points:[]},points=Array.isArray(history.points)?history.points:[],current=currentPrices[symbol]||0;
+    let pnl=null;if(Number.isFinite(avgBuy)&&avgBuy>0&&current>0)pnl=((current-avgBuy)/avgBuy)*100;
+    const content=document.getElementById('history-detail-content');
+    let h=`<div class="history-period-wrap"><div class="history-period-buttons">${historyPeriodButtons(symbol,name,'live',!historyIsPro())}</div>${historyCustomRow(symbol,name,false)}<div class="history-period-status">${!historyIsPro()?T('historyProOnly'):T('historyLive')}</div></div>`;
+    if(Number.isFinite(avgBuy)&&avgBuy>0)h+=`<div class="history-buy">${T('averageBuy')}: <strong>${formatCryptoMoney(avgBuy)}</strong></div>`;
+    if(current>0)h+=`<div class="history-pnl ${pnl!==null?(pnl>=0?'up':'down'):''}">${T('current')}: ${formatCryptoMoney(current)}${pnl!==null?` • ${pnl>=0?'+':''}${pnl.toFixed(1)}%`:''}</div>`;
+    if(points.length<2)h+=`<div class="history-empty">${translations[currentLang].history_empty}<br><br>${points.length} ${translations[currentLang].history_points}.</div>`;
+    else h+=`<svg class="history-chart" id="history-svg" viewBox="0 0 320 180" preserveAspectRatio="none"></svg><div class="history-list">${renderHistoryRows(points,avgBuy)}</div>`;
+    content.innerHTML=h;if(points.length>=2)setTimeout(()=>drawHistoryChart(points,avgBuy,current),50);
+}
+async function selectHistoryPeriod(symbol,name,period){
+    if(period!=='live'&&historyProRequired())return;
+    if(period==='live'){renderHistoryLive(symbol,name);return;}
+    if(period==='custom'){renderHistoryCustom(symbol,name);return;}
+    const c=historyPeriodConfig(period);if(c)await renderHistoryRemote(symbol,name,c.from,c.to,c.interval,c.label,period);
+}
+function renderHistoryCustom(symbol,name){
+    const avgBuy=parseFloat(localStorage.getItem('avg_'+symbol));
+    const content=document.getElementById('history-detail-content');
+    if(!content)return;
+    let h=`<div class="history-period-wrap"><div class="history-period-buttons">${historyPeriodButtons(symbol,name,'custom',false)}</div>${historyCustomRow(symbol,name,true)}<div class="history-period-status">${T('historyCustom')}</div></div>`;
+    if(Number.isFinite(avgBuy)&&avgBuy>0)h+=`<div class="history-buy">${T('averageBuy')}: <strong>${formatCryptoMoney(avgBuy)}</strong></div>`;
+    h+=`<div class="history-empty">${T('historyCustom')} — ${T('historyApply')}</div>`;
+    content.innerHTML=h;
+}
+async function renderHistoryRemote(symbol,name,from,to,interval,label,activePeriod=''){
+    const content=document.getElementById('history-detail-content');if(!content)return;
+    const avgBuy=parseFloat(localStorage.getItem('avg_'+symbol)),current=currentPrices[symbol]||0,n=historySafeName(name);
+    const fromDate=new Date(from).toLocaleDateString(historyLocale()),toDate=new Date(to).toLocaleDateString(historyLocale());
+    content.innerHTML=`<div class="history-period-wrap"><div class="history-period-buttons">${historyPeriodButtons(symbol,name,activePeriod,false)}</div>${historyCustomRow(symbol,name,true)}<div class="history-period-status">${label} · ${fromDate} — ${toDate}</div></div><div class="history-chart-loading">${T('historyLoading')}</div>`;
+    const points=await fetchBinanceHistoryRange(symbol,from,to,interval);
+    if(!points||points.length<2){content.innerHTML=`<div class="history-period-wrap"><div class="history-period-buttons">${historyPeriodButtons(symbol,name,'',false)}</div>${historyCustomRow(symbol,name,true)}<div class="history-period-status">${T('historyUnavailable')}</div></div>`;return;}
+    let h=`<div class="history-period-wrap"><div class="history-period-buttons">${historyPeriodButtons(symbol,name,activePeriod,false)}</div>${historyCustomRow(symbol,name,true)}<div class="history-period-status">${label} · ${fromDate} — ${toDate}</div></div>`;
+    if(Number.isFinite(avgBuy)&&avgBuy>0)h+=`<div class="history-buy">${T('averageBuy')}: <strong>${formatCryptoMoney(avgBuy)}</strong></div>`;
+    if(current>0)h+=`<div class="history-pnl">${T('current')}: ${formatCryptoMoney(current)}</div>`;
+    h+=`<svg class="history-chart" id="history-svg" viewBox="0 0 320 180" preserveAspectRatio="none"></svg><div class="history-list">${renderHistoryRows(points,avgBuy)}</div>`;
+    content.innerHTML=h;setTimeout(()=>drawHistoryChart(points,avgBuy,current),50);
+}
+function applyCustomHistory(symbol,name){
+    if(historyProRequired())return;
+    const f=document.getElementById('history-from'),t=document.getElementById('history-to');
+    if(!f||!t||!f.value||!t.value){alert(T('historyInvalidRange'));return;}
+    const from=new Date(f.value+'T00:00:00').getTime(),to=new Date(t.value+'T23:59:59.999').getTime();
+    if(!Number.isFinite(from)||!Number.isFinite(to)||from>=to||to>Date.now()){alert(T('historyInvalidRange'));return;}
+    renderHistoryRemote(symbol,name,from,to,historyIntervalForRange(to-from),`${T('historyCustom')} · ${f.value} — ${t.value}`,'custom');
+}
 function openHistoryDetail(symbol,name){
-    document.getElementById(
-        'history-assets-overlay'
-    ).style.display='none';
-    const avgBuy=
-        parseFloat(
-            localStorage.getItem('avg_'+symbol)
-        );
-    const history=
-        priceHistory[symbol]||{
-            started:Date.now(),
-            points:[]
-        };
-    const points=
-        Array.isArray(history.points)
-        ?history.points
-        :[];
-    const current=
-        currentPrices[symbol]||0;
-    let pnl=null;
-    if(
-        Number.isFinite(avgBuy)&&
-        avgBuy>0&&
-        current>0
-    ){
-        pnl=
-            ((current-avgBuy)/avgBuy)*100;
-    }
-    document.getElementById(
-        'history-detail-header'
-    ).innerText=
-        `${name} ${T('priceHistory')}`;
-    const content=
-        document.getElementById(
-            'history-detail-content'
-        );
-    let html='';
-    if(Number.isFinite(avgBuy)&&avgBuy>0){
-        html+=
-        `<div class="history-buy">
-            ${T('averageBuy')}:
-            <strong>${formatCryptoMoney(avgBuy)}</strong>
-         </div>`;
-    }
-    if(current>0){
-        html+=
-        `<div class="history-pnl ${pnl!==null?(pnl>=0?'up':'down'):''}">
-            CURRENT:
-            ${formatCryptoMoney(current)}
-            ${pnl!==null
-            ?` • ${pnl>=0?'+':''}${pnl.toFixed(1)}%`
-            :''}
-         </div>`;
-    }
-    if(points.length<2){
-        html+=
-        `<div class="history-empty">
-            ${translations[currentLang].history_empty}<br><br>
-            ${points.length} ${translations[currentLang].history_points}.
-         </div>`;
-    }else{
-        html+=
-        `<svg class="history-chart"
-            id="history-svg"
-            viewBox="0 0 320 180"
-            preserveAspectRatio="none">
-         </svg>`;
-        html+=
-        `<div class="history-list">`;
-        points.slice().reverse().forEach(point=>{
-            const date=
-                new Date(point.time).toLocaleString(
-                    'et-EE',
-                    {
-                        day:'2-digit',
-                        month:'2-digit',
-                        hour:'2-digit',
-                        minute:'2-digit'
-                    }
-                );
-            let change='';
-            if(Number.isFinite(avgBuy)&&avgBuy>0){
-                const cp=
-                    ((point.price-avgBuy)/avgBuy)*100;
-                change=
-                    `<span class="${cp>=0?'up':'down'}">
-                        ${cp>=0?'+':''}${cp.toFixed(1)}%
-                     </span>`;
-            }
-            html+=
-            `<div class="history-row">
-                <span class="history-date">${date}</span>
-                <span class="history-price">
-                    ${formatCryptoMoney(point.price)}
-                </span>
-                ${change}
-             </div>`;
-        });
-        html+='</div>';
-    }
-    content.innerHTML=html;
-    document.getElementById(
-        'history-detail-overlay'
-    ).style.display='flex';
-    if(points.length>=2){
-        setTimeout(()=>{
-            drawHistoryChart(
-                points,
-                avgBuy,
-                current
-            );
-        },50);
-    }
+    document.getElementById('history-assets-overlay').style.display='none';
+    document.getElementById('history-detail-header').innerText=`${name} ${T('priceHistory')}`;
+    document.getElementById('history-detail-overlay').style.display='flex';
+    renderHistoryLive(symbol,name);
 }
 function formatPrice(price){
     if(price>=1)
