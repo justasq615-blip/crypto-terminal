@@ -906,7 +906,7 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 }
 
 /* APLO FREE banner ad slots — reserved space for native AdMob */
-.modal-overlay #info-content + .aplo-inline-ad-slot{width:100% !important;max-width:none !important;align-self:stretch !important;margin-left:0 !important;margin-right:0 !important;box-sizing:border-box}.modal-overlay #info-content + .aplo-inline-ad-slot .aplo-ad-native-slot{width:100% !important;max-width:none !important;box-sizing:border-box}.aplo-inline-ad-slot{
+.modal-overlay > .aplo-inline-ad-slot{width:100% !important;max-width:360px !important;align-self:center !important;box-sizing:border-box}.modal-overlay > .aplo-inline-ad-slot .aplo-ad-native-slot{width:100% !important;box-sizing:border-box}.aplo-inline-ad-slot{
   margin:12px 8px 4px;
   padding:7px 6px 4px;
   border-top:1px solid var(--border);
@@ -943,10 +943,13 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
 .history-chart-loading{padding:16px;text-align:center;font-size:8px;opacity:.7}
 
 /* APLO banner placement:
-   FREE: banner sits OUTSIDE the modal, directly underneath it.
-   PRO: only the banner disappears; the modal keeps its original size. */
+   FREE: banner is a separate sibling OUTSIDE the modal, directly underneath it.
+   PRO: the separate banner is hidden and takes ZERO layout space. */
 .modal-overlay{
   flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
 }
 .aplo-inline-ad-slot{
   width:100%;
@@ -962,7 +965,12 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
   flex:0 0 auto;
 }
 .aplo-inline-ad-slot[style*="display: none"]{
-  margin:0;
+  display:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  min-height:0 !important;
+  height:0 !important;
+  border:0 !important;
 }
 
 .whatif-save-row{margin-top:8px;display:flex;justify-content:center}.whatif-save-row .action-btn{width:100%}
@@ -1133,12 +1141,13 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <div id="info-header" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;text-transform:uppercase;font-size:11px"></div>
         <div id="info-content" style="padding:20px">
 </div>
+    
+    </div>
     <div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-guide-slot"></div>
     </div>
-    </div>
-    </div>
+</div>
 <div id="dist-overlay" class="modal-overlay" onclick="this.style.display='none'">
     <div class="modal" onclick="event.stopPropagation()">
         <div id="ui-dist-title" style="padding:15px;border-bottom:1px solid var(--border);font-weight:bold;text-align:center;text-transform:uppercase;font-size:11px;color:var(--title)">VARADE JAOTUS</div>
@@ -1151,12 +1160,13 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
             <span id="ui-history-title">HINNAAJALUGU</span>
         </div>
         <div id="history-assets-list" style="padding:8px;overflow-y:auto;max-height:60vh"></div>
+    
+    </div>
     <div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-history-slot"></div>
     </div>
-    </div>
-    </div>
+</div>
 <div id="history-detail-overlay" class="modal-overlay" onclick="closeHistoryDetail()">
     <div class="modal" onclick="event.stopPropagation()">
         <div style="display:flex;align-items:center;border-bottom:1px solid var(--border);min-height:44px">
@@ -1174,12 +1184,13 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
       <div class="action-sub" data-i18n="score_sub">Terminali enda heuristiline momentum / trendisignaal</div>
       <select id="ants-symbol" class="action-select" onchange="renderAntsScore()"></select>
       <div id="ants-content"></div>
-    </div><div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
+    </div>
+    </div>
+    <div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-ants-slot"></div>
     </div>
-    </div>
-    </div>
+</div>
 <div id="whatif-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="action-header" data-i18n="whatif_title">🎯 WHAT IF?</div>
@@ -1204,12 +1215,13 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         </div>
         <div id="whatif-history-list"></div>
       </div>
-    </div><div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
+    </div>
+    </div>
+    <div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-whatif-slot"></div>
     </div>
-    </div>
-    </div>
+</div>
 <div id="alerts-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="action-header" data-i18n="alerts_title">🔔 PRICE ALERTS</div>
@@ -1224,12 +1236,13 @@ font-size:9px;opacity:.6;text-align:center;padding:20px 5px
         <button class="action-btn primary" onclick="addAlert()" data-i18n="add_alert">ADD ALERT</button>
       </div>
       <div id="alerts-content"></div>
-    </div><div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
+    </div>
+    </div>
+    <div class="aplo-inline-ad-slot" onclick="event.stopPropagation()" data-aplo-ad-slot="action">
       <div class="aplo-ad-label">ADVERTISEMENT</div>
       <div class="aplo-ad-native-slot" id="aplo-ad-alerts-slot"></div>
     </div>
-    </div>
-    </div>
+</div>
 <div id="watchlist-overlay" class="modal-overlay" onclick="this.style.display='none'">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="action-header" data-i18n="watch_title">💎 WATCHLIST / TEST</div>
